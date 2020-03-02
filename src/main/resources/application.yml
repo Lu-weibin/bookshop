@@ -13,7 +13,7 @@ spring:
 
 jwt:
   config:
-    key: itcast
+    key: bookshop
     ttl: 3600000
 
 user:

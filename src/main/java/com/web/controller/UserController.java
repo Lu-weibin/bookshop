@@ -7,10 +7,13 @@ import com.web.repository.UserRepository;
 import com.web.service.UserService;
 import com.web.util.JwtUtil;
 import com.web.util.ShaUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /***
@@ -23,11 +26,13 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final HttpServletRequest request;
 
     @Autowired
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, HttpServletRequest request) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.request = request;
     }
 
     /**
@@ -51,10 +56,15 @@ public class UserController {
      */
 //    @PostMapping("login")
     public Result findOneByUsername(@RequestBody User user) {
-        User user1 = userService.findOneByUsernameAndPassword(user);
-        if (user1 != null) {
-            String token = jwtUtil.createJWT(user1.getId().toString(), user1.getUsername(), "user");
-            return new Result(token);
+        if (user.getUsername() != null && user.getPassword() != null) {
+            User user1 = userService.findOneByUsernameAndPassword(user);
+            if (user1 != null) {
+                String token = jwtUtil.createJWT(user1.getId().toString(), user1.getUsername(), "user");
+                Map<String, String> map = new HashMap<>();
+                map.put("token", token);
+                map.put("username", user.getUsername());
+                return new Result(map);
+            }
         }
         return new Result(false, StatusCode.ERROR, "用户名或密码错误！");
     }
@@ -74,6 +84,10 @@ public class UserController {
 
     @GetMapping
     public Result list() {
+        Claims claims = (Claims) request.getAttribute("user_claims");
+        if (claims == null) {
+            return new Result(false, StatusCode.ACCESSERROR, "无访问权限");
+        }
         return new Result(userService.findAll());
     }
 
