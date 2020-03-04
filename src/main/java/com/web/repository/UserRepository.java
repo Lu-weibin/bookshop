@@ -12,5 +12,5 @@ public interface UserRepository extends JpaBaseRepository<User,Integer> {
 	/**
 	 * 通过用户名查询用户
 	 */
-	User findTop1ByUsername(String username);
+	User findTop1ByUsernameAndUserType(String username,int usertype);
 }

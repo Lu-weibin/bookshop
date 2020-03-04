@@ -3,7 +3,6 @@ package com.web.interceptor;
 import com.web.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author luwb
  * @date 2020/03/02
  */
-@Component
+//@Component
 public class JwtInterceptor extends HandlerInterceptorAdapter{
 
 	private final JwtUtil jwtUtil;
@@ -22,18 +21,21 @@ public class JwtInterceptor extends HandlerInterceptorAdapter{
 		this.jwtUtil = jwtUtil;
 	}
 
+	private static final String ROLES = "roles";
+	private static final String ROLES_ADMIN = "admin";
+	private static final String RROLES_USER = "user";
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		System.out.println("经过了拦截器");
-		String authHeader = request.getHeader("Authorization");
-		if (authHeader != null && authHeader.startsWith("Bearer ")) {
-			String token = authHeader.substring(7);
+		String token = request.getHeader("bookshop_token");
+		if (token != null) {
 			Claims claims = jwtUtil.parseJWT(token);
 			if (claims!=null) {
-				if ("admin".equals(claims.get("roles"))) {
+				if (ROLES_ADMIN.equals(claims.get(ROLES))) {
 					request.setAttribute("admin_claims", claims);
 				}
-				if ("user".equals(claims.get("roles"))) {
+				if (RROLES_USER.equals(claims.get(ROLES))) {
 					request.setAttribute("user_claims", claims);
 				}
 			}

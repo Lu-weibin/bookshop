@@ -32,14 +32,14 @@ public class UserServiceImpl extends BaseServiceImpl<User,Integer> implements Us
 	}
 
 	@Override
-	public User findOneByUsername(String username) {
-		return userRepository.findTop1ByUsername(username);
+	public User findOneByUsername(String username,int userType) {
+		return userRepository.findTop1ByUsernameAndUserType(username, userType);
 	}
 
 	@Override
 	public User findOneByUsernameAndPassword(User user) {
-		User user1 = userRepository.findTop1ByUsername(user.getUsername());
-		if (user1.getPassword().equals(ShaUtils.encrypt(user.getPassword()))) {
+		User user1 = userRepository.findTop1ByUsernameAndUserType(user.getUsername(),user.getUserType());
+		if (user1!=null && user1.getPassword().equals(ShaUtils.encrypt(user.getPassword()))) {
 			user1.setPassword("");
 			return user1;
 		}

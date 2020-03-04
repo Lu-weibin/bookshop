@@ -13,8 +13,4 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
     List<Book> findAllByState(int state);
 
-    List<Book> findByBookNameContainsOrAuthorContains(String key,String key2);
-
-//    List<Book> findAllByBookNameLikeOrAuthorLike(String key);
-
 }

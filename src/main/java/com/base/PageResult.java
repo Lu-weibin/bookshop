@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class PageResult<T> {
-    private long tatal;
+    private long total;
     private List<T> rows;
 }

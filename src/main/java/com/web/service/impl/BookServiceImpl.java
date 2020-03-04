@@ -6,8 +6,13 @@ import com.web.pojo.Book;
 import com.web.repository.BookRepository;
 import com.web.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +43,22 @@ public class BookServiceImpl extends BaseServiceImpl<Book,Integer> implements Bo
 	}
 
 	@Override
-	public List<Book> findAllByBookNameLikeOrAuthorLike(String key) {
-		return bookRepository.findByBookNameContainsOrAuthorContains(key,key);
+	public Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book) {
+		Pageable pageable = PageRequest.of(page - 1, size);
+		return bookRepository.findAll(createSpecification(book), pageable);
 	}
+
+	private Specification<Book> createSpecification(Book book) {
+		return (root,query,cb) -> {
+			List<Predicate> predicateList = new ArrayList<>();
+			if (book.getBookName() != null) {
+				predicateList.add(cb.like(root.get("bookName"), "%" + book.getBookName() + "%"));
+			}
+			if (book.getAuthor() != null) {
+				predicateList.add(cb.like(root.get("author"), "%" + book.getAuthor() + "%"));
+			}
+			return cb.and(predicateList.toArray(new Predicate[predicateList.size()]));
+		};
+	}
+
 }

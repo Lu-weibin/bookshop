@@ -2,8 +2,8 @@ package com.web.controller;
 
 import com.base.Result;
 import com.base.StatusCode;
+import com.base.TestResult;
 import com.web.pojo.User;
-import com.web.repository.UserRepository;
 import com.web.service.UserService;
 import com.web.util.JwtUtil;
 import com.web.util.ShaUtils;
@@ -20,6 +20,7 @@ import java.util.Optional;
  * @author luwb
  * @date 2020/02/25
  */
+@CrossOrigin
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -40,7 +41,7 @@ public class UserController {
      */
     @PostMapping("register")
     public Result register(@RequestBody User user) {
-        User user1 = userService.findOneByUsername(user.getUsername());
+        User user1 = userService.findOneByUsername(user.getUsername(),1);
         if (user1 != null) {
             return new Result(false, StatusCode.ERROR, "用户名已存在");
         }
@@ -54,12 +55,12 @@ public class UserController {
     /**
      * 登录
      */
-//    @PostMapping("login")
+    @PostMapping("login")
     public Result findOneByUsername(@RequestBody User user) {
         if (user.getUsername() != null && user.getPassword() != null) {
             User user1 = userService.findOneByUsernameAndPassword(user);
             if (user1 != null) {
-                String token = jwtUtil.createJWT(user1.getId().toString(), user1.getUsername(), "user");
+                String token = jwtUtil.createJWT(user1.getId().toString(), user1.getUsername(), "admin");
                 Map<String, String> map = new HashMap<>();
                 map.put("token", token);
                 map.put("username", user.getUsername());
@@ -69,8 +70,25 @@ public class UserController {
         return new Result(false, StatusCode.ERROR, "用户名或密码错误！");
     }
 
-    @Autowired
-    UserRepository userRepository;
+    @GetMapping("info")
+    public TestResult getInfo() {
+		String token = request.getHeader("bookshop_token");
+		if (token!=null) {
+			Claims claims = jwtUtil.parseJWT(token);
+			if (claims != null) {
+				String adminRoles = "admin";
+				if (adminRoles.equals(claims.get("roles"))) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("roles", new String[]{"admin"});
+					map.put("name", claims.getSubject());
+					// https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80
+					map.put("avatar", "http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+					return new TestResult(map);
+				}
+			}
+		}
+        return new TestResult(StatusCode.ACCESSERROR, "token失效");
+    }
 
     @GetMapping("{id}")
     public Result findOne(@PathVariable Integer id) {
@@ -84,16 +102,17 @@ public class UserController {
 
     @GetMapping
     public Result list() {
-        Claims claims = (Claims) request.getAttribute("user_claims");
-        if (claims == null) {
-            return new Result(false, StatusCode.ACCESSERROR, "无访问权限");
-        }
         return new Result(userService.findAll());
     }
 
     @DeleteMapping("{id}")
     public Result delete(@PathVariable Integer id) {
         return new Result(userService.findById(id));
+    }
+
+    @RequestMapping("logout")
+    public TestResult logout() {
+        return new TestResult();
     }
 
 }

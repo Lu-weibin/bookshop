@@ -2,6 +2,7 @@ package com.web.service;
 
 import com.base.BaseService;
 import com.web.pojo.Book;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface BookService extends BaseService<Book,Integer> {
     /**
      * 根据书名或作者查询列表
      */
-    List<Book> findAllByBookNameLikeOrAuthorLike(String key);
+    Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book);
 
 }
