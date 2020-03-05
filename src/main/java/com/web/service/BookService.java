@@ -22,4 +22,9 @@ public interface BookService extends BaseService<Book,Integer> {
      */
     Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book);
 
+    /**
+     * 更新图书状态
+     */
+    Book update(int id, int state);
+
 }

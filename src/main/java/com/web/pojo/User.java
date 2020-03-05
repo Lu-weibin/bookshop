@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.List;
 @Entity
 @Data
 @ToString
+@NoArgsConstructor
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class User implements Serializable {
 
@@ -48,5 +50,10 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.MERGE)
     private List<Address> addresses;
+
+    public User(Integer id) {
+        this.id = id;
+    }
+
 
 }

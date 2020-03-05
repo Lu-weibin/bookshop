@@ -27,7 +27,7 @@ public class Book implements Serializable {
 
 	private String bookName;
 
-	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+	@ManyToOne
 	@JoinColumn(name = "categoryid",referencedColumnName = "id")
 	private Category category;
 

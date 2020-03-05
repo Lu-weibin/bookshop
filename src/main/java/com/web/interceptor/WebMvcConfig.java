@@ -11,7 +11,7 @@ import java.util.List;
  * @author luwb
  * @date 2020/03/02
  */
-//@Configuration
+@Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 	private final JwtInterceptor jwtInterceptor;

@@ -3,6 +3,7 @@ package com.web.interceptor;
 import com.web.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author luwb
  * @date 2020/03/02
  */
-//@Component
+@Component
 public class JwtInterceptor extends HandlerInterceptorAdapter{
 
 	private final JwtUtil jwtUtil;
@@ -27,7 +28,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter{
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		System.out.println("经过了拦截器");
+//		System.out.println("经过了拦截器");
 		String token = request.getHeader("bookshop_token");
 		if (token != null) {
 			Claims claims = jwtUtil.parseJWT(token);
