@@ -34,7 +34,7 @@ public class JwtUtil {
     /**
      * 生成JWT
      */
-    public String createJWT(String id, String subject, String roles) {
+    public String createJwt(String id, String subject, String roles) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         JwtBuilder builder = Jwts.builder().setId(id)
@@ -50,7 +50,7 @@ public class JwtUtil {
     /**
      * 解析JWT
      */
-    public Claims parseJWT(String jwtStr){
+    public Claims parseJwt(String jwtStr){
         return  Jwts.parser()
                 .setSigningKey(key)
                 .parseClaimsJws(jwtStr)

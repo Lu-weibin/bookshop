@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by luwb on 2020/02/25.
+ * @author luwb
+ * @date 2020/02/25
  * 基本服务类，定义通用的service操作方法
  */
 public abstract class BaseServiceImpl<T extends Serializable, ID> implements BaseService<T, ID> {

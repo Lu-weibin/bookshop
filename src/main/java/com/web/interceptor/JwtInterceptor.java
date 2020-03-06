@@ -28,10 +28,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter{
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//		System.out.println("经过了拦截器");
 		String token = request.getHeader("bookshop_token");
 		if (token != null) {
-			Claims claims = jwtUtil.parseJWT(token);
+			Claims claims = jwtUtil.parseJwt(token);
 			if (claims!=null) {
 				if (ROLES_ADMIN.equals(claims.get(ROLES))) {
 					request.setAttribute("admin_claims", claims);

@@ -34,7 +34,7 @@ public class CommonUtil {
 	/**
 	 * 生成32位字符
 	 */
-	public static String getUUID() {
+	public static String getUuid() {
 		String uuid = UUID.randomUUID().toString().trim().replaceAll("-", "");
 		return uuid.toUpperCase();
 	}

@@ -60,8 +60,8 @@ public class UserController {
         if (user.getUsername() != null && user.getPassword() != null) {
             User user1 = userService.findOneByUsernameAndPassword(user);
             if (user1 != null) {
-                String token = jwtUtil.createJWT(user1.getId().toString(), user1.getUsername(), "admin");
-                Map<String, String> map = new HashMap<>();
+                String token = jwtUtil.createJwt(user1.getId().toString(), user1.getUsername(), "admin");
+                Map<String, String> map = new HashMap<>(16);
                 map.put("token", token);
                 map.put("username", user.getUsername());
                 return new Result(map);
@@ -72,16 +72,16 @@ public class UserController {
 
     @GetMapping("info")
     public TestResult getInfo() {
-		String token = request.getHeader("bookshop_token");
+        String roles = "roles";
+        String token = request.getHeader("bookshop_token");
 		if (token!=null) {
-			Claims claims = jwtUtil.parseJWT(token);
+			Claims claims = jwtUtil.parseJwt(token);
 			if (claims != null) {
 				String adminRoles = "admin";
-				if (adminRoles.equals(claims.get("roles"))) {
-					Map<String, Object> map = new HashMap<>();
+				if (adminRoles.equals(claims.get(roles))) {
+					Map<String, Object> map = new HashMap<>(16);
 					map.put("roles", new String[]{"admin"});
 					map.put("name", claims.getSubject());
-					// https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80
 					map.put("avatar", "http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
 					return new TestResult(map);
 				}
