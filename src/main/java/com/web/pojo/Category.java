@@ -1,6 +1,7 @@
 package com.web.pojo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  */
 @Entity
 @Data
+@NoArgsConstructor
 @ToString
 public class Category implements Serializable{
 
@@ -19,5 +21,9 @@ public class Category implements Serializable{
     private Integer id;
 
     private String category;
+
+    public Category(Integer id) {
+        this.id = id;
+    }
 
 }

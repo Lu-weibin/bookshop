@@ -36,6 +36,9 @@ public class Book implements Serializable {
 
 	private String publisher;
 
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Timestamp publishTime;
+
 	private String description;
 
 	private String picture;
@@ -46,7 +49,7 @@ public class Book implements Serializable {
 	@JoinColumn(name = "userid",referencedColumnName = "id")
 	private User user;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Timestamp createTime;
 
 }

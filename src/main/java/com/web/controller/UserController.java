@@ -48,8 +48,10 @@ public class UserController {
         user.setId(null);
         user.setPassword(ShaUtils.encrypt(user.getPassword()));
         user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        user.setUserType(1);
+        user.setState(1);
         userService.save(user);
-        return new Result("注册成功");
+        return new Result(true,StatusCode.OK,"注册成功");
     }
 
     /**
@@ -60,10 +62,13 @@ public class UserController {
         if (user.getUsername() != null && user.getPassword() != null) {
             User user1 = userService.findOneByUsernameAndPassword(user);
             if (user1 != null) {
-                String token = jwtUtil.createJwt(user1.getId().toString(), user1.getUsername(), "admin");
+                String role = user.getUserType() == 1 ? "user" : "admin";
+                String token = jwtUtil.createJwt(user1.getId().toString(), user1.getUsername(), role);
                 Map<String, String> map = new HashMap<>(16);
                 map.put("token", token);
                 map.put("username", user.getUsername());
+                // 头像固定不变
+                map.put("avatar","http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
                 return new Result(map);
             }
         }

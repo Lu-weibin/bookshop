@@ -32,9 +32,9 @@ public class BookController {
 		this.request = request;
 	}
 
-	@GetMapping
-	public Result list() {
-		return new Result(bookService.findAll());
+	@GetMapping("category/{categoryid}")
+	public Result listByCategoryid(@PathVariable Integer categoryid) {
+		return new Result(bookService.findAllByCategoryid(categoryid));
 	}
 
 	@GetMapping("{id}")

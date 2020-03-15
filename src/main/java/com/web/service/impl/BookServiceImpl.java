@@ -3,6 +3,7 @@ package com.web.service.impl;
 import com.base.BaseServiceImpl;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Book;
+import com.web.pojo.Category;
 import com.web.repository.BookRepository;
 import com.web.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,14 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
 			return bookRepository.save(book);
 		}
 		return null;
+	}
+
+	@Override
+	public List<Book> findAllByCategoryid(Integer categoryid) {
+		if (categoryid==-1) {
+			return bookRepository.findAll();
+		}
+		return bookRepository.findAllByCategory(new Category(categoryid));
 	}
 
 	private Specification<Book> createSpecification(Book book) {

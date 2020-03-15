@@ -27,4 +27,5 @@ public interface BookService extends BaseService<Book,Integer> {
      */
     Book update(int id, int state);
 
+    List<Book> findAllByCategoryid(Integer categoryid);
 }
