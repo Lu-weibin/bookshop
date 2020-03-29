@@ -30,9 +30,12 @@ public class Orders implements Serializable {
 
     private BigDecimal payPrice;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp payTime;
 
     private Integer state;
+
+    private String phone;
 
     private String address;
 

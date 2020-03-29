@@ -4,9 +4,11 @@ import com.base.Result;
 import com.base.StatusCode;
 import com.web.pojo.Cart;
 import com.web.service.CartService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -16,14 +18,24 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("cart")
+@CrossOrigin
 public class CartController {
 
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @GetMapping
     public Result list() {
-        return new Result(cartService.findAll());
+        Claims userClaims = (Claims) request.getAttribute("user_claims");
+        if (userClaims != null) {
+            String userid = userClaims.getId();
+            return new Result(cartService.findAllByUserid(Integer.parseInt(userid)));
+        } else {
+            return new Result(false, StatusCode.ERROR, "未登录");
+        }
     }
 
     @PostMapping("book/{bookid}")

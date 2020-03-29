@@ -8,6 +8,8 @@ import com.web.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author luwb
  * @date 2020-02-29
@@ -23,4 +25,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements
         return this.orderRepository;
     }
 
+    @Override
+    public List<Orders> findAllByUserid(int userid,Integer state) {
+        if (state == -1) {
+            return orderRepository.findAllByUserid(userid);
+        }
+        return orderRepository.findAllByUseridAndState(userid, state);
+    }
 }

@@ -1,11 +1,13 @@
 package com.web.controller;
 
 import com.base.Result;
+import com.base.StatusCode;
 import com.web.service.OrderService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author luwb
@@ -13,14 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("order")
+@CrossOrigin
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private HttpServletRequest request;
 
-    @GetMapping
-    public Result list() {
-        return new Result(orderService.findAll());
+    @GetMapping(value = "state/{state}")
+    public Result list(@PathVariable Integer state) {
+        Claims userClaims = (Claims) request.getAttribute("user_claims");
+        if (userClaims != null) {
+            String userid = userClaims.getId();
+            return new Result(orderService.findAllByUserid(Integer.parseInt(userid),state));
+        } else {
+            return new Result(false, StatusCode.ERROR, "未登录");
+        }
     }
 
 }

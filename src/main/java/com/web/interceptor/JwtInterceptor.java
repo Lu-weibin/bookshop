@@ -30,13 +30,16 @@ public class JwtInterceptor extends HandlerInterceptorAdapter{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String token = request.getHeader("bookshop_token");
 		if (token != null) {
-			Claims claims = jwtUtil.parseJwt(token);
-			if (claims!=null) {
-				if (ROLES_ADMIN.equals(claims.get(ROLES))) {
-					request.setAttribute("admin_claims", claims);
-				}
-				if (RROLES_USER.equals(claims.get(ROLES))) {
-					request.setAttribute("user_claims", claims);
+			token = token.substring(7);
+			if (!"undefined".equals(token)) {
+				Claims claims = jwtUtil.parseJwt(token);
+				if (claims!=null) {
+					if (ROLES_ADMIN.equals(claims.get(ROLES))) {
+						request.setAttribute("admin_claims", claims);
+					}
+					if (RROLES_USER.equals(claims.get(ROLES))) {
+						request.setAttribute("user_claims", claims);
+					}
 				}
 			}
 		}

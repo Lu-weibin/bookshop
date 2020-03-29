@@ -3,6 +3,7 @@ package com.web.repository;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -15,5 +16,8 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
     List<Book> findAllByState(int state);
 
     List<Book> findAllByCategory(Category category);
+
+    @Query(value = "select b.* from book b,cart c where  c.bookid = b.id and c.userid = 1 and c.state = 1",nativeQuery = true)
+    List<Book> findBooksByCart(int userid);
 
 }
