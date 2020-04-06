@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
@@ -10,12 +11,19 @@ spring:
     show-sql: true
     generate-ddl: true
     database: mysql
+#  resources:
+#    static-locations: classpath:templates/
+
+#spring:
+#  resources:
+#    static-locations: classpath:/templates/
+
+  servlet:
+    multipart:
+      max-file-size: 10Mb
+      max-request-size: 10Mb
 
 jwt:
   config:
     key: bookshop
     ttl: 3600000
-
-user:
-  name: luweibin
-  password: 123456

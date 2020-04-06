@@ -45,6 +45,7 @@ public class UserController {
         if (user1 != null) {
             return new Result(false, StatusCode.ERROR, "用户名已存在");
         }
+        user.setUsername("haha");
         user.setId(null);
         user.setPassword(ShaUtils.encrypt(user.getPassword()));
         user.setCreateTime(new Timestamp(System.currentTimeMillis()));

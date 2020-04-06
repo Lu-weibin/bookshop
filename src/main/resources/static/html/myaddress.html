@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>二手书交易平台</title>
+	<!-- Bootstrap -->
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">二手书交易平台</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li ><a href="index.html">首页 <span class="sr-only">(current)</span></a></li>
+					<li><a href="cart.html">购物车</a></li>
+					<li><a href="order.html">我的订单</a></li>
+					<li><a href="myinfo.html">个人中心</a></li>
+					<li class="active"><a href="notice.html">网站通知</a></li>
+				</ul>
+				<form class="navbar-form navbar-left">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search">
+					</div>
+					<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="register.html">注册</a></li>
+					<li><a href="login.html">登录</a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2 text-center">
+				<div class="list-group">
+					<a href="myinfo.html" class="list-group-item ">个 人 资 料</a><br>
+					<a href="account.html" class="list-group-item">账 户 安 全</a><br>
+					<a href="myaddress.html" class="list-group-item active">我 的 地 址</a><br>
+					<a href="favorite.html" class="list-group-item">我 的 收 藏</a><br>
+				</div>
+			</div>
+			<div class="col-lg-8 col-lg-offset-1">
+				<div class="row">
+					<h4>我 的 地 址</small></h4>
+					<hr><br><br>
+					<div class="col-lg-8 col-lg-offset-0">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="inputEmail3" class="col-sm-2 control-label">省 份</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="inputEmail3" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputPassword3" class="col-sm-2 control-label">市</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="inputPassword3" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputEmail3" class="col-sm-2 control-label">详细地址</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="inputEmail3" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-8 col-sm-10">
+									<button type="submit" class="btn btn-info">保 存</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<hr>
+					<table class="table">
+						<tr>
+							<td class="active" width="50%">地 址</td>
+							<td class="active">默 认</td>
+							<td class="active">操 作</td>
+						</tr>
+						<tr>
+							<td class="" width="50%">广东省潮州市潮安区</td>
+							<td class="">是</td>
+							<td class="">
+								<a class="" type="">设为默认 </a>&nbsp;
+								<a class="" type=""> 删除</a>
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr />
+	<p style="text-align: center;color: #ADADAD;">
+		运维支持：佛大15级计算机科学与技术1 卢伟彬
+	</p>
+
+	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+</body>
+
+</html>

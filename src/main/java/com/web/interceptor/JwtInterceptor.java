@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author luwb
  * @date 2020/03/02
  */
-@Component
+//@Component
 public class JwtInterceptor extends HandlerInterceptorAdapter{
 
 	private final JwtUtil jwtUtil;
