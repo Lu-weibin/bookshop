@@ -1,5 +1,7 @@
 server:
   port: 8080
+#  servlet:
+#    context-path: /thymeleaf
 
 spring:
   datasource:
@@ -11,12 +13,13 @@ spring:
     show-sql: true
     generate-ddl: true
     database: mysql
-#  resources:
-#    static-locations: classpath:templates/
+  thymeleaf:
+    mode: HTML5
+    encoding: utf-8
+    servlet:
+      content-type: text/html
+    cache: false
 
-#spring:
-#  resources:
-#    static-locations: classpath:/templates/
 
   servlet:
     multipart:
@@ -27,3 +30,8 @@ jwt:
   config:
     key: bookshop
     ttl: 3600000
+
+
+#myEmail:
+#  from: 1571701516@qq.com
+#  sqm: ekrhrtxbazubjaci

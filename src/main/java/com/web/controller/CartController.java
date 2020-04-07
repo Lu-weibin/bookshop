@@ -27,7 +27,7 @@ public class CartController {
     @Autowired
     private HttpServletRequest request;
 
-    @GetMapping
+    @GetMapping("list")
     public Result list() {
         Claims userClaims = (Claims) request.getAttribute("user_claims");
         if (userClaims != null) {

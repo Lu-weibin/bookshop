@@ -43,6 +43,8 @@ public class User implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createTime;
 
+    private String code;
+
     private String remarks;
 
     @JsonIgnore

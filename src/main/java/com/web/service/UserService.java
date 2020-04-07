@@ -12,7 +12,11 @@ public interface UserService extends BaseService<User,Integer> {
 	/**
 	 * 根据用户名查询用户信息
 	 */
-	User findOneByUsername(String username, int userType);
+	User findOneByUsername(String email, int userType);
 
-	User findOneByUsernameAndPassword(User user);
+	User findOneByEmailAndPassword(User user);
+
+	User findOneByEmail(String username, int userType);
+
+	User findOneByCode(String code);
 }
