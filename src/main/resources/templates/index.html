@@ -2,135 +2,166 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-	<title>二手书交易平台</title>
-	<!-- Bootstrap -->
-	<link href="../css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>二手书交易平台</title>
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-	<nav class="navbar navbar-default">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">二手书交易平台</a>
-			</div>
+<div id="vue_bookshop">
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">二手书交易平台</a>
+            </div>
 
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="index">首页 <span class="sr-only">(current)</span></a></li>
-					<li><a href="cart">购物车</a></li>
-					<li><a href="order">我的订单</a></li>
-					<li><a href="myinfo">个人中心</a></li>
-					<li><a href="notice">网站通知</a></li>
-				</ul>
-				<form class="navbar-form navbar-left">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search">
-					</div>
-					<button type="submit" class="btn btn-default">搜索</button>
-				</form>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="register">注册</a></li>
-					<li><a href="login">登录</a></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- /.container-fluid -->
-	</nav>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index">首页 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="cart">购物车</a></li>
+                    <li><a href="order">我的订单</a></li>
+                    <li><a href="myinfo">个人中心</a></li>
+                    <li><a href="notice">网站通知</a></li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li th:if="${session.username}==null"><a href="register">注册</a></li>
+                    <li th:if="${session.username}==null"><a href="login">登录</a></li>
+                    <li th:if="${session.username}!=null"><a href="#" th:text="|欢迎，${session.username}|"></a></li>
+                    <li th:if="${session.username}!=null"><a href="logout">退出</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-2">
-				<div class="list-group">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="list-group">
 					<a href="#" class="list-group-item active">
 						所有书籍
 					</a>
-					<a href="#" class="list-group-item">心理学</a>
-					<a href="#" class="list-group-item">文学</a>
-					<a href="#" class="list-group-item">小说</a>
-					<a href="#" class="list-group-item">科幻</a>
-				</div>
-			</div>
-			<div class="col-lg-10">
-				<div class="row">
-					<div class="col-lg-3">
-						<div class="thumbnail">
-							<img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..."
-								width="150px" height="150px">
-							<div class="caption">
-								<h4 class="text-center">《平凡的世界》</h4>
-								<p class="text-center">—— 路遥</p>
-								<p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-								<p class="text-center"><a href="detail" class="btn btn-primary btn-sm" role="button">详情</a>
-									<a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="thumbnail">
-							<img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..."
-								width="150px" height="150px">
-							<div class="caption">
-								<h4 class="text-center">《平凡的世界》</h4>
-								<p class="text-center">—— 路遥</p>
-								<p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-								<p class="text-center"><a href="detail" class="btn btn-primary btn-sm" role="button">详情</a>
-									<a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="thumbnail">
-							<img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..."
-								width="150px" height="150px">
-							<div class="caption">
-								<h4 class="text-center">《平凡的世界》</h4>
-								<p class="text-center">—— 路遥</p>
-								<p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-								<p class="text-center"><a href="detail" class="btn btn-primary btn-sm" role="button">详情</a>
-									<a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="thumbnail">
-							<img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..."
-								width="150px" height="150px">
-							<div class="caption">
-								<h4 class="text-center">《平凡的世界》</h4>
-								<p class="text-center">—— 路遥</p>
-								<p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-								<p class="text-center"><a href="detail" class="btn btn-primary btn-sm" role="button">详情</a>
-									<a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<hr />
-	<p style="text-align: center;color: #ADADAD;">
-		运维支持：佛大15级计算机科学与技术1 卢伟彬
-	</p>
+                    <div v-for="(category,index) in categorys" :key="index">
+                        <a href="#" class="list-group-item">{{category.category }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="thumbnail">
+                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
+                                 height="150px">
+                            <div class="caption">
+                                <h4 class="text-center">《平凡的世界》</h4>
+                                <p class="text-center">—— 路遥</p>
+                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
+                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
+                                                          role="button">详情</a>
+                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="thumbnail">
+                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
+                                 height="150px">
+                            <div class="caption">
+                                <h4 class="text-center">《平凡的世界》</h4>
+                                <p class="text-center">—— 路遥</p>
+                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
+                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
+                                                          role="button">详情</a>
+                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="thumbnail">
+                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
+                                 height="150px">
+                            <div class="caption">
+                                <h4 class="text-center">《平凡的世界》</h4>
+                                <p class="text-center">—— 路遥</p>
+                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
+                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
+                                                          role="button">详情</a>
+                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="thumbnail">
+                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
+                                 height="150px">
+                            <div class="caption">
+                                <h4 class="text-center">《平凡的世界》</h4>
+                                <p class="text-center">—— 路遥</p>
+                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
+                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
+                                                          role="button">详情</a>
+                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
+                            </div>
 
-	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
-	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <p style="text-align: center;color: #ADADAD;">
+        运维支持：佛大15级计算机科学与技术1 卢伟彬
+    </p>
+</div>
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="../js/jquery-3.3.1.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="../js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+<script th:inline="javascript">
+    var vm = new Vue({
+        el: '#vue_bookshop',
+        data() {
+            return {
+                username: [[${ session.username }]],
+                categorys: [{}]
+            }
+        },
+        methods: {
+            getCategorys: function () {
+				axios
+						.get('/category')
+						.then(response => (this.categorys = response.data.data))
+			.catch(function (error) { // 请求失败处理
+					console.log(error);
+				});
+            }
+        },
+        created() {
+            this.getCategorys();
+        }
+    })
+</script>
 </body>
 
 </html>

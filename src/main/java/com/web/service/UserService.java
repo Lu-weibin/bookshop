@@ -7,16 +7,16 @@ import com.web.pojo.User;
  * @author luwb
  * @date 2020/02/25
  */
-public interface UserService extends BaseService<User,Integer> {
+public interface UserService extends BaseService<User, Integer> {
 
-	/**
-	 * 根据用户名查询用户信息
-	 */
-	User findOneByUsername(String email, int userType);
+    /**
+     * 根据用户名查询用户信息
+     */
+    User findOneByUsername(String email, int userType);
 
-	User findOneByEmailAndPassword(User user);
+    User findOneByEmailAndPassword(String email, String password);
 
-	User findOneByEmail(String username, int userType);
+    User findOneByEmail(String username, int userType);
 
-	User findOneByCode(String code);
+    User findOneByCode(String code);
 }

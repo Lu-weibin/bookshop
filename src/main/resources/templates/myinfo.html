@@ -42,8 +42,10 @@
 					<button type="submit" class="btn btn-default">搜索</button>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="register">注册</a></li>
-					<li><a href="login">登录</a></li>
+					<li th:if="${session.username}==null"><a href="register">注册</a></li>
+					<li th:if="${session.username}==null"><a href="login">登录</a></li>
+					<li th:if="${session.username}!=null"><a href="#" th:text="|欢迎，${session.username}|"></a></li>
+					<li th:if="${session.username}!=null"><a href="logout">退出</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- /.container-fluid -->
@@ -61,45 +63,46 @@
 			</div>
 			<div class="col-lg-8 col-lg-offset-1">
 				<div class="row">
-					<h4>个 人 资 料</small></h4><hr><br><br>
+					<h4>个 人 资 料</small></h4>
+					<hr><br><br>
 					<div class="col-lg-8 col-lg-offset-0">
 						<form class="form-horizontal">
 							<div class="form-group">
-							  <label for="inputEmail3" class="col-sm-2 control-label">账 号</label>
-							  <div class="col-sm-10">
-								<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-							  </div>
+								<label for="inputEmail3" class="col-sm-2 control-label">账 号</label>
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+								</div>
 							</div>
 							<div class="form-group">
-							  <label for="inputPassword3" class="col-sm-2 control-label">手机号码</label>
-							  <div class="col-sm-10">
-								<input type="password" class="form-control" id="inputPassword3" placeholder="手机号码">
-							  </div>
+								<label for="inputPassword3" class="col-sm-2 control-label">手机号码</label>
+								<div class="col-sm-10">
+									<input type="password" class="form-control" id="inputPassword3" placeholder="手机号码">
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">姓名</label>
 								<div class="col-sm-10">
-								  <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+									<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
 								</div>
-							  </div>
-							  <div class="form-group">
+							</div>
+							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">默认地址</label>
 								<div class="col-sm-10">
-								  <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+									<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
 								</div>
-							  </div>
-							  <div class="form-group">
+							</div>
+							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">性别</label>
 								<div class="col-sm-10">
-								  <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+									<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
 								</div>
-							  </div>
-							<div class="form-group">
-							  <div class="col-sm-offset-8 col-sm-10">
-								<button type="submit" class="btn btn-info">保 存</button>
-							  </div>
 							</div>
-						  </form>
+							<div class="form-group">
+								<div class="col-sm-offset-8 col-sm-10">
+									<button type="submit" class="btn btn-info">保 存</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

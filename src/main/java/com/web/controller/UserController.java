@@ -10,7 +10,11 @@ import com.web.util.MailUtil;
 import com.web.util.ShaUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -23,7 +27,8 @@ import java.util.UUID;
  * @date 2020/02/25
  */
 @CrossOrigin
-@RestController
+//@RestController
+@Controller
 @RequestMapping("user")
 public class UserController {
 
@@ -42,8 +47,9 @@ public class UserController {
      * 注册
      */
     @PostMapping("register")
+    @ResponseBody
     public Result register(@RequestBody User user) {
-        User user1 = userService.findOneByUsername(user.getUsername(),1);
+        User user1 = userService.findOneByUsername(user.getUsername(), 1);
         if (user1 != null) {
             return new Result(false, StatusCode.ERROR, "用户名已存在！");
         }
@@ -62,11 +68,12 @@ public class UserController {
         String code = UUID.randomUUID().toString();
         user.setCode(code);
         userService.save(user);
-        new MailUtil(user.getEmail(),code).run();
-        return new Result(true,StatusCode.OK,"注册成功");
+        new MailUtil(user.getEmail(), code).run();
+        return new Result(true, StatusCode.OK, "注册成功");
     }
 
     @GetMapping("activation")
+    @ResponseBody
     public String activation(String code) {
         User user = userService.findOneByCode(code);
         if (user == null) {
@@ -82,45 +89,43 @@ public class UserController {
      * 登录
      */
     @PostMapping("login")
-    public Result findOneByUsername(@RequestBody User user) {
-        user.setUserType(1);
-        if (user.getEmail() != null && user.getPassword() != null) {
-             User user1 = userService.findOneByEmailAndPassword(user);
-            if (user1 != null) {
-                if (user1.getState() == 3) {
-                    return new Result(false, StatusCode.ERROR,"请到邮箱中激活账户！");
-                }
-                String role = user.getUserType() == 1 ? "user" : "admin";
-                String token = jwtUtil.createJwt(user1.getId().toString(), user1.getUsername(), role);
-                Map<String, String> map = new HashMap<>(16);
-                map.put("token", token);
-                map.put("email", user1.getEmail());
-                map.put("username", user1.getUsername());
-                // 头像固定不变
-//                map.put("avatar","http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-                return new Result(map);
+    public String findOneByUsername(String email, String password, RedirectAttributes redirectAttributes) {
+        User user;
+        if (email != null && password != null) {
+            user = userService.findOneByEmailAndPassword(email,password);
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("error", "用户名或密码错误！");
+                return "redirect:../login";
             }
+            if (user.getState() == 3) {
+                redirectAttributes.addFlashAttribute("error", "请到邮箱中激活账户！");
+                return "redirect:../login";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "信息不能为空！");
+            return "redirect:../login";
         }
-        return new Result(false, StatusCode.ERROR, "用户名或密码错误！");
+        request.getSession().setAttribute("username", user.getUsername());
+        return "redirect:../index";
     }
 
     @GetMapping("info")
     public TestResult getInfo() {
         String roles = "roles";
         String token = request.getHeader("bookshop_token");
-		if (token!=null) {
-			Claims claims = jwtUtil.parseJwt(token);
-			if (claims != null) {
-				String adminRoles = "admin";
-				if (adminRoles.equals(claims.get(roles))) {
-					Map<String, Object> map = new HashMap<>(16);
-					map.put("roles", new String[]{"admin"});
-					map.put("name", claims.getSubject());
-					map.put("avatar", "http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-					return new TestResult(map);
-				}
-			}
-		}
+        if (token != null) {
+            Claims claims = jwtUtil.parseJwt(token);
+            if (claims != null) {
+                String adminRoles = "admin";
+                if (adminRoles.equals(claims.get(roles))) {
+                    Map<String, Object> map = new HashMap<>(16);
+                    map.put("roles", new String[]{"admin"});
+                    map.put("name", claims.getSubject());
+                    map.put("avatar", "http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+                    return new TestResult(map);
+                }
+            }
+        }
         return new TestResult(StatusCode.ACCESSERROR, "token失效");
     }
 
@@ -131,7 +136,7 @@ public class UserController {
             User user = optional.get();
             return new Result(user);
         }
-		return new Result(false,StatusCode.ERROR,"id不存在");
+        return new Result(false, StatusCode.ERROR, "id不存在");
     }
 
     @GetMapping

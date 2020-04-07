@@ -34,6 +34,7 @@ public class BookController {
 
 	@GetMapping("category/{categoryid}")
 	public Result listByCategoryid(@PathVariable Integer categoryid) {
+		// categoryid为-1时返回所有分类
 		return new Result(bookService.findAllByCategoryid(categoryid));
 	}
 
