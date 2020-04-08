@@ -105,6 +105,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("error", "信息不能为空！");
             return "redirect:../login";
         }
+        request.getSession().setAttribute("userid", user.getId());
         request.getSession().setAttribute("username", user.getUsername());
         return "redirect:../index";
     }

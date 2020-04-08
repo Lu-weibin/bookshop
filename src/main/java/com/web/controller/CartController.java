@@ -42,6 +42,7 @@ public class CartController {
     public Result save(@PathVariable int bookid) {
         Cart cart = new Cart();
         // todo 获取用户id
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
         cart.setBookid(bookid);
         cart.setBookCount(1);
         cart.setUserid(1);

@@ -56,71 +56,29 @@
         <div class="row">
             <div class="col-lg-2">
                 <div class="list-group">
-					<a href="#" class="list-group-item active">
+					<a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}" v-on:click="getBooks(-1);flag=-1">
 						所有书籍
 					</a>
                     <div v-for="(category,index) in categorys" :key="index">
-                        <a href="#" class="list-group-item">{{category.category }}</a>
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==category.id}" v-on:click="getBooks(category.id);flag=category.id">{{category.category }}</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-10">
-                <div class="row">
-                    <div class="col-lg-3">
+                <div class="row" >
+                    <div class="col-lg-3" v-for="(book,index) in books" :key="index">
                         <div class="thumbnail">
-                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
+                            <img :src="book.picture" alt="" width="150px"
                                  height="150px">
                             <div class="caption">
-                                <h4 class="text-center">《平凡的世界》</h4>
-                                <p class="text-center">—— 路遥</p>
-                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
+                                <h4 class="text-center">{{book.bookName}}</h4>
+                                <p class="text-center">—— {{book.author}}</p>
+                                <p class="text-center">分类: {{book.category.category}}</p>
+                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥{{book.price}}</p>
+                                <p class="text-center"><a v-bind:href="'detail/'+book.id" class="btn btn-primary btn-sm"
                                                           role="button">详情</a>
-                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
+                                    <a href="javascript:void(0);" class="btn btn-default btn-sm" role="button" v-on:click="addCart(book.id)">+购物车</a></p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="thumbnail">
-                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
-                                 height="150px">
-                            <div class="caption">
-                                <h4 class="text-center">《平凡的世界》</h4>
-                                <p class="text-center">—— 路遥</p>
-                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
-                                                          role="button">详情</a>
-                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="thumbnail">
-                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
-                                 height="150px">
-                            <div class="caption">
-                                <h4 class="text-center">《平凡的世界》</h4>
-                                <p class="text-center">—— 路遥</p>
-                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
-                                                          role="button">详情</a>
-                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="thumbnail">
-                            <img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" alt="..." width="150px"
-                                 height="150px">
-                            <div class="caption">
-                                <h4 class="text-center">《平凡的世界》</h4>
-                                <p class="text-center">—— 路遥</p>
-                                <p class="text-center" style="font-size:18px;color: #bf7f5f;">￥20</p>
-                                <p class="text-center"><a href="detail" class="btn btn-primary btn-sm"
-                                                          role="button">详情</a>
-                                    <a href="#" class="btn btn-default btn-sm" role="button">+购物车</a></p>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -143,8 +101,11 @@
         el: '#vue_bookshop',
         data() {
             return {
+                flag: -1,
                 username: [[${ session.username }]],
-                categorys: [{}]
+                categorys: [{}],
+                books: [{category:{}}],
+                result: {}
             }
         },
         methods: {
@@ -155,10 +116,39 @@
 			.catch(function (error) { // 请求失败处理
 					console.log(error);
 				});
+            },
+            getBooks: function(categoryid){
+                axios
+						.get('/book/category/'+categoryid)
+						.then(response => (this.books = response.data.data))
+			.catch(function (error) { // 请求失败处理
+					console.log(error);
+				});
+            },
+            addCart: function(bookid){
+                axios.post('cart/book/'+bookid)
+                .then(function (response) {
+                    if(response.data.flag){
+                        this.result = response.data.data;
+                        console.log(JSON.stringify(response.data.data))
+                    }else{
+                        console.log(response.data.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                // axios
+                //     .post('/book/'+books)
+                //     .then(response => (this.result = response))
+                //     .catch(function (error) { // 请求失败处理
+                //         console.log(error);
+                //     });
             }
         },
         created() {
             this.getCategorys();
+            this.getBooks(-1);
         }
     })
 </script>
