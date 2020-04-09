@@ -29,23 +29,29 @@ public class CartController {
 
     @GetMapping("list")
     public Result list() {
-        Claims userClaims = (Claims) request.getAttribute("user_claims");
-        if (userClaims != null) {
-            String userid = userClaims.getId();
-            return new Result(cartService.findAllByUserid(Integer.parseInt(userid)));
-        } else {
-            return new Result(false, StatusCode.ERROR, "未登录");
-        }
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        return new Result(cartService.findAllByUserid(userid));
     }
 
+    /**
+     * 加入购物车
+     */
     @PostMapping("book/{bookid}")
     public Result save(@PathVariable int bookid) {
-        Cart cart = new Cart();
-        // todo 获取用户id
         Integer userid = (Integer) request.getSession().getAttribute("userid");
+        if (userid == null) {
+            return new Result(false, StatusCode.LOGINERROR, "未登录");
+        }
+        // 校验该用户是否已加入过该书籍
+        Cart existCart = cartService.findByUseridAndBookidAndState(userid, bookid, 1);
+        if (existCart != null) {
+            return new Result(false, StatusCode.LOGINERROR, "已加入！");
+        }
+        Cart cart = new Cart();
         cart.setBookid(bookid);
         cart.setBookCount(1);
-        cart.setUserid(1);
+        cart.setUserid(userid);
+        // 1为加入的状态；2为结算
         cart.setState(1);
         cart.setCreateTime(new Timestamp(System.currentTimeMillis()));
         return new Result(cartService.save(cart));
@@ -62,9 +68,18 @@ public class CartController {
         return new Result(false, StatusCode.ERROR,"操作失败");
     }
 
-    @DeleteMapping("{id}")
-    public Result delete(@PathVariable int id) {
-        cartService.delete(id);
-        return new Result("删除成功");
+    /**
+     * 删除购物车
+     */
+    @GetMapping("delete/{bookid}")
+    public Result delete(@PathVariable int bookid) {
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        if (userid == null) {
+            return new Result(false, StatusCode.LOGINERROR, "未登录");
+        }
+        if (cartService.deleteCart(userid, bookid, 1)) {
+            return new Result("删除成功");
+        }
+        return new Result(false, StatusCode.ERROR, "删除失败");
     }
 }

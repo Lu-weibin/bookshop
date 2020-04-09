@@ -150,10 +150,5 @@ public class UserController {
         return new Result(userService.findById(id));
     }
 
-    @RequestMapping("logout")
-    public TestResult logout() {
-        return new TestResult();
-    }
-
 
 }

@@ -79,6 +79,7 @@ public class PageController {
     @RequestMapping("logout")
     public String logout() {
         request.getSession().setAttribute("username", null);
+        request.getSession().setAttribute("userid", null);
         return "redirect:index";
     }
 }

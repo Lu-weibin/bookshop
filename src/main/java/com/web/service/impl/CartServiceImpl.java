@@ -9,7 +9,9 @@ import com.web.repository.CartRepository;
 import com.web.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ import java.util.List;
  * @date 2020-02-29
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements CartService {
 
     @Autowired
@@ -29,7 +32,24 @@ public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements Ca
         return this.cartRepository;
     }
 
+    @Override
     public List<Book> findAllByUserid(int userid) {
         return bookRepository.findBooksByCart(userid);
+    }
+
+    @Override
+    public Cart findByUseridAndBookidAndState(int userid, int bookid, int state) {
+        return cartRepository.findFirstByUseridAndBookidAndState(userid, bookid, state);
+    }
+
+    @Override
+    public boolean deleteCart(int userid, int bookid, int state) {
+        try {
+            cartRepository.deleteCart(userid,bookid);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

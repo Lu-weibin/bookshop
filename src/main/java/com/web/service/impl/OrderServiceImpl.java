@@ -26,7 +26,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements
     }
 
     @Override
-    public List<Orders> findAllByUserid(int userid,Integer state) {
+    public List<Orders> findAllByUserid(int userid,int state) {
         if (state == -1) {
             return orderRepository.findAllByUserid(userid);
         }

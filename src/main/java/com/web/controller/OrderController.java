@@ -24,14 +24,9 @@ public class OrderController {
     private HttpServletRequest request;
 
     @GetMapping(value = "state/{state}")
-    public Result list(@PathVariable Integer state) {
-        Claims userClaims = (Claims) request.getAttribute("user_claims");
-        if (userClaims != null) {
-            String userid = userClaims.getId();
-            return new Result(orderService.findAllByUserid(Integer.parseInt(userid),state));
-        } else {
-            return new Result(false, StatusCode.ERROR, "未登录");
-        }
+    public Result getOrders(@PathVariable Integer state) {
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        return new Result(orderService.findAllByUserid(userid, state));
     }
 
 }

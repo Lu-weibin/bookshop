@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface OrderService extends BaseService<Orders,Integer> {
 
-    List<Orders> findAllByUserid(int parseInt,Integer state);
+    List<Orders> findAllByUserid(int parseInt,int state);
 }
