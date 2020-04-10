@@ -11,9 +11,9 @@
     <link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding-top: 70px;">
 <div id="vue_bookshop">
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -128,7 +128,6 @@
                 .then(function (response) {
                     if(response.data.flag){
                         this.result = response.data.data;
-                        console.log(JSON.stringify(response.data.data))
                         alert("加入成功！");
                     }else{
                         console.log(response.data.message);

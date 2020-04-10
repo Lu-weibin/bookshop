@@ -110,31 +110,19 @@ public class UserController {
         return "redirect:../index";
     }
 
-    @GetMapping("info")
-    public TestResult getInfo() {
-        String roles = "roles";
-        String token = request.getHeader("bookshop_token");
-        if (token != null) {
-            Claims claims = jwtUtil.parseJwt(token);
-            if (claims != null) {
-                String adminRoles = "admin";
-                if (adminRoles.equals(claims.get(roles))) {
-                    Map<String, Object> map = new HashMap<>(16);
-                    map.put("roles", new String[]{"admin"});
-                    map.put("name", claims.getSubject());
-                    map.put("avatar", "http://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-                    return new TestResult(map);
-                }
-            }
-        }
-        return new TestResult(StatusCode.ACCESSERROR, "token失效");
-    }
+//    @GetMapping("info")
+//    public TestResult getInfo() {
+//        return new TestResult(StatusCode.ACCESSERROR, "token失效");
+//    }
 
-    @GetMapping("{id}")
-    public Result findOne(@PathVariable Integer id) {
-        Optional<User> optional = userService.findById(id);
+    @GetMapping("id")
+    @ResponseBody
+    public Result findOne() {
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        Optional<User> optional = userService.findById(userid);
         if (optional.isPresent()) {
             User user = optional.get();
+            user.setPassword(null);
             return new Result(user);
         }
         return new Result(false, StatusCode.ERROR, "id不存在");

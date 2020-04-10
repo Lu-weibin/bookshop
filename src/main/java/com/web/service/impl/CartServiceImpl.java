@@ -52,4 +52,14 @@ public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements Ca
             return false;
         }
     }
+
+    @Override
+    public boolean updateCartState(int userid, Integer[] bookids, int state) {
+        try {
+            cartRepository.updateCartState(userid, bookids, state);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

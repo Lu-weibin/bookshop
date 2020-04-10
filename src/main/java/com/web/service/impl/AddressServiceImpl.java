@@ -3,10 +3,13 @@ package com.web.service.impl;
 import com.base.BaseServiceImpl;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Address;
+import com.web.pojo.User;
 import com.web.repository.AddressRepository;
 import com.web.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author luwb
@@ -23,4 +26,8 @@ public class AddressServiceImpl extends BaseServiceImpl<Address,Integer> impleme
         return this.addressRepository;
     }
 
+    @Override
+    public List<Address> findAllByUserid(Integer userid) {
+        return addressRepository.findAllByUser(new User(userid));
+    }
 }

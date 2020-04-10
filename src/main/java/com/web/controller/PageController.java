@@ -21,17 +21,17 @@ public class PageController {
     }
 
     @RequestMapping("/register")
-    public String register(Model m) {
+    public String register() {
         return "register";
     }
 
     @RequestMapping("/login")
-    public String login(Model m) {
+    public String login() {
         return "login";
     }
 
     @RequestMapping("/index")
-    public String index(Model m) {
+    public String index() {
         return "index";
     }
 
@@ -42,37 +42,37 @@ public class PageController {
     }
 
     @RequestMapping("/cart")
-    public String cart(Model m) {
+    public String cart() {
         return "cart";
     }
 
     @RequestMapping("/order")
-    public String order(Model m) {
+    public String order() {
         return "order";
     }
 
     @RequestMapping("/myinfo")
-    public String myinfo(Model m) {
+    public String myinfo() {
         return "myinfo";
     }
 
     @RequestMapping("/account")
-    public String account(Model m) {
+    public String account() {
         return "account";
     }
 
     @RequestMapping("/favorite")
-    public String favorite(Model m) {
+    public String favorite() {
         return "favorite";
     }
 
     @RequestMapping("/myaddress")
-    public String myaddress(Model m) {
+    public String myaddress() {
         return "myaddress";
     }
 
     @RequestMapping("/notice")
-    public String notice(Model m) {
+    public String notice() {
         return "notice";
     }
 

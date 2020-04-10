@@ -4,6 +4,7 @@ import com.base.BaseService;
 import com.web.pojo.Book;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,4 +29,9 @@ public interface BookService extends BaseService<Book,Integer> {
     Book update(int id, int state);
 
     List<Book> findAllByCategoryid(Integer categoryid);
+
+    /**
+     * 根据多个图书id计算总金额
+     */
+    BigDecimal totalPriceByBookids(Integer[] bookids);
 }

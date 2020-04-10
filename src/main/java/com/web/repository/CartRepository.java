@@ -1,9 +1,7 @@
 package com.web.repository;
 
 import com.base.JpaBaseRepository;
-import com.web.pojo.Book;
 import com.web.pojo.Cart;
-import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,5 +22,8 @@ public interface CartRepository extends JpaBaseRepository<Cart,Integer>{
     @Query(value = "DELETE from cart where userid = :userid and bookid = :bookid and state = 1;",nativeQuery = true)
     void deleteCart(@Param("userid") int userid, @Param("bookid") int bookid);
 
+    @Modifying
+    @Query(value = "update cart set state=:state where userid = :userid and bookid in :bookids", nativeQuery = true)
+    void updateCartState(@Param("userid") int userid, @Param("bookids") Integer[] bookids, @Param("state") int state);
 
 }

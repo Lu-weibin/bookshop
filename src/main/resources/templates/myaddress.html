@@ -12,6 +12,7 @@
 </head>
 
 <body>
+	<div id="vue_bookshop">
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -70,19 +71,19 @@
 							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">省 份</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="inputEmail3" placeholder="">
+									<input type="text" class="form-control" id="" placeholder="" v-model="addr.province">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="inputPassword3" class="col-sm-2 control-label">市</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="inputPassword3" placeholder="">
+									<input type="text" class="form-control" id="" placeholder="" v-model="addr.city">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">详细地址</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="inputEmail3" placeholder="">
+									<input type="text" class="form-control" id="" placeholder="" v-model="addr.location">
 								</div>
 							</div>
 							<div class="form-group">
@@ -101,11 +102,12 @@
 							<td class="active">默 认</td>
 							<td class="active">操 作</td>
 						</tr>
-						<tr>
-							<td class="" width="50%">广东省潮州市潮安区</td>
-							<td class="">是</td>
+						<tr v-for="(address,index) in addresses" :key="index">
+							<td class="" width="50%">{{address.address}}</td>
+							<td class="" v-if="address.state==2">是</td>
+							<td class="" v-if="address.state==1">否</td>
 							<td class="">
-								<a class="" type="">设为默认 </a>&nbsp;
+								<a class="" type="" v-if="address.state==1">设为默认 </a>&nbsp;
 								<a class="" type=""> 删除</a>
 							</td>
 						</tr>
@@ -117,15 +119,72 @@
 	</div>
 	<hr />
 	<p style="text-align: center;color: #ADADAD;">
-		运维支持：佛大15级计算机科学与技术1 卢伟彬
+		运维支持：佛大15级计算机科学与技术1 卢伟彬<br>{{addresses}}
 	</p>
-
+	</div>
 	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
 	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
 	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script th:inline="javascript">
+        var vm = new Vue({
+            el: '#vue_bookshop',
+            data() {
+                return {
+                    userid: [[${ session.userid }]],
+					addresses: {},
+					addr: {}
+                }
+            },
+            methods: {
+                isLogin: function () {
+                    if (this.userid == null || this.userid == "") {
+                        alert("未登录");
+                        window.location.href = "login";
+                    }else {
+                         this.getAddresses();
+                    }
+                },
+				getAddresses: function(){
+                    axios.get('/address/')
+                        .then(response => (this.addresses = response.data.data))
+                        .catch(function (error) {
+                                // 请求失败处理
+                                console.log(error);
+                            });
+                },
+				addAddress: function(){
+					var province = addr.province;
+					var city = addr.city;
+					var location = addr.location;
+					var address;
+					var _this = this;
+					if(province.trim==""||city.trim==""||location.trim==""){
+						return false;
+					}else{
+						address = province+city+location;
+					}
+					axios.post('address/add/'+address)
+						.then(function (response) {
+							if(response.data.flag){
+								_this.getAddresses;
+							}else{
+								console.log(response.data.message);
+								alert(response.data.message);
+							}
+						})
+						.catch(function (error) {
+							console.log(error);
+						});
+				}
+            },
+            created() {
+                this.isLogin();
+            }
+        })
+    </script>
 </body>
 
 </html>

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,11 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
 			return bookRepository.findAll();
 		}
 		return bookRepository.findAllByCategory(new Category(categoryid));
+	}
+
+	@Override
+	public BigDecimal totalPriceByBookids(Integer[] bookids) {
+		return bookRepository.totalPriceByBookids(bookids);
 	}
 
 	private Specification<Book> createSpecification(Book book) {

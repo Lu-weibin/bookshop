@@ -62,7 +62,16 @@
                         <td class="active">操作</td>
                     </tr>
                      <template v-for="(book,index) in books" :key="index">
-                         <tr><td class="info">卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}} </td></tr>
+                         <tr>
+                             <td class="info">
+                                <div class="checkbox">
+                                    <label>
+                                      <input type="checkbox"  :value="book.id" v-model="bookids">
+                                    </label>
+                                    卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}}
+                                  </div>
+                            </td>
+                         </tr>
                         <tr >
                             <td class="" width="400px">
                                 <div class="media">
@@ -82,17 +91,23 @@
                             <td class="">￥ {{book.price}}</td>
                             <td class="">
                                 <a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
-                                <button class="btn btn-primary btn-sm" type="submit">移入收藏</button>
+                                <button class="btn btn-primary btn-sm" type="submit">加收藏</button>
                                 <button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCart(book.id)">删 除</button>
                             </td>
                         </tr>
                      </template>
                 </table>
+                
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-lg-offset-8">
+                <h4>已选 {{bookids.length}} 件商品 &nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-primary btn-sm" v-bind:class="{ disabled: bookids.length==0}" type="submit" v-on:click="calcCart()">结 算</button></h4>
+            </div>
         </div>
     </div>
     <hr />
     <p style="text-align: center;color: #ADADAD;">
-        运维支持：佛大15级计算机科学与技术1 卢伟彬
+        运维支持：佛大15级计算机科学与技术1 卢伟彬 {{bookids}}
     </p>
 
     </div>
@@ -106,13 +121,14 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    books: [{user:{}}]
+                    books: [{user:{}}],
+                    bookids: []
                 }
             },
             methods: {
                 isLogin: function () {
                     if (this.userid == null || this.userid == "") {
-                        alert("未登录");
+                        alert("未登录!");
                         window.location.href = "login";
                     }else {
                         this.getCarts();
@@ -132,6 +148,7 @@
                         .then(function (response) {
                             if(response.data.flag){
                                 _this.getCarts();
+                                _this.bookids=[];
                             }else{
                                 alert(response.data.message);
                             }
@@ -139,6 +156,29 @@
                         .catch(function (error) {
                             console.log(error);
                         });
+                },
+                calcCart: function(){
+                    if (this.bookids.length==0){
+                        alert("请勾选要结算的商品！");
+                        return false;
+                    }else{
+                        console.log(this.bookids.length)
+                    }
+                    var _this = this;
+                    axios.post('/order/add/', {
+                        bookids: _this.bookids
+                    })
+                    .then(function (response) {
+                        if(response.data.flag){
+                            _this.getCarts();
+                            _this.bookids=[];
+                        }else{
+                            alert(response.data.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 }
             },
             created() {

@@ -56,10 +56,10 @@
         <div class="row">
             <div class="col-lg-2">
                 <div class="list-group">
-                    <a href="#" class="list-group-item">所有订单</a>
-                    <a href="#" class="list-group-item">待支付</a>
-                    <a href="#" class="list-group-item">待收货</a>
-                    <a href="#" class="list-group-item">退款</a>
+                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}" v-on:click="getOrders(-1);flag=-1">所有订单</a>
+                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 1}" v-on:click="getOrders(1);flag=1">待支付</a>
+                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 2}" v-on:click="getOrders(2);flag=2">已支付</a>
+                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 3}" v-on:click="getOrders(3);flag=3">失效</a>
                 </div>
             </div>
             <div class="col-lg-10">
@@ -80,10 +80,23 @@
                             <td class="">{{order.address}}</td>
                             <td class="">{{order.phone}}</td>
                             <td class="">{{order.payTime}}</td>
-                            <td class="">{{order.state}}</td>
+                            <td class="" v-if="order.state==1">
+                                待支付
+                            </td>
+                            <td class="" v-if="order.state==2">
+                                已支付
+                            </td>
+                            <td class="" v-if="order.state==3">
+                                失效
+                            </td>
                             <td class="">
                                 <button class="btn btn-primary btn-sm" type="submit">详情</button>
-                                <button class="btn btn-danger btn-sm" type="submit">退货/售后</button>
+                                <span class="" v-if="order.state==1">
+                                    <button class="btn btn-danger btn-sm" type="submit">去支付</button>
+                                </span>
+                                <span class="" v-if="order.state==2">
+                                    <button class="btn btn-danger btn-sm" type="submit">退货</button>
+                                </span>
                             </td>
                         </tr>
                     </table>
@@ -108,6 +121,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
+                    flag: -1,
                     userid: [[${ session.userid }]],
                     orders: {}
                 }
