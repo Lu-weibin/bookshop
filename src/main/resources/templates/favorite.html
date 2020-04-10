@@ -12,6 +12,7 @@
 </head>
 
 <body>
+	<div id="vue_bookshop">
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -67,32 +68,45 @@
 					<hr><br>
 				</div>
 				<div class="row">
-					<table class="table">
-						<tr>
-							<td class="info">卖主：Luweibin 广东潮州</td>
-						</tr>
-						<tr>
-							<td class="" width="400px">
-								<div class="media">
-									<div class="media-left">
-										<img src="../img/book/p4YBAFqbP9iAT0crAADdSCMtFxc045_b.jfif" width="82px"
-											height="82px" alt="">
 
+					<table class="table text-center">
+						<tr>
+							<td class="active" width="50%">商品</td>
+							<td class="active" width="">品相</td>
+							<td class="active" width="">价格</td>
+							<td class="active">操作</td>
+						</tr>
+						 <template v-for="(book,index) in books" :key="index">
+							 <tr>
+								 <td class="info">
+										卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}}
+								</td>
+							 </tr>
+							<tr >
+								<td class="" width="400px">
+									<div class="media">
+										<div class="media-left">
+											<img :src="book.picture" width="82px"
+												height="90px" alt="">
+										</div>
+										<div class="media-body">
+											<p class="text-muted">书名: {{book.bookName}}</p>
+											<p class="text-muted">作者: {{book.author}}</p>
+											<p class="text-muted">出版社: {{book.publisher}}</p>
+											<p class="text-muted">出版时间: {{book.publishTime}}</p>
+										</div>
 									</div>
-									<div< class="media-body">
-										<p class="text-muted">出版社: 上海译文出版社</p>
-										<p class="text-muted">出版时间: 2020-01</p>
-										<p class="text-muted">版次: 1</p>
-								</div>
-				</div>
-				</td>
-				<td class="">全新</td>
-				<td class="">￥ 168.00</td>
-				<td class="">
-					<button class="btn btn-primary btn-sm" type="submit">+ 购物车</button>
-					<button class="btn btn-danger btn-sm" type="submit">删除</button></td>
-				</tr>
-				</table>
+								</td>
+								<td class="">全新</td>
+								<td class="">￥ {{book.price}}</td>
+								<td class="">
+									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
+									<button class="btn btn-primary btn-sm" type="submit" v-on:click="addCart(book.id)">+购物车</button>
+									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">删 除</button>
+								</td>
+							</tr>
+						 </template>
+					</table>
 			</div>
 		</div>
 	</div>
@@ -101,13 +115,64 @@
 	<p style="text-align: center;color: #ADADAD;">
 		运维支持：佛大15级计算机科学与技术1 卢伟彬
 	</p>
-
+    </div>
 	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
 	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
 	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script th:inline="javascript">
+        var vm = new Vue({
+            el: '#vue_bookshop',
+            data() {
+                return {
+                    userid: [[${ session.userid }]],
+                    books: [{user:{}}],
+                    bookids: []
+                }
+            },
+            methods: {
+                isLogin: function () {
+                    if (this.userid == null || this.userid == "") {
+                        alert("未登录!");
+                        window.location.href = "login";
+                    }else {
+                        this.getCollections();
+                    }
+                },
+                getCollections: function(){
+                    axios.get('/collection/').then(response => (this.books = response.data.data));
+                },
+				addCart: function(bookid){
+                	axios.post('cart/book/'+bookid)
+						.then(function (response) {
+							if(response.data.flag){
+								this.result = response.data.data;
+								alert("加入成功！");
+							}else{
+								console.log(response.data.message);
+								alert(response.data.message);
+							}
+							});
+						},
+				deleteCollection: function(bookid){
+                    var _this = this;
+                    axios.get('/collection/delete/'+bookid)
+                        .then(function (response) {
+                            if(response.data.flag){
+                                _this.getCollections();
+                            }else{
+                                alert(response.data.message);
+                            }
+                        });
+                	}
+            },
+            created() {
+                this.isLogin();
+            }
+        })
+    </script>
 </body>
 
 </html>

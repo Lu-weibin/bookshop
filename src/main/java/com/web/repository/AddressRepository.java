@@ -3,6 +3,9 @@ package com.web.repository;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Address;
 import com.web.pojo.User;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,6 +15,12 @@ import java.util.List;
  */
 public interface AddressRepository extends JpaBaseRepository<Address,Integer>{
 
-    List<Address> findAllByUser(User user);
+    List<Address> findAllByUserAndStateNot(User user,int state);
+
+    Address findFirstByUserAndState(User user,int state);
+
+    @Modifying
+    @Query(value = "update address set state=1 where userid=:userid and state=2;",nativeQuery = true)
+    void updateState(@Param("userid") Integer userid);
 
 }

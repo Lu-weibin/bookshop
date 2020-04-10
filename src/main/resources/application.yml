@@ -19,7 +19,9 @@ spring:
     servlet:
       content-type: text/html
     cache: false
-
+  #设置时区，否则Timestamp反序列化时时间不正确
+  jackson:
+    time-zone: GMT+8
 
   servlet:
     multipart:

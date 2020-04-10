@@ -45,7 +45,7 @@ public class CartController {
         // 校验该用户是否已加入过该书籍
         Cart existCart = cartService.findByUseridAndBookidAndState(userid, bookid, 1);
         if (existCart != null) {
-            return new Result(false, StatusCode.LOGINERROR, "已加入！");
+            return new Result(false, StatusCode.LOGINERROR, "已加入,不要重复添加！");
         }
         Cart cart = new Cart();
         cart.setBookid(bookid);

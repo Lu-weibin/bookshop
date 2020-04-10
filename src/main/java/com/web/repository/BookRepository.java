@@ -5,7 +5,6 @@ import com.web.pojo.Book;
 import com.web.pojo.Category;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,5 +23,8 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
     @Query(value = "SELECT coalesce(sum(price),0) from book WHERE state=1 and id in :ids",nativeQuery = true)
     BigDecimal totalPriceByBookids(@Param("ids") Integer[] ids);
+
+    @Query(value = "select * from book t1,collection t2 WHERE t1.id = t2.bookid and t2.userid = :userid ",nativeQuery = true)
+    List<Book> findCollectionByUserid(@Param("userid") Integer userid);
 
 }

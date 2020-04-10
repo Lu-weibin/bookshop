@@ -91,7 +91,7 @@
                             <td class="">￥ {{book.price}}</td>
                             <td class="">
                                 <a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
-                                <button class="btn btn-primary btn-sm" type="submit">加收藏</button>
+                                <button class="btn btn-primary btn-sm" type="submit" v-on:click="addCollections(book.id)">加收藏</button>
                                 <button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCart(book.id)">删 除</button>
                             </td>
                         </tr>
@@ -101,14 +101,53 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-lg-offset-8">
-                <h4>已选 {{bookids.length}} 件商品 &nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-primary btn-sm" v-bind:class="{ disabled: bookids.length==0}" type="submit" v-on:click="calcCart()">结 算</button></h4>
+                <h4>已选 {{bookids.length}} 件商品 &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary btn-sm" v-bind:class="{ disabled: bookids.length==0}"
+                            type="submit" v-on:click="beforeCalc()" >结 算
+                    </button>
+                </h4>
             </div>
         </div>
     </div>
     <hr />
     <p style="text-align: center;color: #ADADAD;">
-        运维支持：佛大15级计算机科学与技术1 卢伟彬 {{bookids}}
+        运维支持：佛大15级计算机科学与技术1 卢伟彬 {{phone}}
     </p>
+
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">结 算 支 付</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-3">金额：</div>
+                        <div class="col-md-4">￥ {{payPrice}}</div><hr>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-3">联系方式：</div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" v-model="phone">
+                        </div><hr>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-3">收货地址：</div>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="selectAddress">
+                                <option v-for="(address,index) in addresses" :key="index" v-bind:class="{selected:address.state==2}">{{address.address}}</option>
+                            </select>
+                        </div><hr>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" v-on:click="calcCart()">确认支付</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     </div>
     <script src="../js/jquery-3.3.1.min.js"></script>
@@ -122,7 +161,11 @@
                 return {
                     userid: [[${ session.userid }]],
                     books: [{user:{}}],
-                    bookids: []
+                    bookids: [],
+                    addresses: {},
+                    payPrice: "",
+                    phone: "",
+                    selectAddress: ""
                 }
             },
             methods: {
@@ -132,6 +175,7 @@
                         window.location.href = "login";
                     }else {
                         this.getCarts();
+                        this.getAddresses();
                     }
                 },
                 getCarts: function(){
@@ -157,6 +201,27 @@
                             console.log(error);
                         });
                 },
+                beforeCalc: function(){
+                    var _this = this;
+                    if (this.bookids.length==0){
+                        alert("请勾选要结算的商品！");
+                        return false;
+                    }else {
+                        axios.post('/order/getPriceAndPhoneAndAddress/', {
+                            bookids: _this.bookids
+                            })
+                            .then(function (response) {
+                                if(response.data.flag){
+                                    _this.payPrice = response.data.data.payPrice;
+                                    _this.phone = response.data.data.phone;
+                                    _this.selectAddress = response.data.data.address;
+                                    $('#myModal').modal();
+                                }else{
+                                    alert(response.data.message);
+                                }
+                            })
+                    }
+                },
                 calcCart: function(){
                     if (this.bookids.length==0){
                         alert("请勾选要结算的商品！");
@@ -164,14 +229,23 @@
                     }else{
                         console.log(this.bookids.length)
                     }
+                    if (!(/^1[34578]\d{9}$/.test(this.phone))){
+                        alert("手机号码格式不正确！");
+                        return false;
+                    }
                     var _this = this;
                     axios.post('/order/add/', {
-                        bookids: _this.bookids
+                        bookids: _this.bookids,
+                        payPrice: _this.payPrice,
+                        phone: _this.phone,
+                        selectAddress: _this.selectAddress
                     })
                     .then(function (response) {
                         if(response.data.flag){
+                            alert("支付成功！");
                             _this.getCarts();
                             _this.bookids=[];
+                            $('#myModal').modal('hide');
                         }else{
                             alert(response.data.message);
                         }
@@ -179,6 +253,20 @@
                     .catch(function (error) {
                         console.log(error);
                     });
+                },
+                addCollections: function(bookid){
+                    axios.post('collection/book/'+bookid)
+                        .then(function (response) {
+                            if(response.data.flag){
+                                alert("收藏成功！");
+                            }else{
+                                console.log(response.data.message);
+                                alert(response.data.message);
+                            }
+                        });
+                },
+                getAddresses: function(){
+                    axios.get('/address/').then(response => (this.addresses = response.data.data));
                 }
             },
             created() {

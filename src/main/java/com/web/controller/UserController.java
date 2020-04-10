@@ -110,11 +110,6 @@ public class UserController {
         return "redirect:../index";
     }
 
-//    @GetMapping("info")
-//    public TestResult getInfo() {
-//        return new TestResult(StatusCode.ACCESSERROR, "token失效");
-//    }
-
     @GetMapping("id")
     @ResponseBody
     public Result findOne() {
@@ -126,6 +121,43 @@ public class UserController {
             return new Result(user);
         }
         return new Result(false, StatusCode.ERROR, "id不存在");
+    }
+
+    @PostMapping("update/{username}/{phone}")
+    @ResponseBody
+    public Result updateUserInfo(@PathVariable String username, @PathVariable String phone) {
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        User user1 = userService.findOneByUsername(username, 1);
+        if (user1 != null && !user1.getId().equals(userid)) {
+            return new Result(false, StatusCode.ERROR, "用户名已存在！");
+        }
+        Optional<User> optional = userService.findById(userid);
+        if (optional.isPresent()) {
+            User user = optional.get();
+            user.setUsername(username);
+            user.setPhone(phone);
+            userService.save(user);
+            request.getSession().setAttribute("username", username);
+            return new Result("更新成功！");
+        }
+        return new Result(false, StatusCode.ERROR, "更新失败！");
+    }
+
+    @PostMapping("changePassword/{oldPassword}/{newPassword}")
+    @ResponseBody
+    public Result changePassword(@PathVariable String oldPassword,@PathVariable String newPassword) {
+        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        Optional<User> optional = userService.findById(userid);
+        if (optional.isPresent()) {
+            User user = optional.get();
+            if (!user.getPassword().equals(ShaUtils.encrypt(oldPassword))) {
+                return new Result(false, StatusCode.ERROR, "原密码错误！");
+            } else {
+                user.setPassword(ShaUtils.encrypt(newPassword));
+                userService.save(user);
+            }
+        }
+        return new Result("修改成功！");
     }
 
     @GetMapping
