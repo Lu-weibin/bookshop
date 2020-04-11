@@ -18,7 +18,7 @@ public interface BaseService<T extends Serializable,ID> {
 
 	List<T> findAll();
 
-	T save(T user);
+	T save(T t);
 
 	void delete(ID id);
 

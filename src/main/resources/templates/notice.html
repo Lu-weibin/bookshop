@@ -12,12 +12,13 @@
 </head>
 
 <body>
+<div id="vue_bookshop">
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -32,7 +33,7 @@
 					<li><a href="index">首页 <span class="sr-only">(current)</span></a></li>
 					<li><a href="cart">购物车</a></li>
 					<li><a href="order">我的订单</a></li>
-					<li><a href="myinfo">个人中心</a></li>
+					<li ><a href="myinfo">个人中心</a></li>
 					<li class="active"><a href="notice">网站通知</a></li>
 				</ul>
 				<form class="navbar-form navbar-left">
@@ -53,21 +54,68 @@
 
 	<div class="container">
 		<div class="row">
-
-
+			<div class="col-lg-3">
+				<h4>标 题</small></h4>
+				<hr><br><br>
+				<div  v-for="(title,index) in titles" :key="index">
+					<a href="javascript:void(0)" class="list-group-item" v-bind:class="{ active: title.id==notice.id}" v-on:click="getNoticeById(title.id)">{{title.title}}</a><br>
+				</div>
+			</div>
+			<div class="col-lg-7 col-lg-offset-1">
+				<div class="row">
+<!--					<h4>内 容</small></h4>-->
+					<h4>
+						{{notice.title}}&nbsp;&nbsp;&nbsp;
+						<small>{{notice.time}}</small>&nbsp;&nbsp;&nbsp;
+					</h4>
+					<hr><br><br>
+					<div class="col-lg-11">
+						<p>{{notice.content}}</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<hr />
 	<p style="text-align: center;color: #ADADAD;">
 		运维支持：佛大15级计算机科学与技术1 卢伟彬
 	</p>
-
-	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
-	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+</div>
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="../js/jquery-3.3.1.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="../js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+<script th:inline="javascript">
+	var vm = new Vue({
+		el: '#vue_bookshop',
+		data() {
+			return {
+				titles: [],
+				notice: {}
+			}
+		},
+		methods: {
+			getTitles: function(){
+				var _this = this;
+				axios.get('/notice/titles').then(response => (_this.titles = response.data.data));
+			},
+			getFirstNotice: function () {
+				var _this = this;
+				axios.get('/notice/firstNotice').then(response => (_this.notice = response.data.data));
+			},
+			getNoticeById: function (noticeid) {
+				var _this = this;
+				axios.get('/notice/'+noticeid).then(response => (_this.notice = response.data.data));
+			}
+		},
+		created() {
+			this.getTitles();
+			this.getFirstNotice();
+		}
+	})
+</script>
 </body>
 
 </html>

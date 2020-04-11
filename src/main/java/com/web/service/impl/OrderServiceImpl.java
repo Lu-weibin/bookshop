@@ -6,6 +6,7 @@ import com.web.pojo.Orders;
 import com.web.repository.OrderRepository;
 import com.web.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +28,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements
 
     @Override
     public List<Orders> findAllByUserid(int userid,int state) {
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
         if (state == -1) {
-            return orderRepository.findAllByUserid(userid);
+            return orderRepository.findAllByUserid(userid, sort);
         }
-        return orderRepository.findAllByUseridAndState(userid, state);
+        return orderRepository.findAllByUseridAndState(userid, state, sort);
     }
 }

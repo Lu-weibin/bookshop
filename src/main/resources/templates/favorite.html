@@ -97,12 +97,15 @@
 										</div>
 									</div>
 								</td>
-								<td class="">全新</td>
+								<td class="">{{book.conditions}}</td>
 								<td class="">￥ {{book.price}}</td>
-								<td class="">
+								<td class="" v-if="book.state==2">
 									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
 									<button class="btn btn-primary btn-sm" type="submit" v-on:click="addCart(book.id)">+购物车</button>
 									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">删 除</button>
+								</td>
+								<td class="" v-if="book.state!=2">
+									<h5 style="color:red">已失效！&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">删 除</button></h5>
 								</td>
 							</tr>
 						 </template>

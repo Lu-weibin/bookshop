@@ -2,6 +2,8 @@ package com.web.repository;
 
 import com.base.JpaBaseRepository;
 import com.web.pojo.Orders;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface OrderRepository extends JpaBaseRepository<Orders,Integer> {
 
-    List<Orders> findAllByUserid(int userid);
+    List<Orders> findAllByUserid(int userid, Sort sort);
 
-    List<Orders> findAllByUseridAndState(int userid, int state);
+    List<Orders> findAllByUseridAndState(int userid, int state, Sort sort);
 }

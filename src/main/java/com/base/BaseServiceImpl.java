@@ -30,8 +30,8 @@ public abstract class BaseServiceImpl<T extends Serializable, ID> implements Bas
 	}
 
 	@Override
-	public T save(T user) {
-		return getRepository().save(user);
+	public T save(T t) {
+		return getRepository().save(t);
 	}
 
 	@Override

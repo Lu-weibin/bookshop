@@ -5,7 +5,6 @@ import com.base.JpaBaseRepository;
 import com.web.pojo.User;
 import com.web.repository.UserRepository;
 import com.web.service.UserService;
-import com.web.util.JwtUtil;
 import com.web.util.ShaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +17,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements UserService {
 
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil;
     }
 
     @Override

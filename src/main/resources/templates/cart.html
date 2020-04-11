@@ -54,7 +54,7 @@
 
         <div class="container">
             <div class="row">
-                <table class="table text-center">
+                <table class="table">
                     <tr>
                         <td class="active" width="400px">商品</td>
                         <td class="active" width="135px">品相</td>
@@ -65,7 +65,7 @@
                          <tr>
                              <td class="info">
                                 <div class="checkbox">
-                                    <label>
+                                    <label v-if="book.state==2">
                                       <input type="checkbox"  :value="book.id" v-model="bookids">
                                     </label>
                                     卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}}
@@ -87,12 +87,15 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="">全新</td>
+                            <td class="">{{book.conditions}}</td>
                             <td class="">￥ {{book.price}}</td>
-                            <td class="">
+                            <td class="" v-if="book.state==2">
                                 <a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
                                 <button class="btn btn-primary btn-sm" type="submit" v-on:click="addCollections(book.id)">加收藏</button>
                                 <button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCart(book.id)">删 除</button>
+                            </td>
+                            <td class="" v-if="book.state!=2">
+                                <h5 style="color:red">已失效！&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCart(book.id)">删 除</button></h5>
                             </td>
                         </tr>
                      </template>
@@ -111,7 +114,7 @@
     </div>
     <hr />
     <p style="text-align: center;color: #ADADAD;">
-        运维支持：佛大15级计算机科学与技术1 卢伟彬 {{phone}}
+        运维支持：佛大15级计算机科学与技术1 卢伟彬 {{addressee}}
     </p>
 
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="myModal">
@@ -123,27 +126,33 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-3 col-md-offset-3">金额：</div>
-                        <div class="col-md-4">￥ {{payPrice}}</div><hr>
-                    </div>
+                        <div class="col-md-3 ">金额：</div>
+                        <div class="col-md-6">￥ {{payPrice}}</div>
+                    </div><hr>
                     <div class="row">
-                        <div class="col-md-3 col-md-offset-3">联系方式：</div>
-                        <div class="col-md-4">
+                        <div class="col-md-3 ">收件人：</div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" v-model.trim="addressee">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 ">联系方式：</div>
+                        <div class="col-md-6">
                             <input type="text" class="form-control" v-model="phone">
-                        </div><hr>
-                    </div>
+                        </div>
+                    </div><hr>
                     <div class="row">
-                        <div class="col-md-3 col-md-offset-3">收货地址：</div>
-                        <div class="col-md-4">
+                        <div class="col-md-3 ">收货地址：</div>
+                        <div class="col-md-6">
                             <select class="form-control" v-model="selectAddress">
                                 <option v-for="(address,index) in addresses" :key="index" v-bind:class="{selected:address.state==2}">{{address.address}}</option>
                             </select>
-                        </div><hr>
-                    </div>
+                        </div>
+                    </div><hr>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" v-on:click="calcCart()">确认支付</button>
+                    <button type="button" class="btn btn-primary" v-on:click="calcCart()">支付</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -165,7 +174,8 @@
                     addresses: {},
                     payPrice: "",
                     phone: "",
-                    selectAddress: ""
+                    selectAddress: "",
+                    addressee: [[${ session.username }]]
                 }
             },
             methods: {
@@ -233,19 +243,42 @@
                         alert("手机号码格式不正确！");
                         return false;
                     }
+                    if(this.addressee == ""){
+                        alert("收件人不能为空");
+                        return false;
+                    }
+                    if(this.selectAddress == ""){
+                        alert("请先到个人中心添加地址信息！");
+                        return false;
+                    }
+
+                    var result = confirm("确认支付？");
+                    var state;
+                    if(result==false){
+                        state = 1;
+                    }else{
+                        state = 2;
+                        //alert("支付成功");
+                    }
                     var _this = this;
                     axios.post('/order/add/', {
                         bookids: _this.bookids,
                         payPrice: _this.payPrice,
                         phone: _this.phone,
-                        selectAddress: _this.selectAddress
+                        selectAddress: _this.selectAddress,
+                        addressee: _this.addressee,
+                        state: state
                     })
                     .then(function (response) {
                         if(response.data.flag){
-                            alert("支付成功！");
+                            $('#myModal').modal('hide');
+                            if(state== 2){
+                                alert("支付成功！");
+                            }else{
+                                alert("已取消支付，半小时可到订单中重新发起支付！");
+                            }
                             _this.getCarts();
                             _this.bookids=[];
-                            $('#myModal').modal('hide');
                         }else{
                             alert(response.data.message);
                         }

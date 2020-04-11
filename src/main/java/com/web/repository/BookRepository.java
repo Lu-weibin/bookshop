@@ -16,12 +16,14 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
     List<Book> findAllByState(int state);
 
-    List<Book> findAllByCategory(Category category);
+    List<Book> findAllByCategoryAndState(Category category,int state);
+
+    List<Book> findAllByIdIn(Integer[] ids);
 
     @Query(value = "select b.* from book b,cart c where  c.bookid = b.id and c.userid = :userid and c.state = 1",nativeQuery = true)
     List<Book> findBooksByCart(@Param("userid") int userid);
 
-    @Query(value = "SELECT coalesce(sum(price),0) from book WHERE state=1 and id in :ids",nativeQuery = true)
+    @Query(value = "SELECT coalesce(sum(price),0) from book WHERE id in :ids",nativeQuery = true)
     BigDecimal totalPriceByBookids(@Param("ids") Integer[] ids);
 
     @Query(value = "select * from book t1,collection t2 WHERE t1.id = t2.bookid and t2.userid = :userid ",nativeQuery = true)

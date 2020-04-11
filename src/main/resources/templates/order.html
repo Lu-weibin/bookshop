@@ -13,72 +13,120 @@
 
 <body>
     <div id="vue_bookshop">
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">二手书交易平台</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="index">首页 <span class="sr-only">(current)</span></a></li>
-                    <li><a href="cart">购物车</a></li>
-                    <li class="active"><a href="order">我的订单</a></li>
-                    <li><a href="myinfo">个人中心</a></li>
-                    <li><a href="notice">网站通知</a></li>
-                </ul>
-                <form class="navbar-form navbar-left">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">搜索</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li th:if="${session.username}==null"><a href="register">注册</a></li>
-                    <li th:if="${session.username}==null"><a href="login">登录</a></li>
-                    <li th:if="${session.username}!=null"><a href="#" th:text="|欢迎，${session.username}|"></a></li>
-                    <li th:if="${session.username}!=null"><a href="logout">退出</a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-2">
-                <div class="list-group">
-                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}" v-on:click="getOrders(-1);flag=-1">所有订单</a>
-                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 1}" v-on:click="getOrders(1);flag=1">待支付</a>
-                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 2}" v-on:click="getOrders(2);flag=2">已支付</a>
-                    <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 3}" v-on:click="getOrders(3);flag=3">失效</a>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">二手书交易平台</a>
                 </div>
-            </div>
-            <div class="col-lg-10">
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index">首页 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="cart">购物车</a></li>
+                        <li class="active"><a href="order">我的订单</a></li>
+                        <li><a href="myinfo">个人中心</a></li>
+                        <li><a href="notice">网站通知</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li th:if="${session.username}==null"><a href="register">注册</a></li>
+                        <li th:if="${session.username}==null"><a href="login">登录</a></li>
+                        <li th:if="${session.username}!=null"><a href="#" th:text="|欢迎，${session.username}|"></a></li>
+                        <li th:if="${session.username}!=null"><a href="logout">退出</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="list-group">
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}"
+                            v-on:click="getOrders(-1);flag=-1;isShow=false;">所有订单</a>
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 1}"
+                            v-on:click="getOrders(1);flag=1;isShow=false;">待支付</a>
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 2}"
+                            v-on:click="getOrders(2);flag=2;isShow=false;">已支付</a>
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag== 3}"
+                            v-on:click="getOrders(3);flag=3;isShow=false;">失效</a>
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="active" width="">编号</td>
+                                <td class="active" width="">金额</td>
+                                <td class="active" width="25%">地址</td>
+                                <td class="active" width="">联系号码</td>
+                                <td class="active" width="">支付日期</td>
+                                <td class="active" width="">状态</td>
+                                <td class="active">操作</td>
+                            </tr>
+                            <tr v-for="(order,index) in orders" :key="index">
+                                <td class="">{{order.orderNumber}}</td>
+                                <td class="">￥ {{order.payPrice}}</td>
+                                <td class="">{{order.address}}</td>
+                                <td class="">{{order.phone}}</td>
+                                <td class="">{{order.payTime}}</td>
+                                <td class="" v-if="order.state==1">
+                                    待支付
+                                </td>
+                                <td class="" v-if="order.state==2">
+                                    已支付
+                                </td>
+                                <td class="" v-if="order.state==3">
+                                    失效
+                                </td>
+                                <td class="">
+                                    <button class="btn btn-primary btn-sm" type="submit"
+                                        v-on:click="getOrderAndDetails(order.id);">详情</button>
+                                    <span class="" v-if="order.state==1">
+                                        <button class="btn btn-danger btn-sm" type="submit"
+                                            v-on:click="updateOrder(order.id,2);">去支付</button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div><br /><br />
+                </div>
                 <div class="row">
-                    <table class="table text-center table-striped">
+                <div v-if="isShow">
+                    <table class="table">
                         <tr>
-                            <td class="active" width="">编号</td>
-                            <td class="active" width="">金额</td>
-                            <td class="active" width="25%">地址</td>
-                            <td class="active" width="">联系号码</td>
-                            <td class="active" width="">支付日期</td>
-                            <td class="active" width="">状态</td>
-                            <td class="active">操作</td>
+                            <td class="">订单编号</td>
+                            <td class="">支付金额</td>
+                            <td class="15%">收件人</td>
+                            <td class="">收件地址</td>
+                            <td class="">联系方式</td>
+                            <td class="">创建时间</td>
+                            <td class="">支付时间</td>
+                            <td class="">支付状态
+                            </td>
                         </tr>
-                        <tr v-for="(order,index) in orders" :key="index">
-                            <td class="">{{order.orderNumber}}</td>
+                        <tr>
+                            <td class=""><b>{{order.orderNumber}}</b></td>
                             <td class="">￥ {{order.payPrice}}</td>
+                            <td class="">{{order.addressee}}</td>
                             <td class="">{{order.address}}</td>
                             <td class="">{{order.phone}}</td>
+                            <td class="">{{order.createTime}}</td>
                             <td class="">{{order.payTime}}</td>
                             <td class="" v-if="order.state==1">
                                 待支付
@@ -90,65 +138,153 @@
                                 失效
                             </td>
                             <td class="">
-                                <button class="btn btn-primary btn-sm" type="submit">详情</button>
-                                <span class="" v-if="order.state==1">
-                                    <button class="btn btn-danger btn-sm" type="submit">去支付</button>
-                                </span>
-                                <span class="" v-if="order.state==2">
-                                    <button class="btn btn-danger btn-sm" type="submit">退货</button>
-                                </span>
+                                <button class="btn btn-default btn-sm" v-on:click="isShow=false;">隐藏</button>
                             </td>
                         </tr>
                     </table>
+                    <div class="row">
+                        <div class="col-lg-10 col-lg-offset-2">
+                    <table class="table">
+                        <tr>
+                            <td class="active" width="40%">商品</td>
+                            <td class="active" width="">品相</td>
+                            <td class="active" width="">价格</td>
+                            <td class="active" width="">状态</td>
+                            <td class="active">操作</td>
+                        </tr>
+                        <template v-for="(book,index) in books" :key="index">
+                            <tr>
+                                <td class="info">
+                                    <div class="checkbox">
+                                        卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td class="" width="400px">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img :src="book.picture" width="82px"
+                                                 height="90px" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <p class="text-muted">书名: {{book.bookName}}</p>
+                                            <p class="text-muted">作者: {{book.author}}</p>
+                                            <p class="text-muted">出版社: {{book.publisher}}</p>
+                                            <p class="text-muted">出版时间: {{book.publishTime}}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="">{{book.conditions}}</td>
+                                <td class="">￥ {{book.price}}</td>
+                                <td class="" v-if="book.state==2">
+                                    待支付
+                                </td>
+                                <td class="" v-if="book.state==3">
+                                    已支付
+                                </td>
+                                <td class="" v-if="book.state==4">
+                                    退货
+                                </td>
+                                <td class="">
+                                    <a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
+                                    <span class="" v-if="book.state==3">
+                                            <button class="btn btn-danger btn-sm" type="submit" v-on:click="updateOrderDetail(book.id,4)">申请退货</button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </table>
+                </div>
+                </div>
+        
+                </div>
+            </div>
 
-    </div><hr>
-    <h3>000000000000000000</h3>
-    </div>
-    </div>
-    <hr />
-    <p style="text-align: center;color: #ADADAD;">
-        运维支持：佛大15级计算机科学与技术1 卢伟彬{{orders}}
-    </p>
-    </div>
-    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-    <script src="../js/jquery-3.3.1.min.js"></script>
-    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
-    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-    <script th:inline="javascript">
-        var vm = new Vue({
-            el: '#vue_bookshop',
-            data() {
-                return {
-                    flag: -1,
-                    userid: [[${ session.userid }]],
-                    orders: {}
-                }
-            },
-            methods: {
-                isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
-                        alert("未登录");
-                        window.location.href = "login";
-                    }else {
-                        this.getOrders(-1);
+            </div>
+            <hr />
+            <p style="text-align: center;color: #ADADAD;">
+                运维支持：佛大15级计算机科学与技术1 卢伟彬
+            </p>
+        </div>
+        <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+        <script src="../js/jquery-3.3.1.min.js"></script>
+        <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+        <script src="../js/bootstrap.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+        <script th:inline="javascript">
+            var vm = new Vue({
+                el: '#vue_bookshop',
+                data() {
+                    return {
+                        flag: -1,
+                        isShow: false,
+                        userid: [[${ session.userid }]],
+                        orders: {},
+                        order: {},
+                        books: []
+
                     }
                 },
-                getOrders: function(state){
-                    axios.get('/order/state/'+state)
-                        .then(response => (this.orders = response.data.data))
-                        .catch(function (error) {
+                methods: {
+                    isLogin: function () {
+                        if (this.userid == null || this.userid == "") {
+                            alert("未登录");
+                            window.location.href = "login";
+                        } else {
+                            this.getOrders(-1);
+                        }
+                    },
+                    getOrders: function (state) {
+                        axios.get('/order/state/' + state)
+                            .then(response => (this.orders = response.data.data))
+                            .catch(function (error) {
                                 // 请求失败处理
                                 console.log(error);
                             });
+                    },
+                    getOrderAndDetails: function (orderid) {
+                        var _this = this;
+                        axios.get('/order/orderDetails/' + orderid).then(response => (
+                            _this.order = response.data.data.order,
+                            _this.books = response.data.data.books,
+                            _this.isShow = true
+                        ));
+                    },
+                    updateOrder: function (orderid, state) {
+                        var result = confirm("确认支付？");
+                        if (result) {
+                            var _this = this;
+                            axios.post('/order/update/state/' + orderid + '/' + state).then(function (response) {
+                                alert(response.data.message)
+                                _this.isShow = false
+                                _this.getOrders(-1)
+                                _this.flag = -1
+                            })
+                        }
+
+                    },
+                    updateOrderDetail: function (bookid,state) {
+                        var result = confirm("确认要退货吗？");
+                        if (result) {
+                            var _this = this;
+                            var orderid = _this.order.id;
+                            axios.post('/orderDetails/update/state/'+ orderid + '/'+ bookid + '/' + state).then(function (response) {
+                                if(response.data.flag){
+                                    alert("提交申请成功！");
+                                    _this.getOrderAndDetails(response.data.data.orderid);
+                                }
+                            })
+                        }
+                    }
+
+                },
+                created() {
+                    this.isLogin();
                 }
-            },
-            created() {
-                this.isLogin();
-            }
-        })
-    </script>
+            })
+        </script>
 </body>
 
 </html>

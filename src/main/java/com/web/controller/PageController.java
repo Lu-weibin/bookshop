@@ -14,12 +14,6 @@ public class PageController {
     @Autowired
     private HttpServletRequest request;
 
-    @RequestMapping("/hello")
-    public String hello(Model m) {
-        m.addAttribute("name", "thymeleaf");
-        return "hello";
-    }
-
     @RequestMapping("/register")
     public String register() {
         return "register";

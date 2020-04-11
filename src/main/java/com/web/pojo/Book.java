@@ -43,6 +43,11 @@ public class Book implements Serializable {
 
 	private String picture;
 
+	/**
+	 * 品相（书的新旧程度）
+	 */
+	private String conditions;
+
 	private Integer state;
 
 	@ManyToOne(targetEntity = User.class)

@@ -28,12 +28,5 @@ spring:
       max-file-size: 10Mb
       max-request-size: 10Mb
 
-jwt:
-  config:
-    key: bookshop
-    ttl: 3600000
+imagePath: D:\idea_project\bookshop\src\main\resources\static\img\book
 
-
-#myEmail:
-#  from: 1571701516@qq.com
-#  sqm: ekrhrtxbazubjaci

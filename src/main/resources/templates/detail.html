@@ -57,12 +57,12 @@
     <div class="container">
         <div class="row">
             <div class="page-header">
-                <h1>平凡的世界 <small>路遥</small></h1>
+                <h1>{{book.bookName}} <small>{{book.author}}</small></h1>
             </div>
             <div class="media">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object" :src="book.picture" alt=""
+                        <img class="media-object" :src="getImgUrl(book.picture)" alt=""
                             width="280px" height="450px">
                     </a>
                 </div>
@@ -72,10 +72,8 @@
                         <p class="text-muted">出版时间: {{book.publishTime}}</p>
                         <p class="text-muted">版次: 1</p>
                         <p class="text-muted">定价: ￥{{book.price}}</p>
-
-                        <p class="text-muted">开本: 32</p>
+                        <p class="text-muted">品相: {{book.conditions}}</p>
                         <p class="text-muted">分类: {{book.category.category}}</p>
-                        <p class="text-muted">版次: 1</p>
                         <br>
                         <p class="list-group-item-text text-info">
                             {{book.description}}
@@ -143,6 +141,9 @@
                         }
                     });
             },
+            getImgUrl: function(pic){
+                return "../"+pic;
+            }
             },
             created() {
                 this.getBook(this.bookid);

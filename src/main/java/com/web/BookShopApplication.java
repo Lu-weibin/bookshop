@@ -1,9 +1,7 @@
 package com.web;
 
-import com.web.util.JwtUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author luwb
@@ -15,8 +13,4 @@ public class BookShopApplication {
 		SpringApplication.run(BookShopApplication.class, args);
 	}
 
-	@Bean
-	public JwtUtil getJwtUtil() {
-		return new JwtUtil();
-	}
 }

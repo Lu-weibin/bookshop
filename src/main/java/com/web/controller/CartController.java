@@ -2,7 +2,9 @@ package com.web.controller;
 
 import com.base.Result;
 import com.base.StatusCode;
+import com.web.pojo.Book;
 import com.web.pojo.Cart;
+import com.web.service.BookService;
 import com.web.service.CartService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private BookService bookService;
 
     @Autowired
     private HttpServletRequest request;
@@ -41,6 +45,12 @@ public class CartController {
         Integer userid = (Integer) request.getSession().getAttribute("userid");
         if (userid == null) {
             return new Result(false, StatusCode.LOGINERROR, "未登录");
+        }
+        // 加入购物车前先判断是否是自己的图书，是的话不让加入
+        Book book = bookService.findById(bookid).orElse(null);
+        assert book != null;
+        if (book.getUser().getId().equals(userid)) {
+            return new Result(false, StatusCode.ERROR, "不要加入自己的图书！");
         }
         // 校验该用户是否已加入过该书籍
         Cart existCart = cartService.findByUseridAndBookidAndState(userid, bookid, 1);

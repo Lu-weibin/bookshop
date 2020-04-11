@@ -2,23 +2,17 @@ package com.web.controller;
 
 import com.base.Result;
 import com.base.StatusCode;
-import com.base.TestResult;
 import com.web.pojo.User;
 import com.web.service.UserService;
-import com.web.util.JwtUtil;
 import com.web.util.MailUtil;
 import com.web.util.ShaUtils;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,13 +27,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtil jwtUtil;
     private final HttpServletRequest request;
 
     @Autowired
-    public UserController(UserService userService, JwtUtil jwtUtil, HttpServletRequest request) {
+    public UserController(UserService userService, HttpServletRequest request) {
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
         this.request = request;
     }
 

@@ -24,6 +24,11 @@ public interface BookService extends BaseService<Book,Integer> {
     Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book);
 
     /**
+     * 根据id数组查询图书列表
+     */
+    List<Book> findAllByIds(Integer[] ids);
+
+    /**
      * 更新图书状态
      */
     Book update(int id, int state);
@@ -34,4 +39,6 @@ public interface BookService extends BaseService<Book,Integer> {
      * 根据多个图书id计算总金额
      */
     BigDecimal totalPriceByBookids(Integer[] bookids);
+
+    boolean updateState(Integer[] bookids, int state);
 }
