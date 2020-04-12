@@ -19,4 +19,6 @@ public interface UserService extends BaseService<User, Integer> {
     User findOneByEmail(String username, int userType);
 
     User findOneByCode(String code);
+
+    User findOneByBookId(int bookid);
 }

@@ -3,6 +3,7 @@ package com.web.repository;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
+import com.web.pojo.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
@@ -28,5 +29,9 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
     @Query(value = "select * from book t1,collection t2 WHERE t1.id = t2.bookid and t2.userid = :userid ",nativeQuery = true)
     List<Book> findCollectionByUserid(@Param("userid") Integer userid);
+
+    List<Book> findAllByUser(User user);
+
+    List<Book> findAllByBookNameLikeOrAuthorLikeOrPublisherIsLike(String bookName, String author, String publisher);
 
 }

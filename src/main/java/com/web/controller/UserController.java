@@ -81,10 +81,15 @@ public class UserController {
      * 登录
      */
     @PostMapping("login")
-    public String findOneByUsername(String email, String password, RedirectAttributes redirectAttributes) {
+    public String findOneByUsername(String email, String password, String checkImg, RedirectAttributes redirectAttributes) {
+        // 忽略验证码大小写
+        if (!(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
+            redirectAttributes.addFlashAttribute("error", "验证码不正确！");
+            return "redirect:../login";
+        }
         User user;
         if (email != null && password != null) {
-            user = userService.findOneByEmailAndPassword(email,password);
+            user = userService.findOneByEmailAndPassword(email, password);
             if (user == null) {
                 redirectAttributes.addFlashAttribute("error", "用户名或密码错误！");
                 return "redirect:../login";

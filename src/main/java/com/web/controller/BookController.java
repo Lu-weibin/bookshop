@@ -8,6 +8,7 @@ import com.web.pojo.Book;
 import com.web.pojo.Category;
 import com.web.pojo.User;
 import com.web.service.BookService;
+import com.web.service.OrderDetailsService;
 import com.web.service.UserService;
 import com.web.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author luwb
@@ -74,28 +74,15 @@ public class BookController {
 		return new Result(new PageResult<>(bookPage.getTotalElements(),bookPage.getContent()));
 	}
 
-//	@PostMapping
-//	public Result save(@RequestBody Book book){
-//		Claims userClaims = (Claims) request.getAttribute("user_claims");
-//		if (userClaims != null) {
-//			book.setCreateTime(CommonUtil.now());
-//			// 网站用户添加的图书需要管理员审核
-//			book.setState(1);
-//			book.setUser(new User(Integer.parseInt(userClaims.getId())));
-//			bookService.save(book);
-//			return new Result("新增成功");
-//		}
-//		Claims adminClaims = (Claims) request.getAttribute("admin_claims");
-//		if (adminClaims != null) {
-//			book.setCreateTime(CommonUtil.now());
-//			// 管理员添加的图书状态不用核审，即已上架的状态
-//			book.setState(2);
-//			book.setUser(new User(Integer.parseInt(adminClaims.getId())));
-//			bookService.save(book);
-//			return new Result("新增成功");
-//		}
-//		return new Result(false, StatusCode.ACCESSERROR, "限权不足");
-//	}
+	@GetMapping("search/{key}")
+	public Result searchByKey(@PathVariable String key) {
+		if (CommonUtil.isNullOrEmpty(key)) {
+			return new Result(Collections.emptyList());
+		}
+		List<Book> books = bookService.searchByKey(key);
+		books.removeIf(book -> book.getState() != 2);
+		return new Result(books);
+	}
 
 	@PutMapping("{id}")
 	public Result update(@RequestBody Book book){
@@ -169,6 +156,25 @@ public class BookController {
 		System.out.println(desc);
 		imgFile.transferTo(desc);
 		return String.format("img/book/%d/%s", userid, newFileName);
+	}
+
+	@GetMapping("findAllByUserid")
+	public Result findAllByUserid() {
+		Integer userid = (Integer) request.getSession().getAttribute("userid");
+		List<Book> books = bookService.findAllByUserid(userid);
+		for (Book book : books) {
+			// 该图书为卖出或退货状态时，查找购买者
+			if (book.getState() == 3 || book.getState() == 4) {
+				Integer bookId = book.getId();
+				User user = userService.findOneByBookId(bookId);
+				if (user == null) {
+					user = new User();
+				}
+				// 此处的user为购买该图书的用户
+				book.setUser(user);
+			}
+		}
+		return new Result(books);
 	}
 
 }

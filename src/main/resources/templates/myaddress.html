@@ -36,12 +36,7 @@
 					<li class="active"><a href="myinfo">个人中心</a></li>
 					<li><a href="notice">网站通知</a></li>
 				</ul>
-				<form class="navbar-form navbar-left">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search">
-					</div>
-					<button type="submit" class="btn btn-default">搜索</button>
-				</form>
+				
 				<ul class="nav navbar-nav navbar-right">
 					<li th:if="${session.username}==null"><a href="register">注册</a></li>
 					<li th:if="${session.username}==null"><a href="login">登录</a></li>
@@ -60,6 +55,7 @@
 					<a href="account" class="list-group-item">账 户 安 全</a><br>
 					<a href="myaddress" class="list-group-item active">我 的 地 址</a><br>
 					<a href="favorite" class="list-group-item">我 的 收 藏</a><br>
+					<a href="mybook" class="list-group-item">我 的 图 书</a><br>
 				</div>
 			</div>
 			<div class="col-lg-8 col-lg-offset-1">

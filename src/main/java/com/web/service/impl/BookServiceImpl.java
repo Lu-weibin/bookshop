@@ -4,6 +4,7 @@ import com.base.BaseServiceImpl;
 import com.base.JpaBaseRepository;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
+import com.web.pojo.User;
 import com.web.repository.BookRepository;
 import com.web.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +99,17 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Book> findAllByUserid(Integer userid) {
+        return bookRepository.findAllByUser(new User(userid));
+    }
+
+    @Override
+    public List<Book> searchByKey(String key) {
+        String newKey = "%" + key + "%";
+        return bookRepository.findAllByBookNameLikeOrAuthorLikeOrPublisherIsLike(newKey, newKey, newKey);
     }
 
 

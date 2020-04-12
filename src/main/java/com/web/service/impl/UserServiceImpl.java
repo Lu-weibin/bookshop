@@ -53,4 +53,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements U
         return userRepository.findTop1ByCode(code);
     }
 
+    @Override
+    public User findOneByBookId(int bookid) {
+        return userRepository.findOneByBookid(bookid);
+    }
+
 }

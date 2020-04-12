@@ -41,4 +41,8 @@ public interface BookService extends BaseService<Book,Integer> {
     BigDecimal totalPriceByBookids(Integer[] bookids);
 
     boolean updateState(Integer[] bookids, int state);
+
+    List<Book> findAllByUserid(Integer userid);
+
+    List<Book> searchByKey(String key);
 }

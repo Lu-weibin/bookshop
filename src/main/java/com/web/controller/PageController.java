@@ -60,6 +60,11 @@ public class PageController {
         return "favorite";
     }
 
+    @RequestMapping("/mybook")
+    public String mybook() {
+        return "mybook";
+    }
+
     @RequestMapping("/myaddress")
     public String myaddress() {
         return "myaddress";
