@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>二手书交易平台</title>
+	<link href="../../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="vue_bookshop">
+		<div th:replace="../templates/admin/header :: header"  ></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div th:replace="../templates/admin/left :: left"  ></div>
+			<div class="col-lg-8 col-lg-offset-1">
+				<div class="row">
+					<h4>所 有 通 知</small></h4>
+					<hr><br>
+				</div>
+				<form class="navbar-form navbar-right" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="标题、内容">
+					</div>
+					<button type="submit" class="btn btn-default">查 询</button>
+				</form>
+				<div class="row">
+					<table class="table text-center">
+						<tr>
+							<td class="active" width="">标 题</td>
+							<td class="active" width="">内 容</td>
+							<td class="active" width="">时 间</td>
+							<td class="active" width="">状 态</td>
+							<td class="active" width="">发布者</td>
+							<td class="active">操作</td>
+						</tr>
+						 <template v-for="(book,index) in books" :key="index">
+							<tr >
+								<td class="">经典</td>
+								<td class="">1000</td>
+								<td class="">经典</td>
+								<td class="">经典</td>
+								<td class="">经典</td>
+								<td class="">
+									<button class="btn btn-primary btn-sm" type="submit" v-on:click="addCart(book.id)">编 辑</button>
+									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">删 除</button>
+								</td>
+							</tr>
+						 </template>
+					</table>
+			</div>
+		</div>
+	</div>
+	</div>
+	<hr />
+	<div th:replace="../templates/admin/footer :: footer"  ></div>
+    </div>
+	<script src="../../js/jquery-3.3.1.min.js"></script>
+	<script src="../../js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script th:inline="javascript">
+        var vm = new Vue({
+            el: '#vue_bookshop',
+            data() {
+                return {
+                    userid: [[${ session.userid }]],
+                    books: [{user:{}}],
+                    bookids: []
+                }
+            },
+            methods: {
+                isLogin: function () {
+                    if (this.userid == null || this.userid == "") {
+                        // alert("未登录!");
+                        // window.location.href = "login";
+                    }else {
+                        // this.getCollections();
+                    }
+                },
+                getCollections: function(){
+                    axios.get('/collection/').then(response => (this.books = response.data.data));
+                },
+				addCart: function(bookid){
+                	axios.post('cart/book/'+bookid)
+						.then(function (response) {
+							if(response.data.flag){
+								this.result = response.data.data;
+								alert("加入成功！");
+							}else{
+								console.log(response.data.message);
+								alert(response.data.message);
+							}
+							});
+						},
+				deleteCollection: function(bookid){
+                    var _this = this;
+                    axios.get('/collection/delete/'+bookid)
+                        .then(function (response) {
+                            if(response.data.flag){
+                                _this.getCollections();
+                            }else{
+                                alert(response.data.message);
+                            }
+                        });
+                	}
+            },
+            created() {
+                this.isLogin();
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -81,4 +81,30 @@ public class PageController {
         request.getSession().setAttribute("userid", null);
         return "redirect:index";
     }
+
+    @RequestMapping("admin/category")
+    public String category() {
+        return "admin/category";
+    }
+
+    @RequestMapping("admin/book")
+    public String book() {
+        return "admin/book";
+    }
+
+    @RequestMapping("admin/user")
+    public String user() {
+        return "admin/user";
+    }
+
+    @RequestMapping("admin/notice")
+    public String adminNotice() {
+        return "admin/notice";
+    }
+
+    @RequestMapping("admin/editNotice")
+    public String editNotice() {
+        return "admin/editNotice";
+    }
+
 }
