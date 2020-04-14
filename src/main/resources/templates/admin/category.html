@@ -50,7 +50,7 @@
 	</div>
 	</div>
 	<hr />
-	<div th:replace="../templates/admin/footer :: footer"  ></div>
+	<div th:replace="../templates/admin/footer :: footer"  ></div>{{categorys}}
     </div>
 	<script src="../../js/jquery-3.3.1.min.js"></script>
 	<script src="../../js/bootstrap.min.js"></script>
@@ -62,7 +62,7 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    books: [{user:{}}],
+					categorys: [],
                     bookids: []
                 }
             },
@@ -72,11 +72,11 @@
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
-                        // this.getCollections();
+                        this.getCategorys();
                     }
                 },
-                getCollections: function(){
-                    axios.get('/collection/').then(response => (this.books = response.data.data));
+				getCategorys: function(){
+                    axios.get('/category/list').then(response => (this.categorys = response.data.data));
                 },
 				addCart: function(bookid){
                 	axios.post('cart/book/'+bookid)

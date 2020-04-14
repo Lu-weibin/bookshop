@@ -24,6 +24,11 @@ public class Category implements Serializable{
 
     private String category;
 
+    /**
+     * 该分类下图书数量
+     */
+    private Long totalCount;
+
     public Category(Integer id) {
         this.id = id;
     }

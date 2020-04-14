@@ -59,10 +59,13 @@
                     </a>
                     <hr>
 					<a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}" v-on:click="getBooks(-1);flag=-1">
-						所有书籍
+                        所有书籍
+                        <span class="badge">{{bookTatal}}</span>
 					</a>
                     <div v-for="(category,index) in categorys" :key="index">
-                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==category.id}" v-on:click="getBooks(category.id);flag=category.id">{{category.category }}</a>
+                        <a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==category.id}" v-on:click="getBooks(category.id);flag=category.id">{{category.category }}
+                            <span class="badge">{{category.totalCount}}</span>
+                        </a>
                     </div>
                 </div>
                 
@@ -199,6 +202,7 @@
                 categorys: [{}],
                 books: [{category:{}}],
                 result: {},
+                bookTatal: "",
                 saleBook: {
                     bookName: "",
                     author: "",
@@ -226,12 +230,14 @@
 				axios.get('/category').then(response => (this.categorys = response.data.data));
             },
             getBooks: function(categoryid){
+                var _this = this;
                 axios.get('/book/category/'+categoryid)
-				.then(response => (this.books = response.data.data))
-			    .catch(function (error) {
-			        // 请求失败处理
-					console.log(error);
-				});
+				.then(function(response){
+                    if(categoryid==-1){
+                        _this.bookTatal = response.data.data.length
+                    }
+                    _this.books = response.data.data
+                    });
             },
             addCart: function(bookid){
                 axios.post('cart/book/'+bookid)
@@ -301,11 +307,19 @@
                     this.books = response.data.data,
                         this.flag = ""
                 ));
-            }
+            },
+            getTotalCount: function(){
+                var _this = this;
+                axios.get('/book/category/-1')
+				.then(function(response){
+                    _this.bookTatal = response.data.data.length
+                    });
+            },
         },
         created() {
             this.getCategorys();
             this.getBooks(-1);
+            this.getTotalCount();
         }
     })
 </script>
