@@ -33,7 +33,8 @@ public class NoticeServiceImpl extends BaseServiceImpl<Notice, Integer> implemen
 
     @Override
     public List<Notice> findAllByState(int state) {
-        return noticeRepository.findAllByState(state);
+        Sort sort = new Sort(Sort.Direction.DESC, "time");
+        return noticeRepository.findAllByState(state,sort);
     }
 
 }

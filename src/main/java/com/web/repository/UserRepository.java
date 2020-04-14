@@ -5,6 +5,8 @@ import com.web.pojo.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 /**
  * @author luwb
  * @date 2020/02/25
@@ -31,5 +33,10 @@ public interface UserRepository extends JpaBaseRepository<User,Integer> {
 	 */
 	@Query(value = "select * from user where id = (select userid from orders where id = (select orderid from order_details WHERE state in (2,4) and bookid = :bookid))", nativeQuery = true)
 	User findOneByBookid(@Param("bookid") int bookid);
+
+	/**
+	 * 查找所有用户
+	 */
+	List<User> findAllByUserType(int userType);
 
 }

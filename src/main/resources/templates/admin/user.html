@@ -45,14 +45,17 @@
 							<td class="active" width="">注册时间</td>
 							<td class="active">操作</td>
 						</tr>
-						<tr >
-							<td class="">经典</td>
-							<td class="">1000</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
+						<tr v-for="(user,index) in users" :key="index">
+							<td class="">{{user.email}}</td>
+							<td class="">{{user.username}}</td>
+							<td class="">{{user.phone}}</td>
+							<td class="" v-if="user.state==1">正常</td>
+							<td class="" v-if="user.state==2">黑名单</td>
+							<td class="" v-if="user.state==3">未激活</td>
+							<td class="">{{user.createTime}}</td>
 							<td class="">
-								<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">加入黑名单</button>
+								<button class="btn btn-danger btn-sm" type="submit" v-on:click="updateUser(user.id,2)" v-if="user.state==1">加入黑名单</button>
+								<button class="btn btn-info btn-sm" type="submit" v-on:click="updateUser(user.id,1)" v-if="user.state==2">撤销黑名单</button>
 							</td>
 						</tr>
 					</table>
@@ -75,8 +78,7 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    books: [{user:{}}],
-                    bookids: []
+                    users: [],
                 }
             },
             methods: {
@@ -85,35 +87,30 @@
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
-                        // this.getCollections();
+                        this.getUsers();
                     }
                 },
-                getCollections: function(){
-                    axios.get('/collection/').then(response => (this.books = response.data.data));
+                getUsers: function(){
+                    axios.get('/user/list').then(response => (this.users = response.data.data));
                 },
-				addCart: function(bookid){
-                	axios.post('cart/book/'+bookid)
+				updateUser: function(userid,state){
+					if(state==2){
+						var result = confirm("确定加入拉黑用户？");
+						if(!result){
+							return false;
+						}
+					}
+					var _this = this;
+                	axios.post('/user/state/'+userid+'/'+state)
 						.then(function (response) {
 							if(response.data.flag){
-								this.result = response.data.data;
-								alert("加入成功！");
+								_this.getUsers();
 							}else{
 								console.log(response.data.message);
 								alert(response.data.message);
 							}
 							});
-						},
-				deleteCollection: function(bookid){
-                    var _this = this;
-                    axios.get('/collection/delete/'+bookid)
-                        .then(function (response) {
-                            if(response.data.flag){
-                                _this.getCollections();
-                            }else{
-                                alert(response.data.message);
-                            }
-                        });
-                	}
+						}
             },
             created() {
                 this.isLogin();

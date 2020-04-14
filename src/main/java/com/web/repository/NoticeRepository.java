@@ -10,7 +10,7 @@ public interface NoticeRepository extends JpaBaseRepository<Notice,Integer> {
 
     Notice findFirstByState(int state, Sort sort);
 
-    List<Notice> findAllByState(int state);
+    List<Notice> findAllByState(int state, Sort sort);
 
 
 }

@@ -227,7 +227,7 @@
                     }
                 },
             getCategorys: function () {
-				axios.get('/category').then(response => (this.categorys = response.data.data));
+				axios.get('/category/list').then(response => (this.categorys = response.data.data));
             },
             getBooks: function(categoryid){
                 var _this = this;

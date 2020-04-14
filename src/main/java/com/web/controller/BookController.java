@@ -14,6 +14,7 @@ import com.web.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,17 +91,10 @@ public class BookController {
 		return new Result("更新成功");
 	}
 
-	@PutMapping("{id}/{state}")
+	@PostMapping("{id}/{state}")
 	public Result updateState(@PathVariable int id,@PathVariable int state){
 		bookService.update(id, state);
 		return new Result("操作成功");
-	}
-
-	@DeleteMapping("{id}")
-	public Result delete(@PathVariable int id){
-		// 逻辑删除，把图书状态改为-1
-		bookService.update(id, -1);
-		return new Result("删除成功");
 	}
 
 	@PostMapping("add")
@@ -175,6 +169,11 @@ public class BookController {
 			}
 		}
 		return new Result(books);
+	}
+
+	@GetMapping("list")
+	public Result list() {
+		return new Result(bookService.findAll("createTime", Sort.Direction.DESC));
 	}
 
 }

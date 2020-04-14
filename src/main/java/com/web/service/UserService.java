@@ -3,6 +3,8 @@ package com.web.service;
 import com.base.BaseService;
 import com.web.pojo.User;
 
+import java.util.List;
+
 /**
  * @author luwb
  * @date 2020/02/25
@@ -21,4 +23,6 @@ public interface UserService extends BaseService<User, Integer> {
     User findOneByCode(String code);
 
     User findOneByBookId(int bookid);
+
+    List<User> findAllUser();
 }

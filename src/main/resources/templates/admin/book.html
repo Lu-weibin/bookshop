@@ -41,6 +41,7 @@
 				<div class="row">
 					<table class="table text-center">
 						<tr>
+							<td class="active" width="">照片</td>
 							<td class="active" width="">书名</td>
 							<td class="active" width="">作者</td>
 							<td class="active" width="">价格</td>
@@ -51,24 +52,30 @@
 							<td class="active" width="">状态</td>
 							<td class="active" width="">创建时间</td>
 							<td class="active" width="">卖主</td>
-							<td class="active" width="">照片</td>
+							
 							<td class="active">操作</td>
 						</tr>
-						<tr >
-							<td class="">经典</td>
-							<td class="">1000</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
-							<td class="">经典</td>
+						<tr v-for="(book,index) in books" :key="index">
 							<td class="">
-								<button class="btn btn-primary btn-sm" type="submit" v-on:click="addCart(book.id)">通过审核</button>
-								<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">下 架</button>
+								<img :src="getImgUrl(book.picture)" alt="" width="150px" height="150px">
+							</td>
+							<td class="">{{book.bookName}}</td>
+							<td class="">{{book.author}}</td>
+							<td class="">{{book.price}}</td>
+							<td class="">{{book.conditions}}</td>
+							<td class="">{{book.category.category}}</td>
+							<td class="">{{book.publisher}}</td>
+							<td class="">{{book.publishTime}}</td>
+							<td class="" v-if="book.state==1">等审核</td>
+							<td class="" v-if="book.state==2">在售</td>
+							<td class="" v-if="book.state==3">已卖出</td>
+							<td class="" v-if="book.state==4">退货</td>
+							<td class="" v-if="book.state==-1">下架</td>
+							<td class="">{{book.createTime}}</td>
+							<td class="">{{book.user.username}}</td>
+							<td class="">
+								<button class="btn btn-primary btn-sm" type="submit" v-on:click="updateBooks(book.id,2)" v-if="book.state==1">通过审核</button>
+								<button class="btn btn-danger btn-sm" type="submit" v-on:click="updateBooks(book.id,-1)" v-if="book.state==2">下 架</button>
 							</td>
 						</tr>
 					</table>
@@ -91,8 +98,7 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    books: [{user:{}}],
-                    bookids: []
+                    books: [{user:{},category:{}}]
                 }
             },
             methods: {
@@ -101,36 +107,35 @@
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
-                        // this.getCollections();
+                        this.getBooks();
                     }
                 },
-                getCollections: function(){
-                    axios.get('/collection/').then(response => (this.books = response.data.data));
+                getBooks: function(){
+                    axios.get('/book/list').then(response => (this.books = response.data.data));
                 },
-				addCart: function(bookid){
-                	axios.post('cart/book/'+bookid)
+				updateBooks: function(bookid,state){
+					if(state==-1){
+						var result = confirm("确定下架图书？");
+						if(!result){
+							return false;
+						}
+					}
+					var _this = this;
+                	axios.post('/book/'+bookid+'/'+state)
 						.then(function (response) {
 							if(response.data.flag){
-								this.result = response.data.data;
-								alert("加入成功！");
+								_this.getBooks();
 							}else{
 								console.log(response.data.message);
 								alert(response.data.message);
 							}
 							});
 						},
-				deleteCollection: function(bookid){
-                    var _this = this;
-                    axios.get('/collection/delete/'+bookid)
-                        .then(function (response) {
-                            if(response.data.flag){
-                                _this.getCollections();
-                            }else{
-                                alert(response.data.message);
-                            }
-                        });
-                	}
+					getImgUrl: function(pic){
+                		return "../"+pic;
+            }
             },
+		
             created() {
                 this.isLogin();
             }

@@ -5,6 +5,7 @@ import com.base.StatusCode;
 import com.web.pojo.Notice;
 import com.web.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,11 @@ public class NoticeController {
     public Result getNoticeById(@PathVariable int noticeid) {
         Optional<Notice> optionalNotice = noticeService.findById(noticeid);
         return optionalNotice.map(Result::new).orElseGet(() -> new Result(false, StatusCode.ERROR, "查询不到数据!"));
+    }
+
+    @GetMapping("list")
+    public Result list() {
+        return new Result(noticeService.findAll("time", Sort.Direction.DESC));
     }
 
 }

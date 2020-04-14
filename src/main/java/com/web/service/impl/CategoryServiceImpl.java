@@ -8,6 +8,8 @@ import com.web.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author luwb
  * @date 2020-02-29
@@ -23,4 +25,8 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category,Integer> imple
         return this.categoryRepository;
     }
 
+    @Override
+    public List<Category> findAllByKey(String key) {
+        return categoryRepository.findAllByCategoryLike(key);
+    }
 }

@@ -9,6 +9,8 @@ import com.web.util.ShaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author luwb
  * @date 2020/02/25
@@ -58,4 +60,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements U
         return userRepository.findOneByBookid(bookid);
     }
 
+    @Override
+    public List<User> findAllUser() {
+        // userType 1为用户；2为管理员
+        return userRepository.findAllByUserType(1);
+    }
 }

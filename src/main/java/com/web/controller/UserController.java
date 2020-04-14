@@ -21,7 +21,6 @@ import java.util.UUID;
  * @date 2020/02/25
  */
 @CrossOrigin
-//@RestController
 @Controller
 @RequestMapping("user")
 public class UserController {
@@ -97,6 +96,9 @@ public class UserController {
             if (user.getState() == 3) {
                 redirectAttributes.addFlashAttribute("error", "请到邮箱中激活账户！");
                 return "redirect:../login";
+            }if (user.getState() == 2) {
+                redirectAttributes.addFlashAttribute("error", "您的账号状态异常！");
+                return "redirect:../login";
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "信息不能为空！");
@@ -157,14 +159,20 @@ public class UserController {
         return new Result("修改成功！");
     }
 
-    @GetMapping
+    @GetMapping("list")
+    @ResponseBody
     public Result list() {
-        return new Result(userService.findAll());
+        return new Result(userService.findAllUser());
     }
 
-    @DeleteMapping("{id}")
-    public Result delete(@PathVariable Integer id) {
-        return new Result(userService.findById(id));
+    @PostMapping("state/{id}/{state}")
+    @ResponseBody
+    public Result updateUserByState(@PathVariable Integer id,@PathVariable int state) {
+        User user = userService.findById(id).orElse(null);
+        assert user != null;
+        user.setState(state);
+        userService.save(user);
+        return new Result("执行成功");
     }
 
 
