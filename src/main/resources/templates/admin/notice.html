@@ -9,7 +9,7 @@
 	<link href="../../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding-top: 70px;">
 	<div id="vue_bookshop">
 		<div th:replace="../templates/admin/header :: header"  ></div>
 	<div class="container-fluid">
@@ -20,11 +20,19 @@
 					<h4>所 有 通 知</small></h4>
 					<hr><br>
 				</div>
-				<form class="navbar-form navbar-right" role="search">
+				<form class="navbar-form navbar-right" role="search" @submit.prevent="">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="标题、内容">
+						<input type="text" class="form-control" placeholder="标题、内容" v-model.trim="key">
 					</div>
-					<button type="submit" class="btn btn-default">查 询</button>
+					<div class="form-group">
+						<select class="form-control" v-model="state">
+							<option value="">所有</option>
+							<option value="1">已发布</option>
+							<option value="2">草稿</option>
+					   </select>
+					</div>
+					<button type="submit" class="btn btn-default" v-on:click="search()">查 询</button>
+					<button  class="btn btn-default" v-on:click="clear()">清 空</button>
 				</form>
 				<div class="row">
 					<table class="table">
@@ -46,8 +54,8 @@
 								<td class="" v-if="notice.state==3">删除</td>
 
 								<td class="">
-									<button class="btn btn-primary btn-sm" type="submit" v-on:click="addCart(book.id)">编 辑</button>
-									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteCollection(book.id)">删 除</button>
+									<a v-bind:href="'/admin/editNotice/'+notice.id" class="btn btn-primary btn-sm" role="button">编 辑</a>
+									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteNotice(notice.id)">删 除</button>
 								</td>
 							</tr>
 						 </template>
@@ -69,7 +77,9 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    notices: []
+                    notices: [],
+					key: "",
+					state: ""
                 }
             },
             methods: {
@@ -84,32 +94,36 @@
                 getNotices: function(){
                     axios.get('/notice/list').then(response => (this.notices = response.data.data));
                 },
-				addCart: function(bookid){
-                	axios.post('cart/book/'+bookid)
-						.then(function (response) {
-							if(response.data.flag){
-								this.result = response.data.data;
-								alert("加入成功！");
-							}else{
-								console.log(response.data.message);
-								alert(response.data.message);
-							}
-							});
-						},
-				deleteCollection: function(bookid){
-                    var _this = this;
-                    axios.get('/collection/delete/'+bookid)
-                        .then(function (response) {
-                            if(response.data.flag){
-                                _this.getCollections();
-                            }else{
-                                alert(response.data.message);
-                            }
-                        });
-                	}
-            },
+				search: function(){
+				var _this = this;
+				axios.get('/notice/search/',{
+					params: {
+						key: _this.key,
+						state: _this.state
+					}
+				}).then(function (response) {
+					if(response.data.flag){
+						_this.notices = response.data.data;
+					}else{
+						console.log(response.data.message);
+						alert(response.data.message);
+					}
+					});
+				},
+				clear: function(){
+					this.key = "",
+					this.state = ""
+				},
+				deleteNotice: function(noticeid){
+					var result = confirm("确定删除？");
+					if(result){
+						axios.post('/notice/delete/'+noticeid).then(response => (this.getNotices()));
+					}
+				}
+				},
             created() {
                 this.isLogin();
+				this.getNotices();
             }
         })
     </script>

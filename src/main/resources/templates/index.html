@@ -269,7 +269,7 @@
                 let conditions = this.saleBook.conditions;
                 let description = this.saleBook.description;
                 event.preventDefault();
-                if(bookName==""||author==""||publisher==""||publishTime==""||price==""||category==""||conditions==""){
+                if(bookName==""||author==""||publisher==""||publishTime==""||price==""||category==""||conditions==""||price<0){
                     alert("输入信息有误，请检查！");
                     return false;
                 }

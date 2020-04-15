@@ -113,7 +113,6 @@
 								</td>
 								<td class="" v-if="book.state==1||book.state==2">
 									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
-<!--									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">编 辑</a>-->
 									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteBook(book.id)">删 除</button>
 								</td>
 								<td class="" v-if="book.state!=1&&book.state!=2">
@@ -160,15 +159,18 @@
                     axios.get('/book/findAllByUserid').then(response => (this.books = response.data.data));
                 },
 				deleteBook: function(bookid){
-                    var _this = this;
-                    axios.delete('/book/'+bookid)
-                        .then(function (response) {
-                            if(response.data.flag){
-                                _this.getBooks();
-                            }else{
-                                alert(response.data.message);
-                            }
-                        });
+					var result = confirm("确定删除？");
+					if(result){
+						var _this = this;
+						axios.delete('/book/'+bookid)
+							.then(function (response) {
+								if(response.data.flag){
+									_this.getBooks();
+								}else{
+									alert(response.data.message);
+								}
+							});
+					}
                 	}
             },
             created() {

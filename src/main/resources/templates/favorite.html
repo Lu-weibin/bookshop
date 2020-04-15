@@ -157,7 +157,9 @@
 						},
 				deleteCollection: function(bookid){
                     var _this = this;
-                    axios.get('/collection/delete/'+bookid)
+					var result = confirm("确认移出收藏？");
+					if(result){
+						axios.get('/collection/delete/'+bookid)
                         .then(function (response) {
                             if(response.data.flag){
                                 _this.getCollections();
@@ -165,6 +167,7 @@
                                 alert(response.data.message);
                             }
                         });
+					}
                 	}
             },
             created() {

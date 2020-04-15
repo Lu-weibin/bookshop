@@ -193,7 +193,9 @@
                 },
                 deleteCart: function(bookid){
                     var _this = this;
-                    axios.get('/cart/delete/'+bookid)
+                    var result = confirm("确认删除购物车？");
+                    if(result){
+                        axios.get('/cart/delete/'+bookid)
                         .then(function (response) {
                             if(response.data.flag){
                                 _this.getCarts();
@@ -201,10 +203,8 @@
                             }else{
                                 alert(response.data.message);
                             }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
                         });
+                    }           
                 },
                 beforeCalc: function(){
                     var _this = this;

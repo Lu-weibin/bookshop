@@ -10,4 +10,8 @@ public interface NoticeService extends BaseService<Notice,Integer> {
     Notice getFirstNotice();
 
     List<Notice> findAllByState(int state);
+
+    List<Notice> search(String key);
+
+
 }

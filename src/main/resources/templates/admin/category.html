@@ -9,7 +9,7 @@
 	<link href="../../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding-top: 70px;">
 	<div id="vue_bookshop">
 		<div th:replace="../templates/admin/header :: header"></div>
 		<div class="container-fluid">
@@ -86,7 +86,6 @@
 				},
 				getCategorys: function () {
 					var _this = this;
-					console.log("jll");
 					axios.get('/category/list').then(response => (_this.categorys = response.data.data));
 				},
 				addCategory: function () {
@@ -124,6 +123,7 @@
 				searchCategory: function () {
 					var category = this.category;
 					if (category == "") {
+						this.getCategorys();
 						return false;
 					}
 					axios.get('/category/search/'+category).then(response => (this.categorys = response.data.data));
@@ -163,6 +163,7 @@
 			},
 			created() {
 				this.isLogin();
+				this.getCategorys();
 			}
 		})
 	</script>

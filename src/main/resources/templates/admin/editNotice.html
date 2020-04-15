@@ -11,22 +11,23 @@
 	<link href="../../css/default.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding-top: 70px;">
 	<div id="vue_bookshop">
 		<div th:replace="../templates/admin/header :: header"  ></div>
 	<div class="container-fluid">
 		<div class="row">
 			<div th:replace="../templates/admin/left :: left"  ></div>
-			<div class="col-lg-8 col-lg-offset-1">
+			<div class="col-lg-9 col-lg-offset-1">
 				<div class="row">
 					<h4>编 辑 通 知</small></h4>
 					<hr><br>
 				</div>
 				<div class="row">
-					<div class="col-lg-8">
-						<input type="text" class="form-control" id="title" placeholder="标题" value=""/><br/><br/>
+					<div class="col-lg-10">
+						<input type="hidden" id="id" th:value="${notice.id}"/>
+						<input type="text" class="form-control" id="title" placeholder="标题" th:value="${notice.title}"/><br/><br/>
 						<form>
-							<textarea name="content" style="width: 100%; height: 400px; visibility: hidden;" placeholder="通知内容"></textarea>
+							<textarea name="content" style="width: 100%; height: 650px; visibility: hidden;" placeholder="通知内容"><span th:text="${notice.content}"></span></textarea>
 						</form>
 					</div>
 					<div class="col-lg-2">
@@ -62,10 +63,10 @@
 					allowFileManager : true
 				});
 				K('input[name=sendnotice]').click(function(e) {
-					sendnotice();
+					savenotice(1);
 				});
 				K('input[name=savenotice]').click(function(e) {
-					savenotice();
+					savenotice(2);
 				});
 				K('input[name=clear]').click(function(e) {
 					$('#title').val('');
@@ -76,70 +77,31 @@
 				});
 		
 			});
-				function sendnotice(){
-						var id = $('#id').val();
-						var title = $('#title').val();
-						var content = editor.html();
-						if(title.trim()==""||content.trim()==""){
-							alert("标题或内容不能为空！");
-						}else{
-							$.post("saveNotice",{"id":id,"title":title,"content":content,"state":1},function(response){
-								alert(response);
-							});
-						}
-				};
-
-				 function savenotice(){
-					var title = $('#title').val();
-					var content = editor.html();
-					if(title.trim()==""&&content.trim()==""){
-						alert("标题和内容不能同时为空！");
+			function savenotice(state){
+				var id = $('#id').val();
+				var title = $('#title').val();
+				var content = editor.html();
+				if(title.trim()==""||content.trim()==""){
+					alert("标题或内容不能为空！");
+				}else{
+					$.post("/notice/saveNotice",{"id":id,"title":title,"content":content,"state":state},function(response){
+						alert("执行成功");
+					});
+				}
+			};
+				
+			function readnotice(){
+				$.ajax({ url: "/notice/readNotice",success: function(response){
+					// alert(JSON.stringify(response));
+					if(response.flag){
+						$('#title').val(response.data.title);
+						editor.html(response.data.content);
 					}else{
-						$.post("saveNotice",{"title":title,"content":content,"state":2},function(response){
-							alert(response);
-					      });	
+						alert("草稿箱暂无内容！");
 					}
 					
-				};
-				
-				function readnotice(){
-					$.ajax({ url: "myNotice",success: function(response){
-						if(!response){
-							alert("草稿箱暂无内容！");
-						}
-						$('#title').val(response.title);
-						editor.html(response.content);
-				      }});
-				};
-				
-				function readnotice(){
-					$.ajax({ url: "myNotice",success: function(response){
-						if(!response){
-							alert("草稿箱暂无内容！");
-						}
-						$('#title').val(response.title);
-						editor.html(response.content);
-				      }});
-				};
-
-        var vm = new Vue({
-            el: '#vue_bookshop',
-            data() {
-                return {
-                    userid: [[${ session.userid }]],
-                }
-            },
-            methods: {
-                isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
-                        // alert("未登录!");
-                    }
-                }
-            },
-            created() {
-                this.isLogin();
-            }
-        })
+				  }});
+			};
     </script>
 </body>
 

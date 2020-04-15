@@ -1,37 +1,30 @@
 package com.web.controller;
 
-import com.base.PageResult;
 import com.base.Result;
 import com.base.StatusCode;
-import com.sun.org.apache.bcel.internal.generic.IFLE;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
 import com.web.pojo.User;
 import com.web.service.BookService;
-import com.web.service.OrderDetailsService;
 import com.web.service.UserService;
 import com.web.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 @CrossOrigin
 @RestController
 @RequestMapping("book")
@@ -53,10 +46,10 @@ public class BookController {
 		this.userService = userService;
 	}
 
-	@GetMapping("category/{categoryid}")
-	public Result listByCategoryid(@PathVariable Integer categoryid) {
-		// categoryid为-1时返回所有书籍
-		return new Result(bookService.findAllByCategoryid(categoryid));
+	@GetMapping("category/{categoryId}")
+	public Result listByCategoryId(@PathVariable Integer categoryId) {
+		// categoryd为-1时返回所有书籍
+		return new Result(bookService.findAllByCategoryid(categoryId));
 	}
 
 	@GetMapping("{id}")
@@ -69,10 +62,10 @@ public class BookController {
 		return new Result(bookService.findAllByState(state));
 	}
 
-	@PostMapping("search/{page}/{size}")
-	public Result pageByBookNameOrAuthor(@PathVariable int page, @PathVariable int size, @RequestBody Book book) {
-		Page<Book> bookPage = bookService.findPageByBookNameLikeOrAuthorLike(page, size, book);
-		return new Result(new PageResult<>(bookPage.getTotalElements(),bookPage.getContent()));
+	@GetMapping("search")
+	public Result search(@RequestParam String bookName, @RequestParam String author, @RequestParam String publisher, @RequestParam Integer categoryId, @RequestParam Integer state) {
+		List<Book> books = bookService.search(bookName, author, publisher, categoryId, state);
+		return new Result(books);
 	}
 
 	@GetMapping("search/{key}")
@@ -83,12 +76,6 @@ public class BookController {
 		List<Book> books = bookService.searchByKey(key);
 		books.removeIf(book -> book.getState() != 2);
 		return new Result(books);
-	}
-
-	@PutMapping("{id}")
-	public Result update(@RequestBody Book book){
-		bookService.save(book);
-		return new Result("更新成功");
 	}
 
 	@PostMapping("{id}/{state}")
@@ -136,22 +123,6 @@ public class BookController {
 		return new Result(true, StatusCode.OK, "发布成功，等待审核！");
 	}
 
-	private String handleImage(MultipartFile imgFile,int userid) throws IOException {
-		if (imgFile == null) {
-			return "";
-		}
-        // 保存到当前项目img目录下，路径：img/用户id/原图片名+_日期
-		String newFileName = Objects.requireNonNull(imgFile.getOriginalFilename()).replace(".", "_"+CommonUtil.formatDate(new Date(), "yyyyMMdd") + ".");
-		String descStr = String.format("%s\\%d\\%s", imagePath, userid, newFileName);
-		File desc = new File(descStr);
-		if (!desc.getParentFile().exists()) {
-			desc.getParentFile().mkdirs();
-		}
-		System.out.println(desc);
-		imgFile.transferTo(desc);
-		return String.format("img/book/%d/%s", userid, newFileName);
-	}
-
 	@GetMapping("findAllByUserid")
 	public Result findAllByUserid() {
 		Integer userid = (Integer) request.getSession().getAttribute("userid");
@@ -174,6 +145,22 @@ public class BookController {
 	@GetMapping("list")
 	public Result list() {
 		return new Result(bookService.findAll("createTime", Sort.Direction.DESC));
+	}
+
+	private String handleImage(MultipartFile imgFile,int userid) throws IOException {
+		if (imgFile == null) {
+			return "";
+		}
+		// 保存到当前项目img目录下，路径：img/用户id/原图片名+_日期
+		String newFileName = Objects.requireNonNull(imgFile.getOriginalFilename()).replace(".", "_"+CommonUtil.formatDate(new Date(), "yyyyMMdd") + ".");
+		String descStr = String.format("%s\\%d\\%s", imagePath, userid, newFileName);
+		File desc = new File(descStr);
+		if (!desc.getParentFile().exists()) {
+			desc.getParentFile().mkdirs();
+		}
+		System.out.println(desc);
+		imgFile.transferTo(desc);
+		return String.format("img/book/%d/%s", userid, newFileName);
 	}
 
 }

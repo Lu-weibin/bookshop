@@ -19,11 +19,6 @@ public interface BookService extends BaseService<Book,Integer> {
     List<Book> findAllByState(int state);
 
     /**
-     * 根据书名或作者查询列表
-     */
-    Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book);
-
-    /**
      * 根据id数组查询图书列表
      */
     List<Book> findAllByIds(Integer[] ids);
@@ -45,4 +40,6 @@ public interface BookService extends BaseService<Book,Integer> {
     List<Book> findAllByUserid(Integer userid);
 
     List<Book> searchByKey(String key);
+
+    List<Book> search(String bookName, String author, String publisher, Integer categoryId, Integer state);
 }

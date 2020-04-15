@@ -12,5 +12,7 @@ public interface NoticeRepository extends JpaBaseRepository<Notice,Integer> {
 
     List<Notice> findAllByState(int state, Sort sort);
 
+    List<Notice> findAllByTitleLikeOrContentLike(String title, String content);
+
 
 }

@@ -4,6 +4,7 @@ import com.base.JpaBaseRepository;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
 import com.web.pojo.User;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
@@ -15,9 +16,9 @@ import java.util.List;
  */
 public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
-    List<Book> findAllByState(int state);
+    List<Book> findAllByState(int state, Sort sort);
 
-    List<Book> findAllByCategoryAndState(Category category,int state);
+    List<Book> findAllByCategoryAndState(Category category, int state, Sort sort);
 
     List<Book> findAllByIdIn(Integer[] ids);
 

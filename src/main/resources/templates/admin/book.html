@@ -9,7 +9,7 @@
 	<link href="../../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="padding-top: 70px;">
 	<div id="vue_bookshop">
 		<div th:replace="../templates/admin/header :: header"  ></div>
 	<div class="container-fluid">
@@ -20,28 +20,40 @@
 					<h4>图 书 管 理</small></h4>
 					<hr><br>
 				</div>
-				<form class="navbar-form navbar-left" role="search">
+				<form class="navbar-form navbar-left" @submit.prevent="" role="search">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="书名">
+						<input type="text" class="form-control" placeholder="书名" v-model.trim="bookName">
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="作者">
+						<input type="text" class="form-control" placeholder="作者" v-model.trim="author">
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="出版社">
+						<input type="text" class="form-control" placeholder="出版社" v-model.trim="publisher">
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="分类">
+						<select class="form-control" v-model="categoryId">
+							<option value="">所有</option>
+							<option v-for="(category,index) in categorys" :key="index" :value="category.id">{{category.category}}</option>
+					   </select>
+						<!-- <input type="text" class="form-control" placeholder="分类" v-model.trim="categoryId"> -->
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="状态">
+						<select class="form-control" v-model="state">
+							<option value="">所有</option>
+							<option value="1">待审核</option>
+							<option value="2">在售</option>
+							<option value="3">已卖出</option>
+							<option value="4">已卖出</option>
+							<option value="-1">下架</option>
+					   </select>
 					</div>
-					<button type="submit" class="btn btn-default">查 询</button>
+					<button type="submit" class="btn btn-default" v-on:click="search()">查 询</button>
+					<button  class="btn btn-default" v-on:click="clear()">清 空</button>
 				</form>
 				<div class="row">
 					<table class="table text-center">
 						<tr>
-							<td class="active" width="">照片</td>
+							<td class="active" width="">图片</td>
 							<td class="active" width="">书名</td>
 							<td class="active" width="">作者</td>
 							<td class="active" width="">价格</td>
@@ -98,8 +110,14 @@
             data() {
                 return {
                     userid: [[${ session.userid }]],
-                    books: [{user:{},category:{}}]
-                }
+                    books: [{user:{},category:{}}],
+					bookName: "",
+					author: "",
+					publisher: "",
+					categoryId: "",
+					state: "",
+					categorys:{}               
+					}
             },
             methods: {
                 isLogin: function () {
@@ -113,6 +131,10 @@
                 getBooks: function(){
                     axios.get('/book/list').then(response => (this.books = response.data.data));
                 },
+				getCategorys: function () {
+					var _this = this;
+					axios.get('/category/list').then(response => (_this.categorys = response.data.data));
+				},
 				updateBooks: function(bookid,state){
 					if(state==-1){
 						var result = confirm("确定下架图书？");
@@ -133,11 +155,40 @@
 						},
 					getImgUrl: function(pic){
                 		return "../"+pic;
-            }
+           			 },
+					search: function(){
+						var _this = this;
+						axios.get('/book/search/',{
+							params: {
+								bookName: _this.bookName,
+								author: _this.author,
+								publisher: _this.publisher,
+								categoryId: _this.categoryId,
+								state: _this.state
+							}
+						})
+						.then(function (response) {
+							if(response.data.flag){
+								_this.books = response.data.data;
+							}else{
+								console.log(response.data.message);
+								alert(response.data.message);
+							}
+							});
+					},
+					clear: function(){
+						this.bookName = "",
+						this.author = "",
+						this.publisher = "",
+						this.categoryId = "",
+						this.state = ""
+					}
             },
 		
             created() {
                 this.isLogin();
+				this.getBooks();
+				this.getCategorys();
             }
         })
     </script>

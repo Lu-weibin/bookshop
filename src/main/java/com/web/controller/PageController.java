@@ -1,11 +1,14 @@
 package com.web.controller;
 
+import com.web.pojo.Notice;
+import com.web.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -13,6 +16,8 @@ public class PageController {
 
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private NoticeService noticeService;
 
     @RequestMapping("/register")
     public String register() {
@@ -102,8 +107,19 @@ public class PageController {
         return "admin/notice";
     }
 
-    @RequestMapping("admin/editNotice")
-    public String editNotice() {
+//    @RequestMapping("admin/editNotice")
+//    public String editNotice(Model model) {
+//        model.addAttribute("notice", new Notice());
+//        return "admin/editNotice";
+//    }
+
+    @RequestMapping({"admin/editNotice", "admin/editNotice/{noticeId}"})
+    public String editNotice(@PathVariable(required = false) Integer noticeId, Model model) {
+        Notice notice = new Notice();
+        if (noticeId != null) {
+            notice = noticeService.findById(noticeId).orElse(new Notice());
+        }
+        model.addAttribute("notice", notice);
         return "admin/editNotice";
     }
 

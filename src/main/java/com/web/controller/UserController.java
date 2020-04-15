@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -82,6 +83,8 @@ public class UserController {
     @PostMapping("login")
     public String findOneByUsername(String email, String password, String checkImg, RedirectAttributes redirectAttributes) {
         // 忽略验证码大小写
+        redirectAttributes.addFlashAttribute("email", email);
+        redirectAttributes.addFlashAttribute("password", password);
         if (!(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
             redirectAttributes.addFlashAttribute("error", "验证码不正确！");
             return "redirect:../login";
@@ -173,6 +176,13 @@ public class UserController {
         user.setState(state);
         userService.save(user);
         return new Result("执行成功");
+    }
+
+    @GetMapping("search")
+    @ResponseBody
+    public Result search(@RequestParam String email, @RequestParam String username, @RequestParam String phone, @RequestParam Integer state) {
+        List<User> users = userService.search(email, username, phone, state);
+        return new Result(users);
     }
 
 

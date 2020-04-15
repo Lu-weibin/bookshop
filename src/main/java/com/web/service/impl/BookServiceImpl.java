@@ -7,10 +7,12 @@ import com.web.pojo.Category;
 import com.web.pojo.User;
 import com.web.repository.BookRepository;
 import com.web.service.BookService;
+import com.web.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +32,14 @@ import java.util.Optional;
 @Transactional(rollbackFor = Exception.class)
 public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements BookService {
 
+    private final CategoryService categoryService;
+
     private final BookRepository bookRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, CategoryService categoryService) {
         this.bookRepository = bookRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -44,16 +49,11 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
 
     @Override
     public List<Book> findAllByState(int state) {
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
         if (state == 0) {
-            return bookRepository.findAll();
+            return bookRepository.findAll(sort);
         }
-        return bookRepository.findAllByState(state);
-    }
-
-    @Override
-    public Page<Book> findPageByBookNameLikeOrAuthorLike(int page, int size, Book book) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        return bookRepository.findAll(createSpecification(book), pageable);
+        return bookRepository.findAllByState(state, sort);
     }
 
     @Override
@@ -67,6 +67,12 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
         if (optional.isPresent()) {
             Book book = optional.get();
             book.setState(state);
+            if (state == 2) {
+                // 审核通过时，所在分类图书数量 +1
+                Category category = book.getCategory();
+                category.setTotalCount(category.getTotalCount() + 1);
+                categoryService.save(category);
+            }
             return bookRepository.save(book);
         }
         return null;
@@ -74,11 +80,12 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
 
     @Override
     public List<Book> findAllByCategoryid(Integer categoryid) {
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
         if (categoryid == -1) {
             // 查出所有上架的，即状态为2
-            return bookRepository.findAllByState(2);
+            return bookRepository.findAllByState(2,sort);
         }
-        return bookRepository.findAllByCategoryAndState(new Category(categoryid), 2);
+        return bookRepository.findAllByCategoryAndState(new Category(categoryid), 2,sort);
     }
 
     @Override
@@ -112,29 +119,33 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
         return bookRepository.findAllByBookNameLikeOrAuthorLikeOrPublisherIsLike(newKey, newKey, newKey);
     }
 
+    @Override
+    public List<Book> search(String bookName, String author, String publisher, Integer categoryId, Integer state) {
+        Specification<Book> specification = createSpecification(bookName, author, publisher, categoryId, state);
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
+        return bookRepository.findAll(specification, sort);
+    }
 
-    private Specification<Book> createSpecification(Book book) {
+
+    private Specification<Book> createSpecification(String bookName, String author, String publisher, Integer categoryId, Integer state) {
         return (root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();
-            if (book.getBookName() != null) {
-                predicateList.add(cb.like(root.get("bookName"), "%" + book.getBookName() + "%"));
+            if (bookName != null && !"".equals(bookName)) {
+                predicateList.add(cb.like(root.get("bookName"), "%" + bookName + "%"));
             }
-            if (book.getAuthor() != null) {
-                predicateList.add(cb.like(root.get("author"), "%" + book.getAuthor() + "%"));
+            if (author != null && !"".equals(author)) {
+                predicateList.add(cb.like(root.get("author"), "%" + author + "%"));
             }
-            if (book.getPublisher() != null) {
-                predicateList.add(cb.like(root.get("publisher"), "%" + book.getPublisher() + "%"));
+            if (publisher != null && !"".equals(publisher)) {
+                predicateList.add(cb.like(root.get("publisher"), "%" + publisher + "%"));
             }
-            if (book.getCategory() != null && book.getCategory().getId() != null) {
-                predicateList.add(cb.equal(root.get("category").get("id"), book.getCategory().getId()));
+            if ( categoryId != null) {
+                predicateList.add(cb.equal(root.get("category").get("id"), categoryId));
             }
-            if (book.getState() != null) {
-                predicateList.add(cb.equal(root.get("state"), book.getState()));
-            } else {
-                // 状态为-1的图书表示删除
-                predicateList.add(cb.notEqual(root.get("state"), "-1"));
+            if (state != null) {
+                predicateList.add(cb.equal(root.get("state"), state));
             }
-            return cb.and(predicateList.toArray(new Predicate[predicateList.size()]));
+            return cb.and(predicateList.toArray(new Predicate[0]));
         };
     }
 

@@ -7,8 +7,11 @@ import com.web.repository.UserRepository;
 import com.web.service.UserService;
 import com.web.util.ShaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,5 +67,30 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements U
     public List<User> findAllUser() {
         // userType 1为用户；2为管理员
         return userRepository.findAllByUserType(1);
+    }
+
+    @Override
+    public List<User> search(String email, String username, String phone, Integer state) {
+        Specification<User> specification = createSpecification(email, username, phone, state);
+        return userRepository.findAll(specification);
+    }
+
+    private Specification<User> createSpecification(String email, String username, String phone, Integer state) {
+        return (root, query, cb) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            if (email != null && !"".equals(email)) {
+                predicateList.add(cb.like(root.get("email"), "%" + email + "%"));
+            }
+            if (username != null && !"".equals(username)) {
+                predicateList.add(cb.like(root.get("username"), "%" + username + "%"));
+            }
+            if (phone != null && !"".equals(phone)) {
+                predicateList.add(cb.like(root.get("phone"), "%" + phone + "%"));
+            }
+            if (state != null) {
+                predicateList.add(cb.equal(root.get("state"), state));
+            }
+            return cb.and(predicateList.toArray(new Predicate[0]));
+        };
     }
 }

@@ -37,4 +37,9 @@ public class NoticeServiceImpl extends BaseServiceImpl<Notice, Integer> implemen
         return noticeRepository.findAllByState(state,sort);
     }
 
+    @Override
+    public List<Notice> search(String key) {
+        return noticeRepository.findAllByTitleLikeOrContentLike("%" + key + "%", "%" + key + "%");
+    }
+
 }

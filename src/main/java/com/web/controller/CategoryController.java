@@ -65,7 +65,7 @@ public class CategoryController {
     @PostMapping("update/{categoryId}/{category}")
     public Result update(@PathVariable int categoryId,@PathVariable String category) {
         List<Category> categories = categoryService.findAllByKey(category);
-        if (!categories.isEmpty()&&categories.get(0).getId()!=categoryId) {
+        if (!categories.isEmpty() && categories.get(0).getId() != categoryId) {
             return new Result(false, StatusCode.ERROR, "已存在相同的分类名称！");
         }
         Category updateCategory = categoryService.findById(categoryId).orElse(null);
