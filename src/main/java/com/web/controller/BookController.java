@@ -124,11 +124,11 @@ public class BookController {
 	}
 
 	@GetMapping("findAllByUserid")
-	public Result findAllByUserid() {
+	public Result findAllByUserd() {
 		Integer userid = (Integer) request.getSession().getAttribute("userid");
 		List<Book> books = bookService.findAllByUserid(userid);
 		for (Book book : books) {
-			// 该图书为卖出或退货状态时，查找购买者
+			// 该图书为卖出或退货状态时，查找购买者I
 			if (book.getState() == 3 || book.getState() == 4) {
 				Integer bookId = book.getId();
 				User user = userService.findOneByBookId(bookId);

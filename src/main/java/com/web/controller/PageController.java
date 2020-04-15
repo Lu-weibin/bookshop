@@ -87,6 +87,12 @@ public class PageController {
         return "redirect:index";
     }
 
+
+    @RequestMapping("admin/welcome")
+    public String welcome() {
+        return "admin/welcome";
+    }
+
     @RequestMapping("admin/category")
     public String category() {
         return "admin/category";
