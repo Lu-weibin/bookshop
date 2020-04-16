@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>二手书交易平台</title>
+	<link href="../../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="padding-top: 70px;">
+	<div id="vue_bookshop">
+		<div th:replace="../templates/admin/header :: header"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2 text-center">
+					<div class="row">
+						<hr><br>
+						<div class="jumbotron">
+							<h2>欢迎来到二手书交易后台管理系统!</h2><br><br>
+							<div class="row">
+							<div class="col-lg-6 col-lg-offset-3">
+								<form class="form-horizontal" onsubmit="return check()" action="/user/login" method="post">
+									<input type="hidden" name="userType" value="2">
+									<div class="form-group">
+										<label class="col-sm-2 control-label">账 号</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="email" placeholder=""
+												   name="email" th:value="${email}">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">密 码</label>
+										<div class="col-sm-10">
+											<input type="password" class="form-control" id="password" placeholder=""
+												   name="password" th:value="${password}">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label"></label>
+										<div class="col-sm-10">
+											<p th:text="${error}" style="color:red;font-size: 14px"></p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label"></label>
+										<div class="col-sm-10">
+											<button type="submit" class="btn btn-info">登 录</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							</div>
+						  </div>
+						<br><hr>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<div th:replace="../templates/admin/footer :: footer"></div>
+	</div>
+	<script src="../../js/jquery-3.3.1.min.js"></script>
+	<script src="../../js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script th:inline="javascript">
+		function check() {
+			var name = $('#email').val();
+			var password = $('#password').val();
+			if (name.trim == "" || password.trim() == "") {
+				return false;
+			}
+		};
+		var vm = new Vue({
+			el: '#vue_bookshop',
+			data() {
+				return {
+					adminId: [[${ session.adminId }]],
+					systemInfo: {}
+				}
+			},
+			methods: {
+				isLogin: function () {
+					if (this.adminId == null || this.adminId == "") {
+						// alert("未登录!");
+						// window.location.href = "login";
+					} else {
+						this.getSystemInfo();
+					}
+				},
+				getSystemInfo: function () {
+					axios.get('/systemInfo').then(response => (this.systemInfo = response.data.data));
+				}
+			},
+			created() {
+				this.isLogin();
+			}
+		})
+	</script>
+</body>
+
+</html>

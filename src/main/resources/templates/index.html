@@ -74,8 +74,7 @@
                 <div class="row" >
                     <div class="col-lg-3" v-for="(book,index) in books" :key="index">
                         <div class="thumbnail">
-                            <img :src="book.picture" alt="" width="150px"
-                                 height="150px">
+                            <img :src="book.picture" alt=" " width="150px" height="150px">
                             <div class="caption">
                                 <h4 class="text-center">{{book.bookName}}</h4>
                                 <p class="text-center">—— {{book.author}}</p>
@@ -92,9 +91,7 @@
         </div>
     </div>
     <hr/>
-    <p style="text-align: center;color: #ADADAD;">
-        运维支持：佛大15级计算机科学与技术1 卢伟彬
-    </p>
+    <div th:replace="admin/footer :: footer"></div>
 
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="myModal">
         <div class="modal-dialog" role="document">
@@ -203,16 +200,17 @@
                 books: [{category:{}}],
                 result: {},
                 bookTatal: "",
-                saleBook: {
-                    bookName: "",
-                    author: "",
-                    publisher: "",
-                    publishTime: "",
-                    price: "",
-                    category: "",
-                    conditions: "",
-                    description: ""
-                },
+                // saleBook: {
+                //     bookName: "",
+                //     author: "",
+                //     publisher: "",
+                //     publishTime: "",
+                //     price: "",
+                //     category: "",
+                //     conditions: "",
+                //     description: ""
+                // },
+                saleBook: [[${ saleBook }]],
                 file: '',
                 key: ''
             }
@@ -315,11 +313,18 @@
                     _this.bookTatal = response.data.data.length
                     });
             },
+            showMyModal: function(){
+                if(this.saleBook!=null&&this.saleBook.bookName!=""){
+                    this.isLogin();
+                }
+            }
         },
         created() {
             this.getCategorys();
             this.getBooks(-1);
             this.getTotalCount();
+            // this.showMyModal();
+            console.log(JSON.stringify(this.saleBook))
         }
     })
 </script>

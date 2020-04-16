@@ -112,7 +112,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userId: [[${ session.userId }]],
+                    adminId: [[${ session.adminId }]],
                     books: [{user:{},category:{}}],
 					bookName: "",
 					author: "",
@@ -124,11 +124,12 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userId == null || this.userId == "") {
+                    if (this.adminId == null || this.adminId == "") {
                         // alert("未登录!");
-                        // window.location.href = "login";
+                        window.location.href = "login";
                     }else {
-                        this.getBooks();
+						this.getBooks();
+						this.getCategorys();
                     }
                 },
                 getBooks: function(){
@@ -191,8 +192,6 @@
 		
             created() {
                 this.isLogin();
-				this.getBooks();
-				this.getCategorys();
             }
         })
     </script>

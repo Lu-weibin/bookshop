@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>二手书交易平台</title>
+	<link href="../../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="padding-top: 70px;">
+	<div id="vue_bookshop">
+		<div th:replace="../templates/admin/header :: header"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<div th:replace="../templates/admin/left :: left"></div>
+				<div class="col-lg-8 col-lg-offset-1 text-center">
+					<div class="row">
+						<hr><br>
+						<div class="jumbotron">
+							<h2>欢迎来到二手书交易后台管理系统!</h2><br><br>
+							<div class="row">
+								<table class="table table-bordered">
+									<tr>
+										<td>ip</td>
+										<td>{{systemInfo.ip}}</td>
+									</tr>
+									<tr>
+										<td>域名</td>
+										<td>{{systemInfo.domain}}</td>
+									</tr>
+									<tr>
+										<td>主机名</td>
+										<td>{{systemInfo.hostName}}</td>
+									</tr>
+									<tr>
+										<td>操作系统</td>
+										<td>{{systemInfo.osName}}</td>
+									</tr>
+									<tr>
+										<td>系统构架</td>
+										<td>{{systemInfo.osArch}}</td>
+									</tr>
+									<tr>
+										<td>Java版本</td>
+										<td>{{systemInfo.javaVersion}}</td>
+									</tr>
+									<tr>
+										<td>计算机名称</td>
+										<td>{{systemInfo.computerName}}</td>
+									</tr>
+									<tr>
+										<td>内存总量</td>
+										<td>{{systemInfo.memTotal}}</td>
+									</tr>
+									<tr>
+										<td>当前内存使用量</td>
+										<td>{{systemInfo.memUsed}}</td>
+									</tr>
+									<tr>
+										<td>当前内存剩余量</td>
+										<td>{{systemInfo.memFree}}</td>
+									</tr>
+									<tr>
+										<td>JVM可使用总内存</td>
+										<td>{{systemInfo.jvmTotalMemory}}</td>
+									</tr>
+									<tr>
+										<td>JVM可使用的剩余内存</td>
+										<td>{{systemInfo.jvmFreeMemory}}</td>
+									</tr>
+									<tr>
+										<td>JVM可使用的处理器个数</td>
+										<td>{{systemInfo.availableProcessors}}</td>
+									</tr>
+								</table>
+<!--								<div class="text-left">-->
+<!--									<h4>{{systemInfo.ip}}</h4>-->
+<!--									<h4>{{systemInfo.domain}}</h4>-->
+<!--									<h4>{{systemInfo.hostName}}</h4>-->
+<!--									<h4>{{systemInfo.osName}}</h4>-->
+<!--									<h4>{{systemInfo.osArch}}</h4>-->
+<!--									<h4>{{systemInfo.javaVersion}}</h4>-->
+<!--									<h4>{{systemInfo.computerName}}</h4>-->
+<!--									<h4>{{systemInfo.memTotal}}</h4>-->
+<!--									<h4>{{systemInfo.memUsed}}</h4>-->
+<!--									<h4>{{systemInfo.memFree}}</h4>-->
+<!--									<h4>J{{systemInfo.jvmTotalMemory}}</h4>-->
+<!--									<h4>J{{systemInfo.jvmFreeMemory}}</h4>-->
+<!--									<h4>{{systemInfo.availableProcessors}}</h4>-->
+<!--								</div>-->
+							</div>
+						  </div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<!-- <hr /> -->
+		<div th:replace="../templates/admin/footer :: footer"></div>
+	</div>
+	<script src="../../js/jquery-3.3.1.min.js"></script>
+	<script src="../../js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script th:inline="javascript">
+		var vm = new Vue({
+			el: '#vue_bookshop',
+			data() {
+				return {
+					adminId: [[${ session.adminId }]],
+					systemInfo: {}
+				}
+			},
+			methods: {
+				isLogin: function () {
+					if (this.adminId == null || this.adminId == "") {
+						// alert("未登录!");
+						window.location.href = "login";
+					} else {
+						this.getSystemInfo();
+					}
+				},
+				getSystemInfo: function () {
+					axios.get('/systemInfo').then(response => (this.systemInfo = response.data.data));
+				}
+			},
+			created() {
+				this.isLogin();
+			}
+		})
+	</script>
+</body>
+
+</html>

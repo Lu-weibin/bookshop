@@ -16,7 +16,7 @@ public interface UserService extends BaseService<User, Integer> {
      */
     User findOneByUsername(String email, int userType);
 
-    User findOneByEmailAndPassword(String email, String password);
+    User findOneByEmailAndPassword(String email, String password, Integer userType);
 
     User findOneByEmail(String username, int userType);
 

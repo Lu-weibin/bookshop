@@ -39,8 +39,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements U
     }
 
     @Override
-    public User findOneByEmailAndPassword(String email,String password) {
-        User user1 = userRepository.findTop1ByEmailAndUserType(email, 1);
+    public User findOneByEmailAndPassword(String email,String password,Integer userType) {
+        User user1 = userRepository.findTop1ByEmailAndUserType(email, userType);
         if (user1 != null && user1.getPassword().equals(ShaUtils.encrypt(password))) {
             user1.setPassword("");
             return user1;

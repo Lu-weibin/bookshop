@@ -102,6 +102,25 @@
 					
 				  }});
 			};
+			var vm = new Vue({
+			el: '#vue_bookshop',
+			data() {
+				return {
+					adminId: [[${ session.adminId }]]
+				}
+			},
+			methods: {
+				isLogin: function () {
+					if (this.adminId == null || this.adminId == "") {
+						// alert("未登录!");
+						window.location.href = "login";
+					}
+				}
+			},
+			created() {
+				this.isLogin();
+			}
+		})
     </script>
 </body>
 

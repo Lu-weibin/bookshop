@@ -115,6 +115,7 @@
 									删除
 								</td>
 								<td class="" v-if="book.state==1||book.state==2">
+									<a v-if="book.state==1" class="btn btn-primary btn-sm" type="submit" v-bind:href="'index/'+book.id">编 辑</a>
 									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
 									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteBook(book.id)">删 除</button>
 								</td>
@@ -129,9 +130,7 @@
 	</div>
 	</div>
 	<hr />
-	<p style="text-align: center;color: #ADADAD;">
-		运维支持：佛大15级计算机科学与技术1 卢伟彬
-	</p>
+	<div th:replace="admin/footer :: footer"></div>
     </div>
 	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
@@ -165,7 +164,7 @@
 					var result = confirm("确定删除？");
 					if(result){
 						var _this = this;
-						axios.delete('/book/'+bookId)
+						axios.post('/book/'+bookId+'/-1')
 							.then(function (response) {
 								if(response.data.flag){
 									_this.getBooks();

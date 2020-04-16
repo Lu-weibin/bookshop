@@ -74,35 +74,39 @@ public class UserController {
      * 登录
      */
     @PostMapping("login")
-    public String findOneByUsername(String email, String password, String checkImg, RedirectAttributes redirectAttributes) {
+    public String findOneByUsername(String email, String password, String checkImg, Integer userType, RedirectAttributes redirectAttributes) {
         // 忽略验证码大小写
         redirectAttributes.addFlashAttribute("email", email);
         redirectAttributes.addFlashAttribute("password", password);
-        if (!(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
+        if (userType==1 && !(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
             redirectAttributes.addFlashAttribute("error", "验证码不正确！");
             return "redirect:../login";
         }
         User user;
+        String loginPage = userType == 1 ? "redirect:../login" : "redirect:../admin/login";
         if (email != null && password != null) {
-            user = userService.findOneByEmailAndPassword(email, password);
+            user = userService.findOneByEmailAndPassword(email, password, userType);
             if (user == null) {
                 redirectAttributes.addFlashAttribute("error", "用户名或密码错误！");
-                return "redirect:../login";
+                return loginPage;
             }
             if (user.getState() == 3) {
                 redirectAttributes.addFlashAttribute("error", "请到邮箱中激活账户！");
-                return "redirect:../login";
-            }if (user.getState() == 2) {
+                return loginPage;
+            }
+            if (user.getState() == 2) {
                 redirectAttributes.addFlashAttribute("error", "您的账号状态异常！");
-                return "redirect:../login";
+                return loginPage;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "信息不能为空！");
-            return "redirect:../login";
+            return loginPage;
         }
-        request.getSession().setAttribute("userId", user.getId());
-        request.getSession().setAttribute("username", user.getUsername());
-        return "redirect:../index";
+        String id = userType == 1 ? "userId" : "adminId";
+        String name = userType == 1 ? "username" : "adminName";
+        request.getSession().setAttribute(id, user.getId());
+        request.getSession().setAttribute(name, user.getUsername());
+        return userType == 1 ? "redirect:../index" : "redirect:../admin/welcome";
     }
 
     @GetMapping("id")

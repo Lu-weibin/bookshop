@@ -83,7 +83,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userId: [[${ session.userId }]],
+                    adminId: [[${ session.adminId }]],
                     users: [],
 					email: "",
 					username: "",
@@ -93,9 +93,9 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userId == null || this.userId == "") {
+                    if (this.adminId == null || this.adminId == "") {
                         // alert("未登录!");
-                        // window.location.href = "login";
+                        window.location.href = "login";
                     }else {
                         this.getUsers();
                     }

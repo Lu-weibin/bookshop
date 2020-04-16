@@ -1,25 +1,28 @@
 package com.web.controller;
 
+import com.web.pojo.Book;
 import com.web.pojo.Notice;
+import com.web.service.BookService;
 import com.web.service.NoticeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Controller
 public class PageController {
 
     private final HttpServletRequest request;
     private final NoticeService noticeService;
+    private final BookService bookService;
 
-    public PageController(HttpServletRequest request, NoticeService noticeService) {
+    public PageController(HttpServletRequest request, NoticeService noticeService, BookService bookService) {
         this.request = request;
         this.noticeService = noticeService;
+        this.bookService = bookService;
     }
 
     @RequestMapping("/register")
@@ -33,7 +36,23 @@ public class PageController {
     }
 
     @RequestMapping("/index")
-    public String index() {
+    public String index(Model model) {
+        Book book = new Book();
+        book.setBookName("");
+        model.addAttribute("saleBook", book);
+        return "index";
+    }
+
+    @RequestMapping("/index/{bookId}")
+    public String index(@PathVariable Integer bookId, Model model) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        Optional<Book> optional = bookService.findById(bookId);
+        if (optional.isPresent()) {
+            Book book = optional.get();
+            if (userId.equals(book.getUser().getId())) {
+                model.addAttribute("saleBook", book);
+            }
+        }
         return "index";
     }
 
@@ -90,6 +109,10 @@ public class PageController {
         return "redirect:index";
     }
 
+    @RequestMapping("admin/login")
+    public String adminLogin() {
+        return "admin/login";
+    }
 
     @RequestMapping("admin/welcome")
     public String welcome() {
@@ -129,6 +152,13 @@ public class PageController {
         model.addAttribute("notice", notice);
         model.addAttribute("editNoticeActive", "list-group-item active");
         return "admin/editNotice";
+    }
+
+    @RequestMapping("admin/logout")
+    public String adminLogout() {
+        request.getSession().setAttribute("adminName", null);
+        request.getSession().setAttribute("adminId", null);
+        return "redirect:login";
     }
 
 }
