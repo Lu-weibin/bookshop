@@ -15,8 +15,8 @@ import java.util.List;
  */
 public interface CollectionRepository extends JpaBaseRepository<Collection,Integer>{
 
-    int deleteByUseridAndBookid(int userid, int bookid);
+    int deleteByUserIdAndBookId(int userId, int bookId);
 
-    Collection findFirstByUseridAndBookid(int userid, int bookid);
+    Collection findFirstByUserIdAndBookId(int userId, int bookId);
 
 }

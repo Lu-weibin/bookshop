@@ -33,7 +33,6 @@ import java.util.Optional;
 public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements BookService {
 
     private final CategoryService categoryService;
-
     private final BookRepository bookRepository;
 
     @Autowired
@@ -66,40 +65,53 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
         Optional<Book> optional = bookRepository.findById(id);
         if (optional.isPresent()) {
             Book book = optional.get();
-            book.setState(state);
+            Category category = book.getCategory();
             if (state == 2) {
                 // 审核通过时，所在分类图书数量 +1
-                Category category = book.getCategory();
                 category.setTotalCount(category.getTotalCount() + 1);
                 categoryService.save(category);
             }
+            if (state == 5) {
+                // 原在出售的图书，下架（审核不通过）时，所在分类图书数量-1
+                if (book.getState()==2) {
+                    category.setTotalCount(category.getTotalCount() - 1);
+                    categoryService.save(category);
+                }
+            }
+            book.setState(state);
             return bookRepository.save(book);
         }
         return null;
     }
 
     @Override
-    public List<Book> findAllByCategoryid(Integer categoryid) {
+    public List<Book> findAllByCategoryId(Integer categoryId) {
         Sort sort = new Sort(Sort.Direction.DESC, "createTime");
-        if (categoryid == -1) {
+        if (categoryId == -1) {
             // 查出所有上架的，即状态为2
             return bookRepository.findAllByState(2,sort);
         }
-        return bookRepository.findAllByCategoryAndState(new Category(categoryid), 2,sort);
+        return bookRepository.findAllByCategoryAndState(new Category(categoryId), 2,sort);
     }
 
     @Override
-    public BigDecimal totalPriceByBookids(Integer[] bookids) {
-        return bookRepository.totalPriceByBookids(bookids);
+    public BigDecimal totalPriceByBookIds(Integer[] bookIds) {
+        return bookRepository.totalPriceByBookIds(bookIds);
     }
 
     @Override
-    public boolean updateState(Integer[] bookids, int state) {
+    public boolean updateState(Integer[] bookIds, int state) {
         try {
-            for (Integer bookid : bookids) {
-                Book book = bookRepository.findById(bookid).orElse(null);
+            for (Integer bookId : bookIds) {
+                Book book = bookRepository.findById(bookId).orElse(null);
                 assert book != null;
                 book.setState(state);
+                if (state == 3) {
+                    // 图书卖出后所在分类图书数量-1
+                    Category category = book.getCategory();
+                    category.setTotalCount(category.getTotalCount() - 1);
+                    categoryService.save(category);
+                }
                 bookRepository.save(book);
             }
         } catch (Exception e) {
@@ -109,8 +121,8 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
     }
 
     @Override
-    public List<Book> findAllByUserid(Integer userid) {
-        return bookRepository.findAllByUser(new User(userid));
+    public List<Book> findAllByUserId(Integer userId) {
+        return bookRepository.findAllByUser(new User(userId));
     }
 
     @Override

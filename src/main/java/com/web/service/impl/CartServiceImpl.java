@@ -10,8 +10,6 @@ import com.web.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.swing.plaf.nimbus.State;
 import java.util.List;
 
 /**
@@ -33,19 +31,19 @@ public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements Ca
     }
 
     @Override
-    public List<Book> findAllByUserid(int userid) {
-        return bookRepository.findBooksByCart(userid);
+    public List<Book> findAllByUserId(int userId) {
+        return bookRepository.findBooksByCart(userId);
     }
 
     @Override
-    public Cart findByUseridAndBookidAndState(int userid, int bookid, int state) {
-        return cartRepository.findFirstByUseridAndBookidAndState(userid, bookid, state);
+    public Cart findByUserIdAndBookIdAndState(int userId, int bookId, int state) {
+        return cartRepository.findFirstByUserIdAndBookIdAndState(userId, bookId, state);
     }
 
     @Override
-    public boolean deleteCart(int userid, int bookid, int state) {
+    public boolean deleteCart(int userId, int bookId, int state) {
         try {
-            cartRepository.deleteCart(userid,bookid);
+            cartRepository.deleteCart(userId,bookId);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,9 +52,9 @@ public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements Ca
     }
 
     @Override
-    public boolean updateCartState(int userid, Integer[] bookids, int state) {
+    public boolean updateCartState(int userId, Integer[] bookIds, int state) {
         try {
-            cartRepository.updateCartState(userid, bookids, state);
+            cartRepository.updateCartState(userId, bookIds, state);
             return true;
         } catch (Exception e) {
             return false;

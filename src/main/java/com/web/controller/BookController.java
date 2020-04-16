@@ -8,7 +8,6 @@ import com.web.pojo.User;
 import com.web.service.BookService;
 import com.web.service.UserService;
 import com.web.util.CommonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +30,12 @@ import java.util.Objects;
 public class BookController {
 
 	private final BookService bookService;
-
 	private final UserService userService;
-
 	private final HttpServletRequest request;
 
 	@Value("${imagePath}")
 	private String imagePath;
 
-	@Autowired
 	public BookController(BookService bookService, HttpServletRequest request, UserService userService) {
 		this.bookService = bookService;
 		this.request = request;
@@ -48,8 +44,8 @@ public class BookController {
 
 	@GetMapping("category/{categoryId}")
 	public Result listByCategoryId(@PathVariable Integer categoryId) {
-		// categoryd为-1时返回所有书籍
-		return new Result(bookService.findAllByCategoryid(categoryId));
+		// categoryId为-1时返回所有书籍
+		return new Result(bookService.findAllByCategoryId(categoryId));
 	}
 
 	@GetMapping("{id}")
@@ -86,12 +82,12 @@ public class BookController {
 
 	@PostMapping("add")
 	public Result addBooks(MultipartFile file, String bookName, String author, String publisher, String publishTime, String price, String category, String conditions, String description) {
-		Integer userid = (Integer) request.getSession().getAttribute("userid");
-		if (userid == null) {
+		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		if (userId == null) {
 			return new Result(false, StatusCode.ERROR, "未登录！");
 		}
 		Book book = new Book();
-		book.setUser(new User(userid));
+		book.setUser(new User(userId));
 		book.setBookName(bookName);
 		book.setAuthor(author);
 		book.setPublisher(publisher);
@@ -114,7 +110,7 @@ public class BookController {
 		book.setState(1);
 		book.setCreateTime(CommonUtil.now());
 		try {
-			String savePath = handleImage(file, userid);
+			String savePath = handleImage(file, userId);
 			book.setPicture(savePath);
 		} catch (IOException e) {
 			return new Result(false, StatusCode.ERROR, "图片上传失败！");
@@ -123,12 +119,12 @@ public class BookController {
 		return new Result(true, StatusCode.OK, "发布成功，等待审核！");
 	}
 
-	@GetMapping("findAllByUserid")
-	public Result findAllByUserd() {
-		Integer userid = (Integer) request.getSession().getAttribute("userid");
-		List<Book> books = bookService.findAllByUserid(userid);
+	@GetMapping("findAllByUserId")
+	public Result findAllByUserId() {
+		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		List<Book> books = bookService.findAllByUserId(userId);
 		for (Book book : books) {
-			// 该图书为卖出或退货状态时，查找购买者I
+			// 该图书为卖出或退货状态时，查找购买者
 			if (book.getState() == 3 || book.getState() == 4) {
 				Integer bookId = book.getId();
 				User user = userService.findOneByBookId(bookId);
@@ -147,20 +143,20 @@ public class BookController {
 		return new Result(bookService.findAll("createTime", Sort.Direction.DESC));
 	}
 
-	private String handleImage(MultipartFile imgFile,int userid) throws IOException {
+	private String handleImage(MultipartFile imgFile,int userId) throws IOException {
 		if (imgFile == null) {
 			return "";
 		}
 		// 保存到当前项目img目录下，路径：img/用户id/原图片名+_日期
 		String newFileName = Objects.requireNonNull(imgFile.getOriginalFilename()).replace(".", "_"+CommonUtil.formatDate(new Date(), "yyyyMMdd") + ".");
-		String descStr = String.format("%s\\%d\\%s", imagePath, userid, newFileName);
+		String descStr = String.format("%s\\%d\\%s", imagePath, userId, newFileName);
 		File desc = new File(descStr);
 		if (!desc.getParentFile().exists()) {
 			desc.getParentFile().mkdirs();
 		}
 		System.out.println(desc);
 		imgFile.transferTo(desc);
-		return String.format("img/book/%d/%s", userid, newFileName);
+		return String.format("img/book/%d/%s", userId, newFileName);
 	}
 
 }

@@ -31,8 +31,8 @@ public interface UserRepository extends JpaBaseRepository<User,Integer> {
 	/**
 	 * 根据图书id查找购物该图书的用户
 	 */
-	@Query(value = "select * from user where id = (select userid from orders where id = (select orderid from order_details WHERE state in (2,4) and bookid = :bookid))", nativeQuery = true)
-	User findOneByBookid(@Param("bookid") int bookid);
+	@Query(value = "select * from user where id = (select user_id from orders where id = (select order_id from order_details WHERE state in (2,4) and book_id = :bookId))", nativeQuery = true)
+	User findOneByBookid(@Param("bookId") int bookId);
 
 	/**
 	 * 查找所有用户

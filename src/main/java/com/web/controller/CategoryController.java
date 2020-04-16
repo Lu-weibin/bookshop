@@ -10,19 +10,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @CrossOrigin
 @RestController
 @RequestMapping("category")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private BookService bookService;
+    private final CategoryService categoryService;
+    private final BookService bookService;
+
+    public CategoryController(CategoryService categoryService, BookService bookService) {
+        this.categoryService = categoryService;
+        this.bookService = bookService;
+    }
 
     @GetMapping("list")
     public Result list() {
@@ -39,7 +38,11 @@ public class CategoryController {
 
     @PostMapping("delete/{categoryId}")
     public Result add(@PathVariable int categoryId) {
-        categoryService.delete(categoryId);
+        try {
+            categoryService.delete(categoryId);
+        } catch (Exception e) {
+            return new Result(false, StatusCode.ERROR, "删除失败，有其他非在售图书属于此类别");
+        }
         return new Result("删除成功");
     }
 
@@ -48,14 +51,16 @@ public class CategoryController {
         return new Result(categoryService.findAllByKey("%"+key+"%"));
     }
 
-    // 生成类别对应的上架图书数量
 
+    /**
+     * 生成类别对应的上架图书数量
+     */
     @GetMapping("generateCount")
     public Result generateCount() {
         List<Category> categories = categoryService.findAll();
         for (Category category : categories) {
             Integer categoryId = category.getId();
-            int count = bookService.findAllByCategoryid(categoryId).size();
+            int count = bookService.findAllByCategoryId(categoryId).size();
             category.setTotalCount((long) count);
             categoryService.save(category);
         }

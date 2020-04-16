@@ -14,10 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PageController {
 
-    @Autowired
-    private HttpServletRequest request;
-    @Autowired
-    private NoticeService noticeService;
+    private final HttpServletRequest request;
+    private final NoticeService noticeService;
+
+    public PageController(HttpServletRequest request, NoticeService noticeService) {
+        this.request = request;
+        this.noticeService = noticeService;
+    }
 
     @RequestMapping("/register")
     public String register() {
@@ -34,9 +37,9 @@ public class PageController {
         return "index";
     }
 
-    @RequestMapping("/detail/{bookid}")
-    public String detail(@PathVariable Integer bookid, Model m) {
-        m.addAttribute("bookid", bookid);
+    @RequestMapping("/detail/{bookId}")
+    public String detail(@PathVariable Integer bookId, Model m) {
+        m.addAttribute("bookId", bookId);
         return "detail";
     }
 
@@ -83,7 +86,7 @@ public class PageController {
     @RequestMapping("logout")
     public String logout() {
         request.getSession().setAttribute("username", null);
-        request.getSession().setAttribute("userid", null);
+        request.getSession().setAttribute("userId", null);
         return "redirect:index";
     }
 
@@ -94,30 +97,28 @@ public class PageController {
     }
 
     @RequestMapping("admin/category")
-    public String category() {
+    public String category(Model model) {
+        model.addAttribute("categoryActive", "list-group-item active");
         return "admin/category";
     }
 
     @RequestMapping("admin/book")
-    public String book() {
+    public String book(Model model) {
+        model.addAttribute("bookActive", "list-group-item active");
         return "admin/book";
     }
 
     @RequestMapping("admin/user")
-    public String user() {
+    public String user(Model model) {
+        model.addAttribute("userActive", "list-group-item active");
         return "admin/user";
     }
 
     @RequestMapping("admin/notice")
-    public String adminNotice() {
+    public String adminNotice(Model model) {
+        model.addAttribute("noticeActive", "list-group-item active");
         return "admin/notice";
     }
-
-//    @RequestMapping("admin/editNotice")
-//    public String editNotice(Model model) {
-//        model.addAttribute("notice", new Notice());
-//        return "admin/editNotice";
-//    }
 
     @RequestMapping({"admin/editNotice", "admin/editNotice/{noticeId}"})
     public String editNotice(@PathVariable(required = false) Integer noticeId, Model model) {
@@ -126,6 +127,7 @@ public class PageController {
             notice = noticeService.findById(noticeId).orElse(new Notice());
         }
         model.addAttribute("notice", notice);
+        model.addAttribute("editNoticeActive", "list-group-item active");
         return "admin/editNotice";
     }
 

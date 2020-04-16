@@ -215,7 +215,7 @@
                     return {
                         flag: -1,
                         isShow: false,
-                        userid: [[${ session.userid }]],
+                        userId: [[${ session.userId }]],
                         orders: {},
                         order: {},
                         books: []
@@ -224,7 +224,7 @@
                 },
                 methods: {
                     isLogin: function () {
-                        if (this.userid == null || this.userid == "") {
+                        if (this.userId == null || this.userId == "") {
                             alert("未登录");
                             window.location.href = "login";
                         } else {
@@ -239,19 +239,19 @@
                                 console.log(error);
                             });
                     },
-                    getOrderAndDetails: function (orderid) {
+                    getOrderAndDetails: function (orderId) {
                         var _this = this;
-                        axios.get('/order/orderDetails/' + orderid).then(response => (
+                        axios.get('/order/orderDetails/' + orderId).then(response => (
                             _this.order = response.data.data.order,
                             _this.books = response.data.data.books,
                             _this.isShow = true
                         ));
                     },
-                    updateOrder: function (orderid, state) {
+                    updateOrder: function (orderId, state) {
                         var result = confirm("确认支付？");
                         if (result) {
                             var _this = this;
-                            axios.post('/order/update/state/' + orderid + '/' + state).then(function (response) {
+                            axios.post('/order/update/state/' + orderId + '/' + state).then(function (response) {
                                 alert(response.data.message)
                                 _this.isShow = false
                                 _this.getOrders(-1)
@@ -260,15 +260,15 @@
                         }
 
                     },
-                    updateOrderDetail: function (bookid,state) {
+                    updateOrderDetail: function (bookId,state) {
                         var result = confirm("确认要退货吗？");
                         if (result) {
                             var _this = this;
-                            var orderid = _this.order.id;
-                            axios.post('/orderDetails/update/state/'+ orderid + '/'+ bookid + '/' + state).then(function (response) {
+                            var orderId = _this.order.id;
+                            axios.post('/orderDetails/update/state/'+ orderId + '/'+ bookId + '/' + state).then(function (response) {
                                 if(response.data.flag){
                                     alert("提交申请成功！");
-                                    _this.getOrderAndDetails(response.data.data.orderid);
+                                    _this.getOrderAndDetails(response.data.data.orderId);
                                 }
                             })
                         }

@@ -20,7 +20,7 @@ public interface AddressRepository extends JpaBaseRepository<Address,Integer>{
     Address findFirstByUserAndState(User user,int state);
 
     @Modifying
-    @Query(value = "update address set state=1 where userid=:userid and state=2;",nativeQuery = true)
-    void updateState(@Param("userid") Integer userid);
+    @Query(value = "update address set state=1 where user_id=:userId and state=2;",nativeQuery = true)
+    void updateState(@Param("userId") Integer userId);
 
 }

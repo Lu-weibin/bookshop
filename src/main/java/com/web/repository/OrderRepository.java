@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface OrderRepository extends JpaBaseRepository<Orders,Integer> {
 
-    List<Orders> findAllByUserid(int userid, Sort sort);
+    List<Orders> findAllByUserId(int userId, Sort sort);
 
-    List<Orders> findAllByUseridAndState(int userid, int state, Sort sort);
+    List<Orders> findAllByUserIdAndState(int userId, int state, Sort sort);
 }

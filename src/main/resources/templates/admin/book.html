@@ -43,8 +43,9 @@
 							<option value="1">待审核</option>
 							<option value="2">在售</option>
 							<option value="3">已卖出</option>
-							<option value="4">已卖出</option>
-							<option value="-1">下架</option>
+							<option value="4">退货</option>
+							<option value="5">审核不通过</option>
+							<option value="-1">用户删除</option>
 					   </select>
 					</div>
 					<button type="submit" class="btn btn-default" v-on:click="search()">查 询</button>
@@ -78,16 +79,18 @@
 							<td class="">{{book.category.category}}</td>
 							<td class="">{{book.publisher}}</td>
 							<td class="">{{book.publishTime}}</td>
-							<td class="" v-if="book.state==1">等审核</td>
+							<td class="" v-if="book.state==1">待审核</td>
 							<td class="" v-if="book.state==2">在售</td>
 							<td class="" v-if="book.state==3">已卖出</td>
 							<td class="" v-if="book.state==4">退货</td>
-							<td class="" v-if="book.state==-1">下架</td>
+							<td class="" v-if="book.state==5">审核不通过</td>
+							<td class="" v-if="book.state==-1">删除</td>
 							<td class="">{{book.createTime}}</td>
 							<td class="">{{book.user.username}}</td>
 							<td class="">
-								<button class="btn btn-primary btn-sm" type="submit" v-on:click="updateBooks(book.id,2)" v-if="book.state==1">通过审核</button>
-								<button class="btn btn-danger btn-sm" type="submit" v-on:click="updateBooks(book.id,-1)" v-if="book.state==2">下 架</button>
+								<button class="btn btn-primary btn-sm" type="submit" v-on:click="updateBooks(book.id,2)" v-if="book.state==1||book.state==5">通过审核</button>
+								<button class="btn btn-primary btn-sm" type="submit" v-on:click="updateBooks(book.id,5)" v-if="book.state==1||book.state==2">不通过审核</button>
+								<!-- <button class="btn btn-danger btn-sm" type="submit" v-on:click="updateBooks(book.id,5)" v-if="book.state==2">下 架</button> -->
 							</td>
 						</tr>
 					</table>
@@ -109,7 +112,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     books: [{user:{},category:{}}],
 					bookName: "",
 					author: "",
@@ -121,7 +124,7 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
@@ -135,7 +138,7 @@
 					var _this = this;
 					axios.get('/category/list').then(response => (_this.categorys = response.data.data));
 				},
-				updateBooks: function(bookid,state){
+				updateBooks: function(bookId,state){
 					if(state==-1){
 						var result = confirm("确定下架图书？");
 						if(!result){
@@ -143,10 +146,11 @@
 						}
 					}
 					var _this = this;
-                	axios.post('/book/'+bookid+'/'+state)
+                	axios.post('/book/'+bookId+'/'+state)
 						.then(function (response) {
 							if(response.data.flag){
-								_this.getBooks();
+								// _this.getBooks();
+								_this.search();
 							}else{
 								console.log(response.data.message);
 								alert(response.data.message);

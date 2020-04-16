@@ -32,14 +32,14 @@ public class CollectionServiceImpl extends BaseServiceImpl<Collection,Integer> i
     }
 
     @Override
-    public List<Book> findAllByUserid(Integer userid) {
-        return bookRepository.findCollectionByUserid(userid);
+    public List<Book> findAllByUserId(Integer userId) {
+        return bookRepository.findCollectionByUserId(userId);
     }
 
     @Override
-    public boolean deleteCollection(Integer userid, int bookid) {
+    public boolean deleteCollection(Integer userId, int bookId) {
         try {
-            collectionRepository.deleteByUseridAndBookid(userid, bookid);
+            collectionRepository.deleteByUserIdAndBookId(userId, bookId);
         } catch (Exception e) {
             return false;
         }
@@ -47,8 +47,8 @@ public class CollectionServiceImpl extends BaseServiceImpl<Collection,Integer> i
     }
 
     @Override
-    public Collection findByUseridAndBookid(Integer userid, int bookid) {
-        return collectionRepository.findFirstByUseridAndBookid(userid, bookid);
+    public Collection findByUserIdAndBookId(Integer userId, int bookId) {
+        return collectionRepository.findFirstByUserIdAndBookId(userId, bookId);
     }
 
 }

@@ -100,9 +100,9 @@
 				var _this = this;
 				axios.get('/notice/firstNotice').then(response => (_this.notice = response.data.data));
 			},
-			getNoticeById: function (noticeid) {
+			getNoticeById: function (noticeId) {
 				var _this = this;
-				axios.get('/notice/'+noticeid).then(response => (_this.notice = response.data.data));
+				axios.get('/notice/'+noticeId).then(response => (_this.notice = response.data.data));
 			}
 		},
 		created() {

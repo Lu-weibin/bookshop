@@ -83,7 +83,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     users: [],
 					email: "",
 					username: "",
@@ -93,7 +93,7 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
@@ -103,7 +103,7 @@
                 getUsers: function(){
                     axios.get('/user/list').then(response => (this.users = response.data.data));
                 },
-				updateUser: function(userid,state){
+				updateUser: function(userId,state){
 					if(state==2){
 						var result = confirm("确定加入拉黑用户？");
 						if(!result){
@@ -111,7 +111,7 @@
 						}
 					}
 					var _this = this;
-                	axios.post('/user/state/'+userid+'/'+state)
+                	axios.post('/user/state/'+userId+'/'+state)
 						.then(function (response) {
 							if(response.data.flag){
 								_this.getUsers();
@@ -141,10 +141,9 @@
 						});
 				},
 				clear: function(){
-					this.bookName = "",
-					this.author = "",
-					this.publisher = "",
-					this.categoryId = "",
+					this.email = "",
+					this.username = "",
+					this.phone = "",
 					this.state = ""
 				}
             },

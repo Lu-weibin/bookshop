@@ -14,16 +14,16 @@ import java.util.List;
  */
 public interface CartRepository extends JpaBaseRepository<Cart,Integer>{
 
-    List<Cart> findAllByUserid(int userid);
+    List<Cart> findAllByUserId(int userId);
 
-    Cart findFirstByUseridAndBookidAndState(int userid, int bookid, int state);
-
-    @Modifying
-    @Query(value = "DELETE from cart where userid = :userid and bookid = :bookid and state = 1;",nativeQuery = true)
-    void deleteCart(@Param("userid") int userid, @Param("bookid") int bookid);
+    Cart findFirstByUserIdAndBookIdAndState(int userId, int bookId, int state);
 
     @Modifying
-    @Query(value = "update cart set state=:state where userid = :userid and bookid in :bookids", nativeQuery = true)
-    void updateCartState(@Param("userid") int userid, @Param("bookids") Integer[] bookids, @Param("state") int state);
+    @Query(value = "DELETE from cart where user_id = :userId and book_id = :bookId and state = 1;",nativeQuery = true)
+    void deleteCart(@Param("userId") int userId, @Param("bookId") int bookId);
+
+    @Modifying
+    @Query(value = "update cart set state=:state where user_id = :userId and book_id in :bookIds", nativeQuery = true)
+    void updateCartState(@Param("userId") int userId, @Param("bookIds") Integer[] bookIds, @Param("state") int state);
 
 }

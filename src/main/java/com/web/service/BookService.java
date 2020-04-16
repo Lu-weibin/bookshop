@@ -7,10 +7,6 @@ import org.springframework.data.domain.Page;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 public interface BookService extends BaseService<Book,Integer> {
 
     /**
@@ -28,16 +24,16 @@ public interface BookService extends BaseService<Book,Integer> {
      */
     Book update(int id, int state);
 
-    List<Book> findAllByCategoryid(Integer categoryid);
+    List<Book> findAllByCategoryId(Integer categoryId);
 
     /**
      * 根据多个图书id计算总金额
      */
-    BigDecimal totalPriceByBookids(Integer[] bookids);
+    BigDecimal totalPriceByBookIds(Integer[] bookIds);
 
-    boolean updateState(Integer[] bookids, int state);
+    boolean updateState(Integer[] bookIds, int state);
 
-    List<Book> findAllByUserid(Integer userid);
+    List<Book> findAllByUserId(Integer userId);
 
     List<Book> searchByKey(String key);
 

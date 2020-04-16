@@ -13,11 +13,11 @@ import java.util.List;
  */
 public interface CartService extends BaseService<Cart, Integer> {
 
-    List<Book> findAllByUserid(int userid);
+    List<Book> findAllByUserId(int userId);
 
-    Cart findByUseridAndBookidAndState(int userid, int bookid, int state);
+    Cart findByUserIdAndBookIdAndState(int userId, int bookId, int state);
 
-    boolean deleteCart(int userid, int bookid, int state);
+    boolean deleteCart(int userId, int bookId, int state);
 
-    boolean updateCartState(int userid, Integer[] bookids, int state);
+    boolean updateCartState(int userId, Integer[] bookIds, int state);
 }

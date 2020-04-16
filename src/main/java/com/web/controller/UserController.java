@@ -6,21 +6,15 @@ import com.web.pojo.User;
 import com.web.service.UserService;
 import com.web.util.MailUtil;
 import com.web.util.ShaUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/***
- * @author luwb
- * @date 2020/02/25
- */
 @CrossOrigin
 @Controller
 @RequestMapping("user")
@@ -29,7 +23,6 @@ public class UserController {
     private final UserService userService;
     private final HttpServletRequest request;
 
-    @Autowired
     public UserController(UserService userService, HttpServletRequest request) {
         this.userService = userService;
         this.request = request;
@@ -107,7 +100,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("error", "信息不能为空！");
             return "redirect:../login";
         }
-        request.getSession().setAttribute("userid", user.getId());
+        request.getSession().setAttribute("userId", user.getId());
         request.getSession().setAttribute("username", user.getUsername());
         return "redirect:../index";
     }
@@ -115,8 +108,8 @@ public class UserController {
     @GetMapping("id")
     @ResponseBody
     public Result findOne() {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        Optional<User> optional = userService.findById(userid);
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        Optional<User> optional = userService.findById(userId);
         if (optional.isPresent()) {
             User user = optional.get();
             user.setPassword(null);
@@ -128,12 +121,12 @@ public class UserController {
     @PostMapping("update/{username}/{phone}")
     @ResponseBody
     public Result updateUserInfo(@PathVariable String username, @PathVariable String phone) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
         User user1 = userService.findOneByUsername(username, 1);
-        if (user1 != null && !user1.getId().equals(userid)) {
+        if (user1 != null && !user1.getId().equals(userId)) {
             return new Result(false, StatusCode.ERROR, "用户名已存在！");
         }
-        Optional<User> optional = userService.findById(userid);
+        Optional<User> optional = userService.findById(userId);
         if (optional.isPresent()) {
             User user = optional.get();
             user.setUsername(username);
@@ -148,8 +141,8 @@ public class UserController {
     @PostMapping("changePassword/{oldPassword}/{newPassword}")
     @ResponseBody
     public Result changePassword(@PathVariable String oldPassword,@PathVariable String newPassword) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        Optional<User> optional = userService.findById(userid);
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        Optional<User> optional = userService.findById(userId);
         if (optional.isPresent()) {
             User user = optional.get();
             if (!user.getPassword().equals(ShaUtils.encrypt(oldPassword))) {

@@ -18,44 +18,47 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin
 public class CollectionController {
 
-    @Autowired
-    private CollectionService collectionService;
-    @Autowired
-    private HttpServletRequest request;
+    private final CollectionService collectionService;
+    private final HttpServletRequest request;
+
+    public CollectionController(CollectionService collectionService, HttpServletRequest request) {
+        this.collectionService = collectionService;
+        this.request = request;
+    }
 
     @GetMapping
     public Result list() {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        return new Result(collectionService.findAllByUserid(userid));
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        return new Result(collectionService.findAllByUserId(userId));
     }
 
-    @PostMapping("book/{bookid}")
-    public Result addCollection(@PathVariable int bookid) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        if (userid == null) {
+    @PostMapping("book/{bookId}")
+    public Result addCollection(@PathVariable int bookId) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
             return new Result(false, StatusCode.LOGINERROR, "未登录!");
         }
         // 校验该用户是否已收藏过该书籍
-        Collection existCollection = collectionService.findByUseridAndBookid(userid, bookid);
+        Collection existCollection = collectionService.findByUserIdAndBookId(userId, bookId);
         if (existCollection != null) {
             return new Result(false, StatusCode.ERROR, "已收藏过，不要重复收藏!");
         }
         Collection collection = new Collection();
-        collection.setUserid(userid);
-        collection.setBookid(bookid);
+        collection.setUserId(userId);
+        collection.setBookId(bookId);
         return new Result(collectionService.save(collection));
     }
 
     /**
      * 删除收藏
      */
-    @GetMapping("delete/{bookid}")
-    public Result delete(@PathVariable int bookid) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        if (userid == null) {
+    @GetMapping("delete/{bookId}")
+    public Result delete(@PathVariable int bookId) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
             return new Result(false, StatusCode.LOGINERROR, "未登录!");
         }
-        if (collectionService.deleteCollection(userid, bookid)) {
+        if (collectionService.deleteCollection(userId, bookId)) {
             return new Result("删除成功!");
         }
         return new Result(false, StatusCode.ERROR, "删除失败!");

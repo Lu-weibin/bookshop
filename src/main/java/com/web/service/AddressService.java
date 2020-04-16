@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface AddressService extends BaseService<Address,Integer> {
 
-    List<Address> findAllByUserid(Integer userid);
+    List<Address> findAllByUserid(Integer userId);
 
-    Address findDefaultAddress(Integer userid);
+    Address findDefaultAddress(Integer userId);
 
-    boolean updateState(Integer userid, int addressid, int state);
+    boolean updateState(Integer userId, int addressId, int state);
 }

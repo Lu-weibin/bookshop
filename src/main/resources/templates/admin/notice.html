@@ -76,7 +76,7 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     notices: [],
 					key: "",
 					state: ""
@@ -84,7 +84,7 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         // alert("未登录!");
                         // window.location.href = "login";
                     }else {
@@ -114,10 +114,10 @@
 					this.key = "",
 					this.state = ""
 				},
-				deleteNotice: function(noticeid){
+				deleteNotice: function(noticeId){
 					var result = confirm("确定删除？");
 					if(result){
-						axios.post('/notice/delete/'+noticeid).then(response => (this.getNotices()));
+						axios.post('/notice/delete/'+noticeId).then(response => (this.getNotices()));
 					}
 				}
 				},

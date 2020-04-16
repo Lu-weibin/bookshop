@@ -26,7 +26,7 @@ public class Address implements Serializable {
 
     @JsonIgnore
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "userid",referencedColumnName = "id")
+    @JoinColumn(name = "userId",referencedColumnName = "id")
     private User user;
 
 }

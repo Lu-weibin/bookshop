@@ -22,8 +22,8 @@ public class Collection implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer bookid;
+    private Integer bookId;
 
-    private Integer userid;
+    private Integer userId;
 
 }

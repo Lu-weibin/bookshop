@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface OrderDetailsRepository extends JpaBaseRepository<OrderDetails,Integer>{
 
-    List<OrderDetails> findAllByOrderid(int orderid);
+    List<OrderDetails> findAllByOrderId(int orderId);
 
-    OrderDetails findFirstByOrderidAndBookid(int orderid, int bookid);
+    OrderDetails findFirstByOrderIdAndBookId(int orderId, int bookId);
 
 }

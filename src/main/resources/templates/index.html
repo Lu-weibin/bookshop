@@ -197,7 +197,7 @@
         data() {
             return {
                 flag: -1,
-                userid: [[${ session.userid }]],
+                userId: [[${ session.userId }]],
                 username: [[${ session.username }]],
                 categorys: [{}],
                 books: [{category:{}}],
@@ -219,7 +219,7 @@
         },
         methods: {
             isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         alert("未登录！");
                         // window.location.href = "login";
                     } else {
@@ -229,18 +229,18 @@
             getCategorys: function () {
 				axios.get('/category/list').then(response => (this.categorys = response.data.data));
             },
-            getBooks: function(categoryid){
+            getBooks: function(categoryId){
                 var _this = this;
-                axios.get('/book/category/'+categoryid)
+                axios.get('/book/category/'+categoryId)
 				.then(function(response){
-                    if(categoryid==-1){
+                    if(categoryId==-1){
                         _this.bookTatal = response.data.data.length
                     }
                     _this.books = response.data.data
                     });
             },
-            addCart: function(bookid){
-                axios.post('cart/book/'+bookid)
+            addCart: function(bookId){
+                axios.post('cart/book/'+bookId)
                 .then(function (response) {
                     if(response.data.flag){
                         this.result = response.data.data;

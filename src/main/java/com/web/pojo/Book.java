@@ -27,7 +27,7 @@ public class Book implements Serializable {
 	private String bookName;
 
 	@ManyToOne
-	@JoinColumn(name = "categoryid",referencedColumnName = "id")
+	@JoinColumn(name = "categoryId",referencedColumnName = "id")
 	private Category category;
 
 	private BigDecimal price;
@@ -51,7 +51,7 @@ public class Book implements Serializable {
 	private Integer state;
 
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "userid",referencedColumnName = "id")
+	@JoinColumn(name = "userId",referencedColumnName = "id")
 	private User user;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")

@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Service
 public class CategoryServiceImpl extends BaseServiceImpl<Category,Integer> implements CategoryService {
 
@@ -29,4 +25,5 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category,Integer> imple
     public List<Category> findAllByKey(String key) {
         return categoryRepository.findAllByCategoryLike(key);
     }
+
 }

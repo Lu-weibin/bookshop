@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface CollectionService extends BaseService<Collection,Integer> {
 
-    List<Book> findAllByUserid(Integer userid);
+    List<Book> findAllByUserId(Integer userId);
 
-    boolean deleteCollection(Integer userid, int bookid);
+    boolean deleteCollection(Integer userId, int bookId);
 
-    Collection findByUseridAndBookid(Integer userid, int bookid);
+    Collection findByUserIdAndBookId(Integer userId, int bookId);
 }

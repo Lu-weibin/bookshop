@@ -29,5 +29,5 @@ public class Notice implements Serializable {
 
     private Integer state;
 
-    private Integer userid;
+    private Integer userId;
 }

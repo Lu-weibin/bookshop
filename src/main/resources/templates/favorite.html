@@ -126,14 +126,14 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     books: [{user:{}}],
-                    bookids: []
+                    bookIds: []
                 }
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         alert("未登录!");
                         window.location.href = "login";
                     }else {
@@ -143,8 +143,8 @@
                 getCollections: function(){
                     axios.get('/collection/').then(response => (this.books = response.data.data));
                 },
-				addCart: function(bookid){
-                	axios.post('cart/book/'+bookid)
+				addCart: function(bookId){
+                	axios.post('cart/book/'+bookId)
 						.then(function (response) {
 							if(response.data.flag){
 								this.result = response.data.data;
@@ -155,11 +155,11 @@
 							}
 							});
 						},
-				deleteCollection: function(bookid){
+				deleteCollection: function(bookId){
                     var _this = this;
 					var result = confirm("确认移出收藏？");
 					if(result){
-						axios.get('/collection/delete/'+bookid)
+						axios.get('/collection/delete/'+bookId)
                         .then(function (response) {
                             if(response.data.flag){
                                 _this.getCollections();

@@ -26,13 +26,13 @@ public class OrderDetailsServiceImpl extends BaseServiceImpl<OrderDetails,Intege
     }
 
     @Override
-    public List<OrderDetails> findAllByOrderid(int orderid) {
-        return orderDetailsRepository.findAllByOrderid(orderid);
+    public List<OrderDetails> findAllByOrderId(int orderId) {
+        return orderDetailsRepository.findAllByOrderId(orderId);
     }
 
     @Override
-    public OrderDetails findOneByOrderidAndBookid(int orderid, int bookid) {
-        return orderDetailsRepository.findFirstByOrderidAndBookid(orderid, bookid);
+    public OrderDetails findOneByOrderIdAndBookId(int orderId, int bookId) {
+        return orderDetailsRepository.findFirstByOrderIdAndBookId(orderId, bookId);
     }
 
 }

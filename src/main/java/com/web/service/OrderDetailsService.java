@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface OrderDetailsService extends BaseService<OrderDetails,Integer> {
 
-    List<OrderDetails> findAllByOrderid(int orderid);
+    List<OrderDetails> findAllByOrderId(int orderId);
 
-    OrderDetails findOneByOrderidAndBookid(int orderid, int bookid);
+    OrderDetails findOneByOrderIdAndBookId(int orderId, int bookId);
 }

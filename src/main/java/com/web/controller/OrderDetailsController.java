@@ -9,27 +9,26 @@ import com.web.service.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @RestController
 @RequestMapping("orderDetails")
 @CrossOrigin
 public class OrderDetailsController {
 
-    @Autowired
-    private OrderDetailsService orderDetailsService;
-    @Autowired
-    private BookService bookService;
+    private final OrderDetailsService orderDetailsService;
+    private final BookService bookService;
 
-    @PostMapping("update/state/{orderid}/{bookid}/{state}")
-    public Result updateState(@PathVariable int orderid, @PathVariable int bookid,@PathVariable int state) {
-        OrderDetails orderDetails = orderDetailsService.findOneByOrderidAndBookid(orderid, bookid);
+    public OrderDetailsController(OrderDetailsService orderDetailsService, BookService bookService) {
+        this.orderDetailsService = orderDetailsService;
+        this.bookService = bookService;
+    }
+
+    @PostMapping("update/state/{orderId}/{bookId}/{state}")
+    public Result updateState(@PathVariable int orderId, @PathVariable int bookId,@PathVariable int state) {
+        OrderDetails orderDetails = orderDetailsService.findOneByOrderIdAndBookId(orderId, bookId);
         if (orderDetails != null) {
             // 订单详情 状态4为退货
             orderDetails.setState(4);
-            Book book = bookService.findById(bookid).orElse(null);
+            Book book = bookService.findById(bookId).orElse(null);
             assert book != null;
             book.setState(4);
             bookService.save(book);

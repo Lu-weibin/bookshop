@@ -27,11 +27,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements
     }
 
     @Override
-    public List<Orders> findAllByUserid(int userid,int state) {
+    public List<Orders> findAllByUserId(int userId,int state) {
         Sort sort = new Sort(Sort.Direction.DESC, "createTime");
         if (state == -1) {
-            return orderRepository.findAllByUserid(userid, sort);
+            return orderRepository.findAllByUserId(userId, sort);
         }
-        return orderRepository.findAllByUseridAndState(userid, state, sort);
+        return orderRepository.findAllByUserIdAndState(userId, state, sort);
     }
 }

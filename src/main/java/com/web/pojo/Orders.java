@@ -26,7 +26,7 @@ public class Orders implements Serializable {
 
     private String orderNumber;
 
-    private Integer userid;
+    private Integer userId;
 
     private BigDecimal payPrice;
 

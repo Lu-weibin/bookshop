@@ -108,8 +108,11 @@
 								<td class="" v-if="book.state==4">
 									退货
 								</td>
+								<td class="" v-if="book.state==5">
+									审核不通过
+								</td>
 								<td class="" v-if="book.state==-1">
-									下架
+									删除
 								</td>
 								<td class="" v-if="book.state==1||book.state==2">
 									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
@@ -141,14 +144,14 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     books: [{user:{}}],
-                    bookids: []
+                    bookIds: []
                 }
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         alert("未登录!");
                         window.location.href = "login";
                     }else {
@@ -156,13 +159,13 @@
                     }
                 },
 				getBooks: function(){
-                    axios.get('/book/findAllByUserid').then(response => (this.books = response.data.data));
+                    axios.get('/book/findAllByUserId').then(response => (this.books = response.data.data));
                 },
-				deleteBook: function(bookid){
+				deleteBook: function(bookId){
 					var result = confirm("确定删除？");
 					if(result){
 						var _this = this;
-						axios.delete('/book/'+bookid)
+						axios.delete('/book/'+bookId)
 							.then(function (response) {
 								if(response.data.flag){
 									_this.getBooks();

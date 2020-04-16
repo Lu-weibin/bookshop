@@ -24,9 +24,9 @@ public class OrderDetails implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer orderid;
+    private Integer orderId;
 
-    private Integer bookid;
+    private Integer bookId;
 
     private Integer bookCount;
 

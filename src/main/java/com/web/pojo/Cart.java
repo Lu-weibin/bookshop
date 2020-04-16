@@ -24,9 +24,9 @@ public class Cart implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer userid;
+    private Integer userId;
 
-    private Integer bookid;
+    private Integer bookId;
 
     private Integer bookCount;
 

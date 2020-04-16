@@ -98,21 +98,21 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    bookid: [[${ bookid }]],
+                    bookId: [[${ bookId }]],
                     book: {category:{}}
                 }
             },
             methods: {
-                getBook: function(bookid){
+                getBook: function(bookId){
                     axios
-                        .get('/book/'+bookid)
+                        .get('/book/'+bookId)
                         .then(response => (this.book = response.data.data))
                         .catch(function (error) { // 请求失败处理
                                 console.log(error);
                             });
                 },
-                addCart: function(bookid){
-                axios.post('http://localhost:8080/cart/book/'+bookid)
+                addCart: function(bookId){
+                axios.post('http://localhost:8080/cart/book/'+bookId)
                 .then(function (response) {
                     if(response.data.flag){
                         alert("加入成功！");
@@ -125,8 +125,8 @@
                     console.log(error);
                 });
             },
-            addCollections: function(bookid){
-                axios.post('http://localhost:8080/collection/book/'+bookid)
+            addCollections: function(bookId){
+                axios.post('http://localhost:8080/collection/book/'+bookId)
                     .then(function (response) {
                         if(response.data.flag){
                             alert("收藏成功！");
@@ -141,7 +141,7 @@
             }
             },
             created() {
-                this.getBook(this.bookid);
+                this.getBook(this.bookId);
             }
         })
     </script>

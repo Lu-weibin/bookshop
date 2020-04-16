@@ -17,8 +17,11 @@ import java.util.stream.Collectors;
 @RequestMapping("notice")
 public class NoticeController {
 
-    @Autowired
-    private NoticeService noticeService;
+    private final NoticeService noticeService;
+
+    public NoticeController(NoticeService noticeService) {
+        this.noticeService = noticeService;
+    }
 
     @GetMapping("titles")
     public Result getTitles() {
@@ -34,9 +37,9 @@ public class NoticeController {
         return new Result(noticeService.getFirstNotice());
     }
 
-    @GetMapping("{noticeid}")
-    public Result getNoticeById(@PathVariable int noticeid) {
-        Optional<Notice> optionalNotice = noticeService.findById(noticeid);
+    @GetMapping("{noticeId}")
+    public Result getNoticeById(@PathVariable int noticeId) {
+        Optional<Notice> optionalNotice = noticeService.findById(noticeId);
         return optionalNotice.map(Result::new).orElseGet(() -> new Result(false, StatusCode.ERROR, "查询不到数据!"));
     }
 

@@ -115,14 +115,14 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
 					user: {},
 					address: ""
                 }
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         alert("未登录");
                         window.location.href = "login";
                     }else {

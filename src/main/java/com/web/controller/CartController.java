@@ -6,61 +6,57 @@ import com.web.pojo.Book;
 import com.web.pojo.Cart;
 import com.web.service.BookService;
 import com.web.service.CartService;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Optional;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @RestController
 @RequestMapping("cart")
 @CrossOrigin
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
-    @Autowired
-    private BookService bookService;
+    private final CartService cartService;
+    private final BookService bookService;
+    private final HttpServletRequest request;
 
-    @Autowired
-    private HttpServletRequest request;
+    public CartController(CartService cartService, BookService bookService, HttpServletRequest request) {
+        this.cartService = cartService;
+        this.bookService = bookService;
+        this.request = request;
+    }
 
     @GetMapping("list")
     public Result list() {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        return new Result(cartService.findAllByUserid(userid));
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        return new Result(cartService.findAllByUserId(userId));
     }
 
     /**
      * 加入购物车
      */
-    @PostMapping("book/{bookid}")
-    public Result save(@PathVariable int bookid) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        if (userid == null) {
+    @PostMapping("book/{bookId}")
+    public Result save(@PathVariable int bookId) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
             return new Result(false, StatusCode.LOGINERROR, "未登录");
         }
         // 加入购物车前先判断是否是自己的图书，是的话不让加入
-        Book book = bookService.findById(bookid).orElse(null);
+        Book book = bookService.findById(bookId).orElse(null);
         assert book != null;
-        if (book.getUser().getId().equals(userid)) {
+        if (book.getUser().getId().equals(userId)) {
             return new Result(false, StatusCode.ERROR, "不要加入自己的图书！");
         }
         // 校验该用户是否已加入过该书籍
-        Cart existCart = cartService.findByUseridAndBookidAndState(userid, bookid, 1);
+        Cart existCart = cartService.findByUserIdAndBookIdAndState(userId, bookId, 1);
         if (existCart != null) {
             return new Result(false, StatusCode.LOGINERROR, "已加入,不要重复添加！");
         }
         Cart cart = new Cart();
-        cart.setBookid(bookid);
+        cart.setBookId(bookId);
         cart.setBookCount(1);
-        cart.setUserid(userid);
+        cart.setUserId(userId);
         // 1为加入的状态；2为结算
         cart.setState(1);
         cart.setCreateTime(new Timestamp(System.currentTimeMillis()));
@@ -81,13 +77,13 @@ public class CartController {
     /**
      * 删除购物车
      */
-    @GetMapping("delete/{bookid}")
-    public Result delete(@PathVariable int bookid) {
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        if (userid == null) {
+    @GetMapping("delete/{bookId}")
+    public Result delete(@PathVariable int bookId) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
             return new Result(false, StatusCode.LOGINERROR, "未登录");
         }
-        if (cartService.deleteCart(userid, bookid, 1)) {
+        if (cartService.deleteCart(userId, bookId, 1)) {
             return new Result("删除成功");
         }
         return new Result(false, StatusCode.ERROR, "删除失败");

@@ -30,23 +30,23 @@ public class AddressServiceImpl extends BaseServiceImpl<Address,Integer> impleme
     }
 
     @Override
-    public List<Address> findAllByUserid(Integer userid) {
-        return addressRepository.findAllByUserAndStateNot(new User(userid),-1);
+    public List<Address> findAllByUserid(Integer userId) {
+        return addressRepository.findAllByUserAndStateNot(new User(userId),-1);
     }
 
     @Override
-    public Address findDefaultAddress(Integer userid) {
-        return addressRepository.findFirstByUserAndState(new User(userid),2);
+    public Address findDefaultAddress(Integer userId) {
+        return addressRepository.findFirstByUserAndState(new User(userId),2);
     }
 
     @Override
-    public boolean updateState(Integer userid, int addressid, int state) {
+    public boolean updateState(Integer userId, int addressId, int state) {
         try {
             if (state == 2) {
                 // 要更改默认地址时，要先将之前为默认的设置为非默认
-                addressRepository.updateState(userid);
+                addressRepository.updateState(userId);
             }
-            Optional<Address> optional = this.findById(addressid);
+            Optional<Address> optional = this.findById(addressId);
             if (optional.isPresent()) {
                 Address address = optional.get();
                 address.setState(state);

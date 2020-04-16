@@ -61,7 +61,7 @@
                              <td class="info">
                                 <div class="checkbox">
                                     <label v-if="book.state==2">
-                                      <input type="checkbox"  :value="book.id" v-model="bookids">
+                                      <input type="checkbox"  :value="book.id" v-model="bookIds">
                                     </label>
                                     卖主：{{book.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{book.user.email}}
                                   </div>
@@ -99,8 +99,8 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-lg-offset-8">
-                <h4>已选 {{bookids.length}} 件商品 &nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-primary btn-sm" v-bind:class="{ disabled: bookids.length==0}"
+                <h4>已选 {{bookIds.length}} 件商品 &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary btn-sm" v-bind:class="{ disabled: bookIds.length==0}"
                             type="submit" v-on:click="beforeCalc()" >结 算
                     </button>
                 </h4>
@@ -163,9 +163,9 @@
             el: '#vue_bookshop',
             data() {
                 return {
-                    userid: [[${ session.userid }]],
+                    userId: [[${ session.userId }]],
                     books: [{user:{}}],
-                    bookids: [],
+                    bookIds: [],
                     addresses: {},
                     payPrice: "",
                     phone: "",
@@ -175,7 +175,7 @@
             },
             methods: {
                 isLogin: function () {
-                    if (this.userid == null || this.userid == "") {
+                    if (this.userId == null || this.userId == "") {
                         alert("未登录!");
                         window.location.href = "login";
                     }else {
@@ -191,15 +191,15 @@
                                 console.log(error);
                             });
                 },
-                deleteCart: function(bookid){
+                deleteCart: function(bookId){
                     var _this = this;
                     var result = confirm("确认删除购物车？");
                     if(result){
-                        axios.get('/cart/delete/'+bookid)
+                        axios.get('/cart/delete/'+bookId)
                         .then(function (response) {
                             if(response.data.flag){
                                 _this.getCarts();
-                                _this.bookids=[];
+                                _this.bookIds=[];
                             }else{
                                 alert(response.data.message);
                             }
@@ -208,12 +208,12 @@
                 },
                 beforeCalc: function(){
                     var _this = this;
-                    if (this.bookids.length==0){
+                    if (this.bookIds.length==0){
                         alert("请勾选要结算的商品！");
                         return false;
                     }else {
                         axios.post('/order/getPriceAndPhoneAndAddress/', {
-                            bookids: _this.bookids
+                            bookIds: _this.bookIds
                             })
                             .then(function (response) {
                                 if(response.data.flag){
@@ -228,11 +228,11 @@
                     }
                 },
                 calcCart: function(){
-                    if (this.bookids.length==0){
+                    if (this.bookIds.length==0){
                         alert("请勾选要结算的商品！");
                         return false;
                     }else{
-                        console.log(this.bookids.length)
+                        console.log(this.bookIds.length)
                     }
                     if (!(/^1[34578]\d{9}$/.test(this.phone))){
                         alert("手机号码格式不正确！");
@@ -257,7 +257,7 @@
                     }
                     var _this = this;
                     axios.post('/order/add/', {
-                        bookids: _this.bookids,
+                        bookIds: _this.bookIds,
                         payPrice: _this.payPrice,
                         phone: _this.phone,
                         selectAddress: _this.selectAddress,
@@ -273,7 +273,7 @@
                                 alert("已取消支付，半小时可到订单中重新发起支付！");
                             }
                             _this.getCarts();
-                            _this.bookids=[];
+                            _this.bookIds=[];
                         }else{
                             alert(response.data.message);
                         }
@@ -282,8 +282,8 @@
                         console.log(error);
                     });
                 },
-                addCollections: function(bookid){
-                    axios.post('collection/book/'+bookid)
+                addCollections: function(bookId){
+                    axios.post('collection/book/'+bookId)
                         .then(function (response) {
                             if(response.data.flag){
                                 alert("收藏成功！");

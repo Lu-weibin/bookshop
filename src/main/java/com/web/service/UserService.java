@@ -22,7 +22,7 @@ public interface UserService extends BaseService<User, Integer> {
 
     User findOneByCode(String code);
 
-    User findOneByBookId(int bookid);
+    User findOneByBookId(int bookId);
 
     List<User> findAllUser();
 
