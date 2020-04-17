@@ -4,13 +4,8 @@ import com.base.JpaBaseRepository;
 import com.web.pojo.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 public interface UserRepository extends JpaBaseRepository<User,Integer> {
 
 	/**

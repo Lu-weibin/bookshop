@@ -4,16 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author luwb
- * @date 2020/02/25
- * 基本服务类，定义通用的service操作方法
- */
 public abstract class BaseServiceImpl<T extends Serializable, ID> implements BaseService<T, ID> {
 
 	@Override

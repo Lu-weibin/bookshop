@@ -11,10 +11,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Entity
 @Data
 @ToString

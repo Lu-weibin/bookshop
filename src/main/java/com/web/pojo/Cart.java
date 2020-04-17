@@ -11,10 +11,6 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Entity
 @Data
 @ToString

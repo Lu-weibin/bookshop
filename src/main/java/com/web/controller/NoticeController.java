@@ -5,10 +5,10 @@ import com.base.StatusCode;
 import com.web.pojo.Notice;
 import com.web.service.NoticeService;
 import com.web.util.CommonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 public class NoticeController {
 
     private final NoticeService noticeService;
+    private final HttpServletRequest request;
 
-    public NoticeController(NoticeService noticeService) {
+    public NoticeController(NoticeService noticeService, HttpServletRequest request) {
         this.noticeService = noticeService;
+        this.request = request;
     }
 
     @GetMapping("titles")
@@ -57,6 +59,10 @@ public class NoticeController {
 
     @PostMapping("saveNotice")
     public Result saveNotice(Notice notice){
+        Integer adminId = (Integer) request.getSession().getAttribute("adminId");
+        if (adminId == null) {
+            return new Result(false, StatusCode.LOGINERROR, "未登录!");
+        }
         notice.setTime(CommonUtil.now());
         Integer state = notice.getState();
         // 如果是从已发布的公告编辑后存入草稿，则是新建一条草稿记录，而不是将原来的发布状态改为草稿
@@ -66,6 +72,7 @@ public class NoticeController {
                 notice.setId(null);
             }
         }
+        notice.setUserId(adminId);
         return new Result(noticeService.save(notice));
     }
 

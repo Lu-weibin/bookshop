@@ -36,7 +36,7 @@ public class SystemInfoController {
             String userDomain = map.get("USERDOMAIN");
             // 内存信息
             Sigar sigar = new Sigar();
-            Mem mem = null;
+            Mem mem;
             mem = sigar.getMem();
             systemInfo.setComputerName(computerName);
             systemInfo.setDomain(userDomain);

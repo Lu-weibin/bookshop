@@ -6,10 +6,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 public interface BaseService<T extends Serializable,ID> {
 
 	JpaBaseRepository<T, ID> getRepository();

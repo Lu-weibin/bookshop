@@ -81,19 +81,32 @@ public class BookController {
 	}
 
 	@PostMapping("add")
-	public Result addBooks(MultipartFile file, String bookName, String author, String publisher, String publishTime, String price, String category, String conditions, String description) {
+	public Result addBooks(MultipartFile file, Integer bookId, String bookName, String author, String publisher, String publishTime, String price, String category, String conditions, String description) {
 		Integer userId = (Integer) request.getSession().getAttribute("userId");
 		if (userId == null) {
 			return new Result(false, StatusCode.ERROR, "未登录！");
 		}
-		Book book = new Book();
-		book.setUser(new User(userId));
+		Book book;
+		// 前端传-1代表是新增图书
+		if (bookId == -1) {
+			book = new Book();
+			book.setCreateTime(CommonUtil.now());
+			book.setUser(new User(userId));
+			try {
+				String savePath = handleImage(file, userId);
+				book.setPicture(savePath);
+			} catch (IOException e) {
+				return new Result(false, StatusCode.ERROR, "图片上传失败！");
+			}
+		} else {
+			book = bookService.findById(bookId).orElse(new Book());
+		}
 		book.setBookName(bookName);
 		book.setAuthor(author);
 		book.setPublisher(publisher);
 		try {
 			Timestamp publishDate = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(publishTime).getTime());
-			if (CommonUtil.getTimeDifference(CommonUtil.now(),publishDate)<0) {
+			if (CommonUtil.getTimeDifference(CommonUtil.now(), publishDate) < 0) {
 				return new Result(false, StatusCode.ERROR, "出版时间有误！");
 			}
 			book.setPublishTime(publishDate);
@@ -105,16 +118,10 @@ public class BookController {
 			return new Result(false, StatusCode.ERROR, "输入信息有误，请检查！");
 		}
 		book.setConditions(conditions);
+		description = description == null ? "" : description;
 		book.setDescription(description);
 		// 待审核状态
 		book.setState(1);
-		book.setCreateTime(CommonUtil.now());
-		try {
-			String savePath = handleImage(file, userId);
-			book.setPicture(savePath);
-		} catch (IOException e) {
-			return new Result(false, StatusCode.ERROR, "图片上传失败！");
-		}
 		bookService.save(book);
 		return new Result(true, StatusCode.OK, "发布成功，等待审核！");
 	}

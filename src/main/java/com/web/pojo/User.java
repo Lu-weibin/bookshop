@@ -12,8 +12,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * @author luwb
- * @date 2020/02/25
  * 用户实体类
  * JsonIgnoreProperties 不加此注解 -> 有属性为空时，Json序列化报错
  */

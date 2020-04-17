@@ -8,13 +8,8 @@ import com.web.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements OrderService {
 

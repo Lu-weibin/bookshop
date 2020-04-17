@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Service
 public class OrderDetailsServiceImpl extends BaseServiceImpl<OrderDetails,Integer> implements OrderDetailsService {
 

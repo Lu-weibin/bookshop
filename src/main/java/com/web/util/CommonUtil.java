@@ -10,11 +10,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
-/**
- * @author luwb
- * @date 2020/03/02
- * 工具类
- */
 public class CommonUtil {
 
 	/**

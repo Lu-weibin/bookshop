@@ -9,11 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- * @author luwb
- * @date 2020/02/25
- * 图书实体类
- */
 @Entity
 @Data
 @ToString

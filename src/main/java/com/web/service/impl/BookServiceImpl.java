@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.security.Key;
@@ -24,10 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements BookService {
@@ -71,9 +66,9 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
                 category.setTotalCount(category.getTotalCount() + 1);
                 categoryService.save(category);
             }
-            if (state == 5) {
-                // 原在出售的图书，下架（审核不通过）时，所在分类图书数量-1
-                if (book.getState()==2) {
+            if (state == 5 || state == -1) {
+                // 原在出售的图书，下架（审核不通过）或用户删除时，所在分类图书数量-1
+                if (book.getState() == 2) {
                     category.setTotalCount(category.getTotalCount() - 1);
                     categoryService.save(category);
                 }
@@ -122,7 +117,8 @@ public class BookServiceImpl extends BaseServiceImpl<Book, Integer> implements B
 
     @Override
     public List<Book> findAllByUserId(Integer userId) {
-        return bookRepository.findAllByUser(new User(userId));
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
+        return bookRepository.findAllByUserAndStateNot(new User(userId), sort, -1);
     }
 
     @Override

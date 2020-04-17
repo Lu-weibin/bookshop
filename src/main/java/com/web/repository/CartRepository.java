@@ -5,13 +5,8 @@ import com.web.pojo.Cart;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 public interface CartRepository extends JpaBaseRepository<Cart,Integer>{
 
     List<Cart> findAllByUserId(int userId);

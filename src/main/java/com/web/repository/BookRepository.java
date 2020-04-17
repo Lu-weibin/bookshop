@@ -10,10 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 public interface BookRepository extends JpaBaseRepository<Book, Integer> {
 
     List<Book> findAllByState(int state, Sort sort);
@@ -31,7 +27,7 @@ public interface BookRepository extends JpaBaseRepository<Book, Integer> {
     @Query(value = "select * from book t1,collection t2 WHERE t1.id = t2.book_id and t2.user_id = :userId ",nativeQuery = true)
     List<Book> findCollectionByUserId(@Param("userId") Integer userId);
 
-    List<Book> findAllByUser(User user);
+    List<Book> findAllByUserAndStateNot(User user, Sort sort, Integer state);
 
     List<Book> findAllByBookNameLikeOrAuthorLikeOrPublisherIsLike(String bookName, String author, String publisher);
 

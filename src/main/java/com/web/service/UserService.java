@@ -5,10 +5,6 @@ import com.web.pojo.User;
 
 import java.util.List;
 
-/**
- * @author luwb
- * @date 2020/02/25
- */
 public interface UserService extends BaseService<User, Integer> {
 
     /**

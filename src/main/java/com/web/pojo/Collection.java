@@ -9,10 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Entity
 @Data
 @ToString

@@ -55,7 +55,11 @@
 					<a href="account" class="list-group-item">账 户 安 全</a><br>
 					<a href="myaddress" class="list-group-item">我 的 地 址</a><br>
 					<a href="favorite" class="list-group-item">我 的 收 藏</a><br>
-					<a href="mybook" class="list-group-item active">我 的 图 书</a><br>
+					<a href="mybook" class="list-group-item active">我 的 图 书</a>
+					<a href="javascript:void(0);" class="list-group-item" v-on:click="showMyModal()">
+						旧 书 出 售
+                    </a>
+					<br>
 				</div>
 			</div>
 			<div class="col-lg-8 col-lg-offset-1">
@@ -115,7 +119,7 @@
 									删除
 								</td>
 								<td class="" v-if="book.state==1||book.state==2">
-									<a v-if="book.state==1" class="btn btn-primary btn-sm" type="submit" v-bind:href="'index/'+book.id">编 辑</a>
+									<button v-if="book.state==1" class="btn btn-primary btn-sm" type="submit" v-on:click="editBook(book.id)">编 辑</button>
 									<a class="btn btn-primary btn-sm" type="submit" v-bind:href="'detail/'+book.id">详 情</a>
 									<button class="btn btn-danger btn-sm" type="submit" v-on:click="deleteBook(book.id)">删 除</button>
 								</td>
@@ -131,6 +135,97 @@
 	</div>
 	<hr />
 	<div th:replace="admin/footer :: footer"></div>
+	
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">旧 书 出 售</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">书名：</div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" v-model.trim="saleBook.bookName">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">作者：</div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" v-model.trim="saleBook.author">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">出版社：</div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" v-model.trim="saleBook.publisher">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">出版时间：</div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" placeholder="" v-model.trim="saleBook.publishTime">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">价格：</div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control" placeholder="单位元" v-model.trim="saleBook.price">
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">分类：</div>
+                        <div class="col-md-5">
+                           <select class="form-control" v-model.trim="saleBook.category">
+                                 <option v-for="(category,index) in categorys" :key="index" :value="category.id">{{category.category}}</option>
+                            </select>
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">品相：</div>
+                        <div class="col-md-5">
+                           <select class="form-control" v-model.trim="saleBook.conditions">
+                                <option>
+                                    六成新
+                                </option>
+                                <option>
+                                    七成新
+                                </option>
+                                <option>
+                                    八成新
+                                </option>
+                               <option>
+                                   九成新
+                               </option>
+                               <option>
+                                   全新
+                               </option>
+                            </select>
+                        </div>
+                    </div><hr>
+                    <div class="row" v-if="saleBook.bookId==''">
+                        <div class="col-md-3 col-md-offset-1">上传照片：</div>
+                        <div class="col-md-5">
+                            <input type="file" id="exampleInputFile" @change="getFile($event)">
+                            <p class="help-block"></p>
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1">书籍介绍：</div>
+                        <div class="col-md-5">
+                            <textarea class="form-control" rows="3" v-model.trim="saleBook.description"></textarea>
+                        </div>
+                    </div><hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" v-on:click="addBook($event,-1)" v-if="saleBook.bookId==''">确定出售</button>
+					<button type="button" class="btn btn-primary" v-on:click="addBook($event,saleBook.bookId)" v-if="saleBook.bookId!=''">修 改</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
@@ -145,7 +240,19 @@
                 return {
                     userId: [[${ session.userId }]],
                     books: [{user:{}}],
-                    bookIds: []
+                    bookIds: [],
+					categorys: [{}],
+					saleBook: {
+                    	bookId: "",
+						bookName: "",
+						author: "",
+						publisher: "",
+						publishTime: "",
+						price: "",
+						category: "",
+						conditions: "",
+						description: ""
+               		 },
                 }
             },
             methods: {
@@ -155,11 +262,75 @@
                         window.location.href = "login";
                     }else {
                        this.getBooks();
+						this.getCategorys();
                     }
                 },
+				showMyModal: function(){
+					$('#myModal').modal();
+					this.saleBook={
+						bookId: "",
+						bookName: "",
+						author: "",
+						publisher: "",
+						publishTime: "",
+						price: "",
+						category: "",
+						conditions: "",
+						description: ""
+					};
+            	},
 				getBooks: function(){
                     axios.get('/book/findAllByUserId').then(response => (this.books = response.data.data));
                 },
+				getCategorys: function () {
+					axios.get('/category/list').then(response => (this.categorys = response.data.data));
+            	},
+				addBook: function(event,bookId){
+                var _this = this;
+                let bookName = this.saleBook.bookName;
+                let author = this.saleBook.author;
+                let publisher = this.saleBook.publisher;
+                let publishTime = this.saleBook.publishTime;
+                let price = this.saleBook.price;
+                let category = this.saleBook.category;
+                let conditions = this.saleBook.conditions;
+                let description = this.saleBook.description;
+                event.preventDefault();
+                if(bookName==""||author==""||publisher==""||publishTime==""||price==""||category==""||conditions==""||price<0){
+                    alert("输入信息有误，请检查！");
+                    return false;
+                }
+                let formData = new FormData();
+                formData.append('bookId', bookId);
+                formData.append('file', this.file);
+                formData.append('bookName',this.saleBook.bookName);
+                formData.append('author',this.saleBook.author);
+                formData.append('publisher',this.saleBook.publisher);
+                formData.append('publishTime',this.saleBook.publishTime);
+                formData.append('price',this.saleBook.price);
+                formData.append('category',this.saleBook.category);
+                formData.append('conditions',this.saleBook.conditions);
+                formData.append('description',this.saleBook.description);
+                let config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                 }
+                 axios.post('/book/add', formData, config).then(function (response) {
+                    if (response.data.flag) {
+                        alert(response.data.message);
+                        $('#myModal').modal('hide');
+						_this.getBooks();
+
+                    }else{
+                        alert(response.data.message);
+                    }
+                    })
+            	},
+				getFile(event) {
+                	this.file = event.target.files[0];
+                	console.log(this.file);
+            	},
 				deleteBook: function(bookId){
 					var result = confirm("确定删除？");
 					if(result){
@@ -173,7 +344,29 @@
 								}
 							});
 					}
-                	}
+                	},
+				editBook: function (bookId) {
+                	var _this = this;
+                	this.saleBook.bookId = bookId;
+					axios.get('/book/'+bookId).then(function (response) {
+						if (response.data.flag) {
+							console.log("ok");
+							var book = response.data.data;
+							_this.saleBook.bookName = book.bookName;
+							_this.saleBook.author = book.author;
+							_this.saleBook.publisher = book.publisher;
+							_this.saleBook.publishTime = book.publishTime;
+							_this.saleBook.price = book.price;
+							_this.saleBook.category = book.category.id;
+							_this.saleBook.conditions = book.conditions;
+							_this.saleBook.description = book.description==null?"":book.description;
+							$('#myModal').modal();
+						}else{
+							alert(response.data.message);
+						}
+					})
+
+				}
             },
             created() {
                 this.isLogin();

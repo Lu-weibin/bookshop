@@ -7,10 +7,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @Entity
 @Data
 @NoArgsConstructor

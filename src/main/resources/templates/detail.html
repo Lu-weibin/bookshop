@@ -28,7 +28,6 @@
                 <a class="navbar-brand" href="#">二手书交易平台</a>
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="../index">首页 <span class="sr-only">(current)</span></a></li>
@@ -69,6 +68,8 @@
                         <p class="text-muted">定价: ￥{{book.price}}</p>
                         <p class="text-muted">品相: {{book.conditions}}</p>
                         <p class="text-muted">分类: {{book.category.category}}</p>
+                        <p class="text-muted">卖家: {{book.user.username}}</p>
+                        <p class="text-muted">联系方式: {{book.user.email}}</p>
                         <br>
                         <p class="list-group-item-text text-info">
                             {{book.description}}

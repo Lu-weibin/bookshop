@@ -54,9 +54,6 @@
         <div class="row">
             <div class="col-lg-2">
                 <div class="list-group">
-                    <a href="javascript:void(0);" class="list-group-item list-group-item-info" v-on:click="isLogin()">
-						有书分享
-                    </a>
                     <hr>
 					<a href="javascript:void(0);" class="list-group-item" v-bind:class="{ active: flag==-1}" v-on:click="getBooks(-1);flag=-1">
                         所有书籍
@@ -93,96 +90,6 @@
     <hr/>
     <div th:replace="admin/footer :: footer"></div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="gridSystemModalLabel">旧 书 出 售</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">书名：</div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" v-model.trim="saleBook.bookName">
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">作者：</div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" v-model.trim="saleBook.author">
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">出版社：</div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" v-model.trim="saleBook.publisher">
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">出版时间：</div>
-                        <div class="col-md-5">
-                            <input type="date" class="form-control" placeholder="" v-model.trim="saleBook.publishTime">
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">价格：</div>
-                        <div class="col-md-5">
-                            <input type="number" class="form-control" placeholder="单位元" v-model.trim="saleBook.price">
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">分类：</div>
-                        <div class="col-md-5">
-                           <select class="form-control" v-model="saleBook.category">
-                                 <option v-for="(category,index) in categorys" :key="index" :value="category.id">{{category.category}}</option>
-                            </select>
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">品相：</div>
-                        <div class="col-md-5">
-                           <select class="form-control" v-model.trim="saleBook.conditions">
-                                <option>
-                                    六成新
-                                </option>
-                                <option>
-                                    七成新
-                                </option>
-                                <option>
-                                    八成新
-                                </option>
-                               <option>
-                                   九成新
-                               </option>
-                               <option>
-                                   全新
-                               </option>
-                            </select>
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">上传照片：</div>
-                        <div class="col-md-5">
-                            <input type="file" id="exampleInputFile" @change="getFile($event)">
-                            <p class="help-block"></p>
-                        </div>
-                    </div><hr>
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-1">书籍介绍：</div>
-                        <div class="col-md-5">
-                            <textarea class="form-control" rows="3" v-model.trim="saleBook.description"></textarea>
-                        </div>
-                    </div><hr>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" v-on:click="addBook($event)">确定出售</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
 </div>
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
@@ -200,17 +107,6 @@
                 books: [{category:{}}],
                 result: {},
                 bookTatal: "",
-                // saleBook: {
-                //     bookName: "",
-                //     author: "",
-                //     publisher: "",
-                //     publishTime: "",
-                //     price: "",
-                //     category: "",
-                //     conditions: "",
-                //     description: ""
-                // },
-                saleBook: [[${ saleBook }]],
                 file: '',
                 key: ''
             }
@@ -251,52 +147,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-            getFile(event) {
-                this.file = event.target.files[0];
-                console.log(this.file);
-            },
-            addBook: function(event){
-                var _this = this;
-                let bookName = this.saleBook.bookName;
-                let author = this.saleBook.author;
-                let publisher = this.saleBook.publisher;
-                let publishTime = this.saleBook.publishTime;
-                let price = this.saleBook.price;
-                let category = this.saleBook.category;
-                let conditions = this.saleBook.conditions;
-                let description = this.saleBook.description;
-                event.preventDefault();
-                if(bookName==""||author==""||publisher==""||publishTime==""||price==""||category==""||conditions==""||price<0){
-                    alert("输入信息有误，请检查！");
-                    return false;
-                }
-                let formData = new FormData();
-                formData.append('file', this.file);
-                formData.append('bookName',this.saleBook.bookName);
-                formData.append('author',this.saleBook.author);
-                formData.append('publisher',this.saleBook.publisher);
-                formData.append('publishTime',this.saleBook.publishTime);
-                formData.append('price',this.saleBook.price);
-                formData.append('category',this.saleBook.category);
-                formData.append('conditions',this.saleBook.conditions);
-                formData.append('description',this.saleBook.description);
-                let config = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                 }
-                 axios.post('/book/add', formData, config).then(function (response) {
-                    if (response.data.flag) {
-                        alert(response.data.message);
-                        $('#myModal').modal('hide');
-                        _this.saleBook = {};
-
-                    }else{
-                        alert(response.data.message);
-                    }
-                    })
-            },
+            },      
             search: function () {
                 if(this.key==""){
                     return false;
@@ -312,19 +163,12 @@
 				.then(function(response){
                     _this.bookTatal = response.data.data.length
                     });
-            },
-            showMyModal: function(){
-                if(this.saleBook!=null&&this.saleBook.bookName!=""){
-                    this.isLogin();
-                }
             }
         },
         created() {
             this.getCategorys();
             this.getBooks(-1);
             this.getTotalCount();
-            // this.showMyModal();
-            console.log(JSON.stringify(this.saleBook))
         }
     })
 </script>

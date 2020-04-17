@@ -6,13 +6,8 @@ import com.web.pojo.Collection;
 import com.web.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author luwb
- * @date 2020-02-29
- */
 @RestController
 @RequestMapping("collection")
 @CrossOrigin
