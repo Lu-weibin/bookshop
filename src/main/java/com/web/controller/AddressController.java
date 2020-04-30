@@ -49,9 +49,9 @@ public class AddressController {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         boolean result = addressService.updateState(userId, addressId, state);
         if (result) {
-            return new Result("操作成功");
+            return new Result(true,"操作成功");
         }
-        return new Result(false, StatusCode.ERROR,"操作失败");
+        return new Result(false, "操作失败");
     }
 
 }

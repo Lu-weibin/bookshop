@@ -1,11 +1,11 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.*;
 import com.web.service.*;
 import com.web.util.CommonUtil;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -69,7 +69,7 @@ public class OrderController {
         String address = (String) map.get("selectAddress");
         Integer state = (Integer) map.get("state");
         if ("".equals(address.trim())) {
-            return new Result(false, StatusCode.ERROR, "请到个人中心添加地址！");
+            return new Result(false, "请到个人中心添加地址！");
         }
         // 创建订单前先检查图书状态，图书状态不为出售时 订单创建失败
         if (checkBooks(bookIds)) {
@@ -84,9 +84,9 @@ public class OrderController {
             if (state == 2) {
                 bookService.updateState(bookIds, 3);
             }
-            return new Result("支付成功！");
+            return new Result(true, "支付成功！");
         }
-        return new Result(false, StatusCode.ERROR, "支付失败，请刷新页面后重新支付！");
+        return new Result(false, "支付失败，请刷新页面后重新支付！");
     }
 
     @GetMapping("orderDetails/{orderId}")
@@ -97,7 +97,7 @@ public class OrderController {
             Orders orders = optional.get();
             map.put("order", orders);
         } else {
-            return new Result(false, StatusCode.ERROR, "订单不存在！");
+            return new Result(false, "订单不存在！");
         }
         List<OrderDetails> orderDetails = orderDetailsService.findAllByOrderId(orderId);
         List<Integer> bookIds = new ArrayList<>();
@@ -137,7 +137,7 @@ public class OrderController {
                 bookService.updateState(bookIds.toArray(new Integer[0]), 3);
             }
         }
-        return state == 2 ? new Result(true, StatusCode.OK, "支付成功") : new Result(false, StatusCode.ERROR, "订单超过30分钟，已失效！");
+        return state == 2 ? new Result(true, "支付成功") : new Result(false, "订单超过30分钟，已失效！");
     }
 
     private Orders saveOrder(int userId, String addressee, String address, int state, String phone, BigDecimal payPrice) {
@@ -165,7 +165,7 @@ public class OrderController {
             orderDetails.setBookId(bookId);
             orderDetails.setBookCount(1);
             orderDetails.setCreateTime(CommonUtil.now());
-            orderDetails.setBookPrice(bookService.findById(bookId).get().getPrice());
+            orderDetails.setBookPrice(bookService.findById(bookId).orElse(new Book()).getPrice());
             orderDetails.setState(state);
             orderDetailsService.save(orderDetails);
         }

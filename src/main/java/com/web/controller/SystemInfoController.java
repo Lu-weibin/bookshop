@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.SystemInfo;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class SystemInfoController {
             systemInfo.setMemUsed(mem.getUsed() / 1024L / 1024L + "M");
             systemInfo.setMemFree(mem.getFree() / 1024L / 1024L + "M");
         } catch (SigarException | UnknownHostException e) {
-            return new Result(false, StatusCode.ERROR, "读取服务器信息失败！");
+            return new Result(false, "读取服务器信息失败！");
         }
         return new Result(systemInfo);
     }

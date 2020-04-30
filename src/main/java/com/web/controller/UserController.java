@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.User;
 import com.web.service.UserService;
 import com.web.util.MailUtil;
@@ -36,11 +35,11 @@ public class UserController {
     public Result register(@RequestBody User user) {
         User user1 = userService.findOneByUsername(user.getUsername(), 1);
         if (user1 != null) {
-            return new Result(false, StatusCode.ERROR, "用户名已存在！");
+            return new Result(false, "用户名已存在！");
         }
         User user2 = userService.findOneByEmail(user.getEmail(), 1);
         if (user2 != null) {
-            return new Result(false, StatusCode.ERROR, "该账户已存在！");
+            return new Result(false, "该账户已存在！");
         }
         user.setId(null);
         user.setPassword(ShaUtils.encrypt(user.getPassword()));
@@ -54,20 +53,20 @@ public class UserController {
         user.setCode(code);
         userService.save(user);
         new MailUtil(user.getEmail(), code).run();
-        return new Result(true, StatusCode.OK, "注册成功");
+        return new Result(true, "注册成功");
     }
 
     @GetMapping("activation")
     @ResponseBody
-    public String activation(String code) {
+    public Result activation(String code) {
         User user = userService.findOneByCode(code);
         if (user == null) {
-            return "账户信息不存在！";
+            return new Result(false, "账户信息不存在！");
         }
         // 激活后状态为1。即正常
         user.setState(1);
         userService.save(user);
-        return "激活成功";
+        return new Result(true, "激活成功!");
     }
 
     /**
@@ -78,7 +77,7 @@ public class UserController {
         // 忽略验证码大小写
         redirectAttributes.addFlashAttribute("email", email);
         redirectAttributes.addFlashAttribute("password", password);
-        if (userType==1 && !(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
+        if (userType == 1 && !(checkImg.equalsIgnoreCase(request.getSession().getAttribute("code").toString()))) {
             redirectAttributes.addFlashAttribute("error", "验证码不正确！");
             return "redirect:../login";
         }
@@ -113,13 +112,7 @@ public class UserController {
     @ResponseBody
     public Result findOne() {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
-        Optional<User> optional = userService.findById(userId);
-        if (optional.isPresent()) {
-            User user = optional.get();
-            user.setPassword(null);
-            return new Result(user);
-        }
-        return new Result(false, StatusCode.ERROR, "id不存在");
+        return new Result(userService.findById(userId).orElse(new User()));
     }
 
     @PostMapping("update/{username}/{phone}")
@@ -128,7 +121,7 @@ public class UserController {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         User user1 = userService.findOneByUsername(username, 1);
         if (user1 != null && !user1.getId().equals(userId)) {
-            return new Result(false, StatusCode.ERROR, "用户名已存在！");
+            return new Result(false, "用户名已存在！");
         }
         Optional<User> optional = userService.findById(userId);
         if (optional.isPresent()) {
@@ -137,26 +130,23 @@ public class UserController {
             user.setPhone(phone);
             userService.save(user);
             request.getSession().setAttribute("username", username);
-            return new Result("更新成功！");
+            return new Result(true,"更新成功！");
         }
-        return new Result(false, StatusCode.ERROR, "更新失败！");
+        return new Result(false, "更新失败！");
     }
 
     @PostMapping("changePassword/{oldPassword}/{newPassword}")
     @ResponseBody
-    public Result changePassword(@PathVariable String oldPassword,@PathVariable String newPassword) {
+    public Result changePassword(@PathVariable String oldPassword, @PathVariable String newPassword) {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
-        Optional<User> optional = userService.findById(userId);
-        if (optional.isPresent()) {
-            User user = optional.get();
-            if (!user.getPassword().equals(ShaUtils.encrypt(oldPassword))) {
-                return new Result(false, StatusCode.ERROR, "原密码错误！");
-            } else {
-                user.setPassword(ShaUtils.encrypt(newPassword));
-                userService.save(user);
-            }
+        User user = userService.findById(userId).orElse(new User());
+        if (!user.getPassword().equals(ShaUtils.encrypt(oldPassword))) {
+            return new Result(false, "原密码错误！");
+        } else {
+            user.setPassword(ShaUtils.encrypt(newPassword));
+            userService.save(user);
+            return new Result(true,"修改成功！");
         }
-        return new Result("修改成功！");
     }
 
     @GetMapping("list")
@@ -167,12 +157,11 @@ public class UserController {
 
     @PostMapping("state/{id}/{state}")
     @ResponseBody
-    public Result updateUserByState(@PathVariable Integer id,@PathVariable int state) {
-        User user = userService.findById(id).orElse(null);
-        assert user != null;
+    public Result updateUserByState(@PathVariable Integer id, @PathVariable int state) {
+        User user = userService.findById(id).orElse(new User());
         user.setState(state);
         userService.save(user);
-        return new Result("执行成功");
+        return new Result(true,"执行成功");
     }
 
     @GetMapping("search")

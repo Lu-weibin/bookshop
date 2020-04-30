@@ -1,11 +1,10 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.Collection;
 import com.web.service.CollectionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -31,12 +30,12 @@ public class CollectionController {
     public Result addCollection(@PathVariable int bookId) {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         if (userId == null) {
-            return new Result(false, StatusCode.LOGINERROR, "未登录!");
+            return new Result(false, "未登录!");
         }
         // 校验该用户是否已收藏过该书籍
         Collection existCollection = collectionService.findByUserIdAndBookId(userId, bookId);
         if (existCollection != null) {
-            return new Result(false, StatusCode.ERROR, "已收藏过，不要重复收藏!");
+            return new Result(false, "已收藏过，不要重复收藏!");
         }
         Collection collection = new Collection();
         collection.setUserId(userId);
@@ -51,12 +50,12 @@ public class CollectionController {
     public Result delete(@PathVariable int bookId) {
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         if (userId == null) {
-            return new Result(false, StatusCode.LOGINERROR, "未登录!");
+            return new Result(false, "未登录!");
         }
         if (collectionService.deleteCollection(userId, bookId)) {
-            return new Result("删除成功!");
+            return new Result(true, "删除成功!");
         }
-        return new Result(false, StatusCode.ERROR, "删除失败!");
+        return new Result(false, "删除失败!");
     }
 
 }

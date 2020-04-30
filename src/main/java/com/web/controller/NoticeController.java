@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.Notice;
 import com.web.service.NoticeService;
 import com.web.util.CommonUtil;
@@ -42,7 +41,7 @@ public class NoticeController {
     @GetMapping("{noticeId}")
     public Result getNoticeById(@PathVariable int noticeId) {
         Optional<Notice> optionalNotice = noticeService.findById(noticeId);
-        return optionalNotice.map(Result::new).orElseGet(() -> new Result(false, StatusCode.ERROR, "查询不到数据!"));
+        return optionalNotice.map(Result::new).orElseGet(() -> new Result(false, "查询不到数据!"));
     }
 
     @GetMapping("list")
@@ -51,17 +50,17 @@ public class NoticeController {
     }
 
     @GetMapping("search")
-    public Result search(@RequestParam String key,@RequestParam Integer state) {
+    public Result search(@RequestParam String key, @RequestParam Integer state) {
         List<Notice> notices = noticeService.search(key);
         notices = state == null ? notices : notices.stream().filter((notice -> notice.getState().equals(state))).collect(Collectors.toList());
         return new Result(notices);
     }
 
     @PostMapping("saveNotice")
-    public Result saveNotice(Notice notice){
+    public Result saveNotice(Notice notice) {
         Integer adminId = (Integer) request.getSession().getAttribute("adminId");
         if (adminId == null) {
-            return new Result(false, StatusCode.LOGINERROR, "未登录!");
+            return new Result(false, "未登录!");
         }
         notice.setTime(CommonUtil.now());
         Integer state = notice.getState();
@@ -80,10 +79,10 @@ public class NoticeController {
      * 读取最近一条通知草稿
      */
     @GetMapping("readNotice")
-    public Result readNotice(){
+    public Result readNotice() {
         List<Notice> notices = noticeService.findAllByState(2);
         if (notices.isEmpty()) {
-            return new Result(false, StatusCode.ERROR, "草稿箱暂无内容");
+            return new Result(false, "草稿箱暂无内容");
         }
         return new Result(notices.get(0));
     }
@@ -91,7 +90,7 @@ public class NoticeController {
     @PostMapping("delete/{noticeId}")
     public Result delete(@PathVariable Integer noticeId) {
         noticeService.delete(noticeId);
-        return new Result("删除成功！");
+        return new Result(true,"删除成功！");
     }
 
 }

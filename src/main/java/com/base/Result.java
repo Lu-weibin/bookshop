@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result {
     private boolean flag = true;
-    private Integer code = StatusCode.OK;
     private String message = "success";
     private Object data;
 
@@ -17,9 +16,8 @@ public class Result {
         this.data = date;
     }
 
-    public Result(boolean flag, Integer code, String message) {
+    public Result(boolean flag, String message) {
         this.flag = flag;
-        this.code = code;
         this.message = message;
     }
 }

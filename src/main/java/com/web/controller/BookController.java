@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import com.base.Result;
-import com.base.StatusCode;
 import com.web.pojo.Book;
 import com.web.pojo.Category;
 import com.web.pojo.User;
@@ -29,141 +28,140 @@ import java.util.Objects;
 @RequestMapping("book")
 public class BookController {
 
-	private final BookService bookService;
-	private final UserService userService;
-	private final HttpServletRequest request;
+    private final BookService bookService;
+    private final UserService userService;
+    private final HttpServletRequest request;
 
-	@Value("${imagePath}")
-	private String imagePath;
+    @Value("${imagePath}")
+    private String imagePath;
 
-	public BookController(BookService bookService, HttpServletRequest request, UserService userService) {
-		this.bookService = bookService;
-		this.request = request;
-		this.userService = userService;
-	}
+    public BookController(BookService bookService, HttpServletRequest request, UserService userService) {
+        this.bookService = bookService;
+        this.request = request;
+        this.userService = userService;
+    }
 
-	@GetMapping("category/{categoryId}")
-	public Result listByCategoryId(@PathVariable Integer categoryId) {
-		// categoryId为-1时返回所有书籍
-		return new Result(bookService.findAllByCategoryId(categoryId));
-	}
+    @GetMapping("category/{categoryId}")
+    public Result listByCategoryId(@PathVariable Integer categoryId) {
+        // categoryId为-1时返回所有书籍
+        return new Result(bookService.findAllByCategoryId(categoryId));
+    }
 
-	@GetMapping("{id}")
-	public Result listById(@PathVariable int id) {
-		return new Result(bookService.findById(id).orElse(null));
-	}
+    @GetMapping("{id}")
+    public Result listById(@PathVariable int id) {
+        return new Result(bookService.findById(id).orElse(null));
+    }
 
-	@GetMapping("state/{state}")
-	public Result listByState(@PathVariable int state) {
-		return new Result(bookService.findAllByState(state));
-	}
+    @GetMapping("state/{state}")
+    public Result listByState(@PathVariable int state) {
+        return new Result(bookService.findAllByState(state));
+    }
 
-	@GetMapping("search")
-	public Result search(@RequestParam String bookName, @RequestParam String author, @RequestParam String publisher, @RequestParam Integer categoryId, @RequestParam Integer state) {
-		List<Book> books = bookService.search(bookName, author, publisher, categoryId, state);
-		return new Result(books);
-	}
+    @GetMapping("search")
+    public Result search(@RequestParam String bookName, @RequestParam String author, @RequestParam String publisher, @RequestParam Integer categoryId, @RequestParam Integer state) {
+        List<Book> books = bookService.search(bookName, author, publisher, categoryId, state);
+        return new Result(books);
+    }
 
-	@GetMapping("search/{key}")
-	public Result searchByKey(@PathVariable String key) {
-		if (CommonUtil.isNullOrEmpty(key)) {
-			return new Result(Collections.emptyList());
-		}
-		List<Book> books = bookService.searchByKey(key);
-		books.removeIf(book -> book.getState() != 2);
-		return new Result(books);
-	}
+    @GetMapping("search/{key}")
+    public Result searchByKey(@PathVariable String key) {
+        if (CommonUtil.isNullOrEmpty(key)) {
+            return new Result(Collections.emptyList());
+        }
+        List<Book> books = bookService.searchByKey(key);
+        books.removeIf(book -> book.getState() != 2);
+        return new Result(books);
+    }
 
-	@PostMapping("{id}/{state}")
-	public Result updateState(@PathVariable int id,@PathVariable int state){
-		bookService.update(id, state);
-		return new Result("操作成功");
-	}
+    @PostMapping("{id}/{state}")
+    public Result updateState(@PathVariable int id, @PathVariable int state) {
+        bookService.update(id, state);
+        return new Result(true,"操作成功");
+    }
 
-	@PostMapping("add")
-	public Result addBooks(MultipartFile file, Integer bookId, String bookName, String author, String publisher, String publishTime, String price, String category, String conditions, String description) {
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
-		if (userId == null) {
-			return new Result(false, StatusCode.ERROR, "未登录！");
-		}
-		Book book;
-		// 前端传-1代表是新增图书
-		if (bookId == -1) {
-			book = new Book();
-			book.setCreateTime(CommonUtil.now());
-			book.setUser(new User(userId));
-			try {
-				String savePath = handleImage(file, userId);
-				book.setPicture(savePath);
-			} catch (IOException e) {
-				return new Result(false, StatusCode.ERROR, "图片上传失败！");
-			}
-		} else {
-			book = bookService.findById(bookId).orElse(new Book());
-		}
-		book.setBookName(bookName);
-		book.setAuthor(author);
-		book.setPublisher(publisher);
-		try {
-			Timestamp publishDate = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(publishTime).getTime());
-			if (CommonUtil.getTimeDifference(CommonUtil.now(), publishDate) < 0) {
-				return new Result(false, StatusCode.ERROR, "出版时间有误！");
-			}
-			book.setPublishTime(publishDate);
-			book.setPrice(new BigDecimal(price));
-			book.setCategory(new Category(Integer.parseInt(category)));
-		} catch (ParseException e) {
-			return new Result(false, StatusCode.ERROR, "日期格式有误！");
-		} catch (Exception e) {
-			return new Result(false, StatusCode.ERROR, "输入信息有误，请检查！");
-		}
-		book.setConditions(conditions);
-		description = description == null ? "" : description;
-		book.setDescription(description);
-		// 待审核状态
-		book.setState(1);
-		bookService.save(book);
-		return new Result(true, StatusCode.OK, "发布成功，等待审核！");
-	}
+    @PostMapping("add")
+    public Result addBooks(MultipartFile file, Integer bookId, String bookName, String author, String publisher, String publishTime, String price, String category, String conditions, String description) {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        if (userId == null) {
+            return new Result(false, "未登录！");
+        }
+        Book book;
+        // 前端传-1代表是新增图书
+        if (bookId == -1) {
+            book = new Book();
+            book.setCreateTime(CommonUtil.now());
+            book.setUser(new User(userId));
+            try {
+                String savePath = handleImage(file, userId);
+                book.setPicture(savePath);
+            } catch (IOException e) {
+                return new Result(false, "图片上传失败！");
+            }
+        } else {
+            book = bookService.findById(bookId).orElse(new Book());
+        }
+        book.setBookName(bookName);
+        book.setAuthor(author);
+        book.setPublisher(publisher);
+        try {
+            Timestamp publishDate = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(publishTime).getTime());
+            if (CommonUtil.getTimeDifference(CommonUtil.now(), publishDate) < 0) {
+                return new Result(false, "出版时间有误！");
+            }
+            book.setPublishTime(publishDate);
+            book.setPrice(new BigDecimal(price));
+            book.setCategory(new Category(Integer.parseInt(category)));
+        } catch (ParseException e) {
+            return new Result(false, "日期格式有误！");
+        } catch (Exception e) {
+            return new Result(false, "输入信息有误，请检查！");
+        }
+        book.setConditions(conditions);
+        description = description == null ? "" : description;
+        book.setDescription(description);
+        // 待审核状态
+        book.setState(1);
+        bookService.save(book);
+        return new Result(true, "发布成功，等待审核！");
+    }
 
-	@GetMapping("findAllByUserId")
-	public Result findAllByUserId() {
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
-		List<Book> books = bookService.findAllByUserId(userId);
-		for (Book book : books) {
-			// 该图书为卖出或退货状态时，查找购买者
-			if (book.getState() == 3 || book.getState() == 4) {
-				Integer bookId = book.getId();
-				User user = userService.findOneByBookId(bookId);
-				if (user == null) {
-					user = new User();
-				}
-				// 此处的user为购买该图书的用户
-				book.setUser(user);
-			}
-		}
-		return new Result(books);
-	}
+    @GetMapping("findAllByUserId")
+    public Result findAllByUserId() {
+        Integer userId = (Integer) request.getSession().getAttribute("userId");
+        List<Book> books = bookService.findAllByUserId(userId);
+        for (Book book : books) {
+            // 该图书为卖出或退货状态时，查找购买者
+            if (book.getState() == 3 || book.getState() == 4) {
+                Integer bookId = book.getId();
+                User user = userService.findOneByBookId(bookId);
+                if (user == null) {
+                    user = new User();
+                }
+                // 此处的user为购买该图书的用户
+                book.setUser(user);
+            }
+        }
+        return new Result(books);
+    }
 
-	@GetMapping("list")
-	public Result list() {
-		return new Result(bookService.findAll("createTime", Sort.Direction.DESC));
-	}
+    @GetMapping("list")
+    public Result list() {
+        return new Result(bookService.findAll("createTime", Sort.Direction.DESC));
+    }
 
-	private String handleImage(MultipartFile imgFile,int userId) throws IOException {
-		if (imgFile == null) {
-			return "";
-		}
-		// 保存到当前项目img目录下，路径：img/用户id/原图片名+_日期
-		String newFileName = Objects.requireNonNull(imgFile.getOriginalFilename()).replace(".", "_"+CommonUtil.formatDate(new Date(), "yyyyMMdd") + ".");
-		String descStr = String.format("%s\\%d\\%s", imagePath, userId, newFileName);
-		File desc = new File(descStr);
-		if (!desc.getParentFile().exists()) {
-			desc.getParentFile().mkdirs();
-		}
-		System.out.println(desc);
-		imgFile.transferTo(desc);
-		return String.format("img/book/%d/%s", userId, newFileName);
-	}
+    private String handleImage(MultipartFile imgFile, int userId) throws IOException {
+        if (imgFile == null) {
+            return "";
+        }
+        // 保存到当前项目img目录下，路径：img/用户id/原图片名+_日期
+        String newFileName = Objects.requireNonNull(imgFile.getOriginalFilename()).replace(".", "_" + CommonUtil.formatDate(new Date(), "yyyyMMdd") + ".");
+        String descStr = String.format("%s\\%d\\%s", imagePath, userId, newFileName);
+        File desc = new File(descStr);
+        if (!desc.getParentFile().exists()) {
+            desc.getParentFile().mkdirs();
+        }
+        imgFile.transferTo(desc);
+        return String.format("img/book/%d/%s", userId, newFileName);
+    }
 
 }
