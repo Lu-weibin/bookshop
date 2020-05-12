@@ -16,10 +16,13 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class CartServiceImpl extends BaseServiceImpl<Cart,Integer> implements CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
-    @Autowired
-    private BookRepository bookRepository;
+    private final CartRepository cartRepository;
+    private final BookRepository bookRepository;
+
+    public CartServiceImpl(CartRepository cartRepository, BookRepository bookRepository) {
+        this.cartRepository = cartRepository;
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public JpaBaseRepository<Cart, Integer> getRepository() {

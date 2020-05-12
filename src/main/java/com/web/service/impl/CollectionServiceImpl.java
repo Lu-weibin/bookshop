@@ -17,10 +17,13 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class CollectionServiceImpl extends BaseServiceImpl<Collection,Integer> implements CollectionService{
 
-    @Autowired
-    private CollectionRepository collectionRepository;
-    @Autowired
-    private BookRepository bookRepository;
+    private final CollectionRepository collectionRepository;
+    private final BookRepository bookRepository;
+
+    public CollectionServiceImpl(CollectionRepository collectionRepository, BookRepository bookRepository) {
+        this.collectionRepository = collectionRepository;
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public JpaBaseRepository<Collection, Integer> getRepository() {

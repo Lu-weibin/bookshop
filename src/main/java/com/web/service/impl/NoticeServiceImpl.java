@@ -16,9 +16,11 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class NoticeServiceImpl extends BaseServiceImpl<Notice, Integer> implements NoticeService {
 
-    @Autowired
-    private NoticeRepository noticeRepository;
+    private final NoticeRepository noticeRepository;
 
+    public NoticeServiceImpl(NoticeRepository noticeRepository) {
+        this.noticeRepository = noticeRepository;
+    }
 
     @Override
     public JpaBaseRepository<Notice, Integer> getRepository() {

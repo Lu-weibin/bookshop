@@ -16,8 +16,11 @@ import java.util.Optional;
 @Transactional(rollbackFor = Exception.class)
 public class AddressServiceImpl extends BaseServiceImpl<Address,Integer> implements AddressService {
 
-    @Autowired
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
+
+    public AddressServiceImpl(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
 
     @Override
     public JpaBaseRepository<Address, Integer> getRepository() {
