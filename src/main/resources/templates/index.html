@@ -70,8 +70,8 @@
             <div class="col-lg-10">
                 <div class="row" >
                     <div class="col-lg-3" v-for="(book,index) in books" :key="index">
-                        <div class="thumbnail">
-                            <img :src="book.picture" alt=" " width="150px" height="150px">
+                        <div class="thumbnail" style="width:210px;height:415px" >
+                            <img :src="book.picture" alt=" " style="width: 150px;height: 200px">
                             <div class="caption">
                                 <h4 class="text-center">{{book.bookName}}</h4>
                                 <p class="text-center">—— {{book.author}}</p>
@@ -112,14 +112,6 @@
             }
         },
         methods: {
-            isLogin: function () {
-                    if (this.userId == null || this.userId == "") {
-                        alert("未登录！");
-                        // window.location.href = "login";
-                    } else {
-                        $('#myModal').modal();
-                    }
-                },
             getCategorys: function () {
 				axios.get('/category/list').then(response => (this.categorys = response.data.data));
             },
@@ -154,13 +146,12 @@
                 }
                 axios.get('/book/search/'+this.key).then(response => (
                     this.books = response.data.data,
-                        this.flag = ""
+                    this.flag = ""
                 ));
             },
             getTotalCount: function(){
                 var _this = this;
-                axios.get('/book/category/-1')
-				.then(function(response){
+                axios.get('/book/category/-1').then(function(response){
                     _this.bookTatal = response.data.data.length
                     });
             }
