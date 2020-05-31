@@ -13,8 +13,11 @@ import java.util.List;
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Orders,Integer> implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @Override
     public JpaBaseRepository<Orders, Integer> getRepository() {
